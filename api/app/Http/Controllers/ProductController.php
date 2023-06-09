@@ -69,23 +69,49 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // get the authenticated user
+        $user = User::find(1); // TODO temporary - tests
+        
+        // create the product
+        $product = Product::create([
+            'name' => $request->input('name'),
+            'to_buy' => 1, // TODO: will it always be true?
+            'comment' => $request->input('comment'),
+            'user_id' => $user->id,
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        // attach the product to the given section
+        // TODO: should we allow to create a product without section?
+        $section = Section::find($request->input('section_id'));
+        if (!$section) {
+            return response()->json([
+                'message' => 'Section not found.'
+            ], 404);
+        } else {
+            $section->products()->attach($product->id);
+        }
+
+        return response()->json([
+            'message' => 'Product created successfully.',
+            'product' => $product
+        ], 201);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        // update the product
+        $product->to_buy = $request->input('to_buy');
+        $product->comment = $request->input('comment');
+        $product->save();
+        // no section management here (other endpoint)
+
+        return response()->json([
+            'message' => 'Product updated successfully.',
+            'product' => $product
+        ], 201);
     }
 
     /**
@@ -93,6 +119,12 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // delete the product
+        $product = Product::find($id);
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product deleted successfully.'
+        ], 201);
     }
 }

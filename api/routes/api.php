@@ -28,7 +28,13 @@ Route::put('/stores/{store}', [StoreController::class, 'update']);
 Route::get('/stores', [StoreController::class, 'index']);
 
 // Products
+// new product
+Route::post('/products', [ProductController::class, 'store']);
+// update product
+Route::put('/products/{product}', [ProductController::class, 'update']);
+// delete product
+Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 // autocomplete route
 Route::get('/products/autocomplete', [ProductController::class, 'autocomplete']);
-// add route to get the current store's sections and products flagged as "to buy"
+// route to get the current store's sections and products flagged as "to buy"
 Route::get('/products', [ProductController::class, 'index']);
