@@ -36,4 +36,12 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /** 
+     * Hide the pivot table from the JSON response
+     */
+     
+    protected $hidden = [
+        'pivot'
+    ];
 }

@@ -51,6 +51,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the current store of this user.
+     */
+    public function currentStore()
+    {
+        return $this->belongsTo(Store::class, 'current_store');
+    }
+
+    /**
      * Get all the products belonging to this user.
      */
     public function products()

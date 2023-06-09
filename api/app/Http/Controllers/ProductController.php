@@ -18,14 +18,14 @@ class ProductController extends Controller
     public function index()
     {
         // get the authenticated user
-        $user = User::find(1); // temporary - tests
-        $store = Store::find($user->current_store);
+        $user = User::find(1); // TODO temporary - tests
+        $store = $user->currentStore;
         // $products = [];
 
         if ($store) {
             // get all products flagged as "to buy", categorised by the current store's sections
             $products = $store->sections()->with(['products' => function($query) {
-                $query->where('to_buy', '=', 1);
+                $query->where('to_buy',  1);
             }])->get();
               
             // add all products flagged as "to buy" and not belonging to any section
