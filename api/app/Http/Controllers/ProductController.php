@@ -25,7 +25,7 @@ class ProductController extends Controller
         if ($store) {
             // get all products flagged as "to buy", categorised by the current store's sections
             $products = $store->sections()->with(['products' => function($query) {
-                $query->where('to_buy',  1);
+                $query->where('to_buy', 1);
             }])->get();
               
             // add all products flagged as "to buy" and not belonging to any section
@@ -46,6 +46,22 @@ class ProductController extends Controller
                 'message' => 'No current store set for given user.'
             ], 404);
         }
+    }
+
+    /**
+     * Autocomplete products names
+     */
+    public function autocomplete(Request $request)
+    {
+        $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')
+        ->get();
+
+        // load section for each product
+        foreach ($products as $product) {
+            $product->section;
+        }
+
+        return $products->makeHidden('comment');
     }
 
     /**

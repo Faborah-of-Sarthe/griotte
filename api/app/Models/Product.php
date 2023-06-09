@@ -20,6 +20,13 @@ class Product extends Model
         'comment',
         'user_id',
     ];
+
+    /** 
+     * Hide unnecessary fields from the JSON response
+     */
+    protected $hidden = [
+        'pivot', 'user_id', 'created_at', 'updated_at'
+    ];
     
     /**
      * Get all the sections where this product is located
@@ -36,12 +43,4 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    /** 
-     * Hide the pivot table from the JSON response
-     */
-     
-    protected $hidden = [
-        'pivot'
-    ];
 }

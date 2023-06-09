@@ -21,6 +21,13 @@ class Section extends Model
         'store_id',
     ];
 
+    /** 
+     * Hide unnecessary fields from the JSON response
+     */
+    protected $hidden = [
+        'pivot', 'store_id', 'created_at', 'updated_at'
+    ];
+
     /**
      * Get the store this section belongs to
      */

@@ -21,11 +21,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Stores CRUD
-
+// Stores
 // change the current store for the current user
 Route::put('/stores/{store}', [StoreController::class, 'update']);
 // return all the stores belonging to the current user
 Route::get('/stores', [StoreController::class, 'index']);
+
+// Products
+// autocomplete route
+Route::get('/products/autocomplete', [ProductController::class, 'autocomplete']);
 // add route to get the current store's sections and products flagged as "to buy"
 Route::get('/products', [ProductController::class, 'index']);
