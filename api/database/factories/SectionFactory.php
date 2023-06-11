@@ -18,8 +18,8 @@ class SectionFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'color' => fake()->hexColor(),
-            'icon' => 'cart.png',
+            'color' => fake()->randomDigitNotNull(),
+            'icon' => fake()->randomNumber(2),
         ];
     }
 }
