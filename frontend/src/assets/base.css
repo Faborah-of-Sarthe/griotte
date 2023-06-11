@@ -5,18 +5,67 @@
   --color-background: #fff;
   --color-primary: #e83e3e;
 
-  /* Section backgrounds */
-  --melon: hsla(0, 100%, 84%, 1);
-  --sunset: hsla(33, 100%, 82%, 1);
-  --cream: hsla(62, 100%, 86%, 1);
-  --tea-green: hsla(110, 100%, 87%, 1);
-  --electric-blue: hsla(185, 100%, 80%, 1);
-  --jordy-blue: hsla(217, 100%, 81%, 1);
-  --periwinkle: hsla(249, 100%, 85%, 1);
-  --mauve: hsla(300, 100%, 89%, 1);
-  --baby-powder: hsla(60, 100%, 99%, 1);
+  /* Base colors */
+  --melon: 0, 100%;
+  --sunset: 33, 100%;
+  --cream:62, 100%;
+  --tea-green: 110, 100%;
+  --electric-blue: 185, 100%;
+  --jordy-blue: 217, 100%;
+  --periwinkle: 249, 100%;
+  --mauve: 300, 100%;
+  --grey: 0, 0%;
+
+  /* Default colors */
+
+  --color-1: hsla(var(--melon), 84%, 1);
+  --color-2: hsla(var(--sunset), 82%, 1);
+  --color-3: hsla(var(--cream), 86%, 1);
+  --color-4: hsla(var(--tea-green), 87%, 1);
+  --color-5: hsla(var(--electric-blue), 80%, 1);
+  --color-6: hsla(var(--jordy-blue), 81%, 1);
+  --color-7: hsla(var(--periwinkle), 85%, 1);
+  --color-8: hsla(var(--mauve), 89%, 1);
+  --color-9: hsla(var(--grey), 60%, 1);
+
+  /* Light colors */
+
+  --color-1-light: hsla(var(--melon), 84%, 0.4);
+  --color-2-light: hsla(var(--sunset), 82%, 0.4);
+  --color-3-light: hsla(var(--cream), 86%, 0.4);
+  --color-4-light: hsla(var(--tea-green), 87%, 0.4);
+  --color-5-light: hsla(var(--electric-blue), 80%, 0.4);
+  --color-6-light: hsla(var(--jordy-blue), 81%, 0.4);
+  --color-7-light: hsla(var(--periwinkle), 85%, 0.4);
+  --color-8-light: hsla(var(--mauve), 89%, 0.4);
+  --color-9-light: hsla(var(--grey), 50%, 0.4);
+
+
+
 }
 
+/* Fonts */
+
+@font-face {
+  font-family: 'Linotte';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/Linotte-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Linotte';
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/Linotte-Bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Linotte';
+  font-style: normal;
+  font-weight: 900;
+  src: url('fonts/Linotte-Heavy.woff') format('woff');
+}
 
 
 @media (prefers-color-scheme: dark) {
@@ -42,9 +91,8 @@ body {
   background: var(--color-background);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  font-size: 15px;
+  font-family: Linotte, sans-serif;
+  font-size: 17px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
