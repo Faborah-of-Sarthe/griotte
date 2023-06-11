@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isLoggedIn } from '../utils'
 
 
 const ListView = () => import('../views/ListView.vue')
@@ -12,23 +13,38 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        middleware: "guest"
+      }
     },
     {
       path: '/my-list',
       name: 'my-list',
-      component: ListView
+      component: ListView,
+      meta: {
+        middleware: "auth"
+      }
     }
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-  // if connected, redirect home to my-list
-  // if (to.name === 'home' && localStorage.getItem('token')) {
-  //   next({ name: 'my-list' })
-  // } else {
-  //   next()
-  // }
-// })
+// Handle auth for each route
+router.beforeEach((to, from, next) => { 
+  // Check if the route has a middleware auth and if the user is logged in
+  if (to.meta.middleware === 'auth' && !isLoggedIn()) {
+    next({ name: 'home' })
+    return
+  }
+  // Check if the route has a middleware guest and if the user is logged in
+  if (to.meta.middleware === 'guest' && isLoggedIn()) {
+    next({ name: 'my-list' })
+    return
+  }
+
+  next()
+  return
+
+})
 
 export default router
