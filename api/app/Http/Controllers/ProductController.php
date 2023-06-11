@@ -27,11 +27,13 @@ class ProductController extends Controller
             $products = $store->sections()->with(['products' => function($query) {
                 $query->where('to_buy', 1);
             }])->get();
-              
+
             // add all products flagged as "to buy" and not belonging to any section
             $noSection = new Section;
             $noSection->id = 0;
-            $noSection->name = 'Unclassified';
+            $noSection->name = 'Non classé';
+            $noSection->color = 0;
+            $noSection->icon = 0;
             $noSection->products = Product::doesntHave('section')
                             ->where('user_id', $user->id)
                             ->where('to_buy', 1)
@@ -71,7 +73,7 @@ class ProductController extends Controller
     {
         // get the authenticated user
         $user = User::find(1); // TODO temporary - tests
-        
+
         // create the product
         $product = Product::create([
             'name' => $request->input('name'),
