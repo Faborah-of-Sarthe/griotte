@@ -2,14 +2,22 @@
 @import './animations.scss';
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 1rem;
-
   font-weight: normal;
 
   isolation: isolate;
 }
+
+main {
+  padding: 0 1rem;
+}
+
+.card__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 a,
 .green {
@@ -22,6 +30,13 @@ h2 {
   font-weight: bold;
 }
 
+input {
+  font-family: inherit;
+}
+
+.no-header header {
+  display: none;
+}
 
 @for $i from 1 through 9 {
   .bg-light-color-#{$i} {
@@ -41,6 +56,10 @@ h2 {
   background-color: var(--color-9-light);
 }
 
+.red-bg {
+  background-color: var(--color-1);
+}
+
 @media (hover: hover) {
   a:hover {
   }
@@ -48,13 +67,7 @@ h2 {
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
   }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+ 
 }

@@ -2,9 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { isLoggedIn } from '../utils'
 
 
-const ListView = () => import('../views/ListView.vue')
-const HomeView = () => import('../views/HomeView.vue')
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
@@ -13,15 +10,34 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../views/HomeView.vue'),
       meta: {
-        middleware: "guest"
+        middleware: "guest",
+        class: "no-header"
+      }
+    },
+    {
+      path:'/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+      meta: {
+        middleware: "guest",
+        class: "red-bg"
+      }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+      meta: {
+        middleware: "guest",
+        class: "red-bg"
       }
     },
     {
       path: '/my-list',
       name: 'my-list',
-      component: ListView,
+      component: () => import('../views/ListView.vue'),
       meta: {
         middleware: "auth"
       }
@@ -33,7 +49,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => { 
   // Check if the route has a middleware auth and if the user is logged in
   if (to.meta.middleware === 'auth' && !isLoggedIn()) {
-    next({ name: 'home' })
+    next({ name: 'login' })
     return
   }
   // Check if the route has a middleware guest and if the user is logged in
