@@ -2,12 +2,19 @@
     <label v-if="label" :for="name">
       {{ label }}
     </label>
-    <input :id="name"  :name="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" v-bind="$attrs"/>
+    <div class="input_wrapper">
+      <input :id="name" ref="inputElement" :name="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" v-bind="$attrs"/>
+      <span @click="toggleEye" :class="passwordClass" class="eye" v-if="$attrs.type == 'password'"></span>
+    </div>
 </template>
 
 <script setup>
 
-  import { defineProps } from 'vue'
+  import { defineProps, ref} from 'vue'
+
+
+  const passwordClass = ref('closed')
+  const inputElement = ref();
 
   const props = defineProps({
     label: {
@@ -25,7 +32,12 @@
   // Create name from label
   const name = props.label.toLowerCase().replace(' ', '-');
 
-  // TODO: Handle password visualization toggle
+  // Change type of input
+  const toggleEye = () => {
+    passwordClass.value = passwordClass.value == 'closed' ? 'open' : 'closed'
+    inputElement.value.type = inputElement.value.type == 'password' ? 'text' : 'password'
+  }
+  
 
 </script>
 
@@ -50,6 +62,33 @@
   input:focus {
     outline: none;
     border-color: var(--color-primary);
+  }
+
+  .input_wrapper {
+    position: relative;
+  }
+
+  .eye {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.6rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #b2b2b2;
+    height: 1.5rem;
+    width: 1.5rem;
+    background: #000;
+    border-radius: 50%;
+    /* TODO: Add an eye background */
+
+  }
+
+  .eye.closed {
+    background: #b2b2b2;
+  }
+
+  .password {
+    padding-right: 2.5rem;
   }
   
 

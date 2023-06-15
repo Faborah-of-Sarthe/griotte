@@ -19,12 +19,28 @@ const password = ref('')
         <Card title="Connexion">
             <form class="login__form">
                 <BaseInput label="E-mail" type="email"  v-model="email"  ></BaseInput>
-                <BaseInput label="Mot de passe" type="password" v-model="password" ></BaseInput>
+                <BaseInput class="password" label="Mot de passe" type="password" v-model="password" ></BaseInput>
                 <Button type="submit" design="primary">Se connecter</Button>
             </form>
+            <div class="links">
+                <RouterLink class="login__link" to="/">Mot de passe oublié ?</RouterLink>
+            </div>
         </Card>
         </Transition>
     </div>
 
 </template>
 
+<style scoped>
+
+.login__form {
+    margin-bottom: 1rem;
+}
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+</style>
