@@ -31,21 +31,5 @@ const props = defineProps({
 
 <style scoped>
 
-.btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    font-size: 1.25rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    appearance: none;
-}
-
-.btn--primary {
-    background-color: var(--color-primary);
-    color: #fff;
-    display: block;
-    margin: auto;
-}
 
 </style>

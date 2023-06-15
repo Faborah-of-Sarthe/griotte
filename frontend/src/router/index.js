@@ -13,7 +13,7 @@ const router = createRouter({
       component: () => import('../views/HomeView.vue'),
       meta: {
         middleware: "guest",
-        class: "no-header"
+        class: "no-header red-bg"
       }
     },
     {
