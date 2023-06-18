@@ -1,6 +1,9 @@
+import Cookies from "universal-cookie"
+
 // Check if the user is logged in
 export function isLoggedIn() {
-  return localStorage.getItem('user')
+  const cookies = new Cookies()
+  return cookies.get("XSRF-TOKEN") ? true : false
 }
 
 // Save the user in local storage

@@ -6,24 +6,52 @@ import Button from '../components/forms/Button.vue'
 import Card from '../components/forms/Card.vue'
 import { saveUser } from '../utils'
 import { useRouter } from 'vue-router'
+import Cookies from 'universal-cookie'
 
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
 
-const login = () => {
-    console.log('login')
+const cookies = new Cookies()
+
+const login = async () => {
 
     const data = {
         email: email.value,
         password: password.value
     }
+    
 
-    // TODO: Send data to API
-    // When the API responds, save the user in localStoragec
-    saveUser(data)
-    router.push('my-list')
+    // Get Sanctum CSRF cookie
+    const csrfCookie = await fetch(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie', {
+        method: 'GET',
+        credentials: 'include'
+    })
+
+
+
+    // Send login request
+    const res = await fetch(import.meta.env.VITE_AUTH_URL+'login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            // Add the CSRF token in the request headers
+            'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
+        },
+        body: JSON.stringify(data)
+    })
+
+
+    // If the API responds with a 200 status code
+    if (res.status === 200) {
+        router.push('my-list')
+    } else {
+        // TODO: handle errors
+        console.log('error')
+    }
 }
 
 
