@@ -25,12 +25,10 @@ watch(() => route.name, () => {
 
 <template>
     <header>
-      <h1>
-        <RouterLink to="/">
-          <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
-          <span>Griotte</span>
-        </RouterLink>
-      </h1>
+      <RouterLink class="logo" to="/">
+        <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
+        <span>Griotte</span>
+      </RouterLink>
       <nav v-if="false">
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="my-list">Ma liste</RouterLink>
@@ -43,18 +41,19 @@ watch(() => route.name, () => {
 
 <style scoped>
 
-h1 a {
+.logo {
   display: flex;
   align-items: center;
   line-height: 1;
+  font-size: 1.7rem;
 }
 
-h1 img {
+.logo img {
   margin-right: .5rem;
   transform: translateY(-9px);
 }
 
-h1 span {
+.logo span {
   font-weight: 900;
 }
 
