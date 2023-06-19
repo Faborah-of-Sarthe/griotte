@@ -77,7 +77,7 @@ class ProductController extends Controller
         // create the product
         $product = Product::create([
             'name' => $request->input('name'),
-            'to_buy' => 1, // TODO: will it always be true?
+            'to_buy' => 1, 
             'comment' => $request->input('comment'),
             'user_id' => $user->id,
         ]);

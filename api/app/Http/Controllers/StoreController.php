@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Store;
 use App\Models\User;
+use Illuminate\Http\Client\Request;
 
 class StoreController extends Controller
 {
     /**
      * Return a listing of the resource.
-     * /!\ Not all stores, but only the stores belonging to the authenticated
+     * /!\ Not all stores, but only the stores belonging to the authenticated user
      *
      * @return \Illuminate\Http\Response<\App\Models\Store>
      */
@@ -24,19 +25,16 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        // create the store
+        $store = new Store;
+        $store->name = $request->input('name');
+        $store->user_id = 1; // temporary - tests
+        $store->save();
     }
 
     /**
      * Switch the user's current store
+     * There is no classic update function, as the other informations are not editable
      */
     public function update(Store $store)
     {
@@ -54,7 +52,12 @@ class StoreController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $store = Store::find($id);
+        $store->delete();
+
+        return response()->json([
+            'message' => 'Store deleted successfully.'
+        ], 200);
     }
 
 }
