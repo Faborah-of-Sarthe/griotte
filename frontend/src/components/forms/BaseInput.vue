@@ -58,6 +58,7 @@
     margin-bottom: 1rem;
     font-size: 1.25rem;
     appearance: none;
+    background: transparent;
   }
   input:focus {
     outline: none;

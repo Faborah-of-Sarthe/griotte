@@ -1,6 +1,7 @@
 @import './base.css';
 @import './animations.scss';
 
+
 #app {
   margin: 0 auto;
   font-weight: normal;
@@ -25,6 +26,15 @@ a,
   color: var(--color-primary);
   transition: 0.4s;
 }
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+h1 {
+  font-weight: bold;
+}
 
 h2 {
   font-weight: bold;
@@ -35,7 +45,7 @@ input {
 }
 
 .no-header header {
-  display: none;
+  display: none !important;
 }
 
 ::placeholder {

@@ -25,6 +25,7 @@ const { isLoading, isError, data, error } = useQuery({
 
 </script>
 <template>
+  <h1>Ma liste</h1>
   <div class="sections">
     <div v-if="isLoading">Loading...</div>
     <div v-if="isError">Error: {{ error }}</div>
@@ -40,6 +41,7 @@ const { isLoading, isError, data, error } = useQuery({
 </template>
 
 <style scoped>
+
 
 
 </style> 

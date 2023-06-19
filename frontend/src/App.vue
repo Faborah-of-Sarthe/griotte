@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
+import NavMenu from './components/NavMenu.vue'
 
 const route = useRoute()
 
@@ -29,10 +30,8 @@ watch(() => route.name, () => {
         <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
         <span>Griotte</span>
       </RouterLink>
-      <nav v-if="false">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="my-list">Ma liste</RouterLink>
-      </nav>
+      <!-- TODO : Hide if not logged in -->
+      <NavMenu />
     </header>
     <main>
       <RouterView />
@@ -61,6 +60,9 @@ header {
   padding: 1rem;
   background: var(--color-background);
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 </style>
