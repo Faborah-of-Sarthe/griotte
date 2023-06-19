@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { isLoggedIn } from '../utils'
+import Cookies from 'universal-cookie'
+
 
 
 const router = createRouter({
@@ -24,6 +26,39 @@ const router = createRouter({
         middleware: "guest",
         class: "red-bg"
       }
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: {
+        beforeRouteEnter(to, from, next) {
+          
+          const cookies = new Cookies()
+
+          fetch(import.meta.env.VITE_AUTH_URL+'logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                // Add the CSRF token in the request headers
+                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
+            },
+          })
+          .then(response => {
+            // Remove the CSRF token cookie
+            cookies.remove('XSRF-TOKEN')
+
+            // Redirect to login
+            next({ name: 'login' })
+          }
+          )
+          .catch(error => console.log(error))
+        }
+      },
+      meta: {
+        middleware: "auth",
+      },
     },
     {
       path: '/register',

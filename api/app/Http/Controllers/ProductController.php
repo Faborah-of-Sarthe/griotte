@@ -7,6 +7,7 @@ use App\Models\Section;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -17,8 +18,9 @@ class ProductController extends Controller
      */
     public function index()
     {
+
         // get the authenticated user
-        $user = User::find(1); // TODO temporary - tests
+        $user = auth('sanctum')->user();
         $store = $user->currentStore;
         // $products = [];
 
