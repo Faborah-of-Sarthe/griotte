@@ -10,3 +10,13 @@ export function isLoggedIn() {
 export function saveUser(user) {
     localStorage.setItem('user', JSON.stringify(user))
 }
+
+
+// Default options for fetch requests
+export const defaultOptions = {
+  credentials: 'include',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+}

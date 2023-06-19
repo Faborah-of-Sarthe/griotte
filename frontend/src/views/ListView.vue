@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
 import { ref } from 'vue'
 import Cookies from 'universal-cookie'
+import { defaultOptions } from '@/utils'
 
 
 const cookies = new Cookies()
@@ -15,12 +16,7 @@ const { isLoading, isError, data, error } = useQuery({
 
     const res = await fetch(import.meta.env.VITE_API_URL+'products', {
       method: 'GET',
-      credentials: 'include',
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
-      },
+      ...defaultOptions,
     });
     return await res.json();
 
