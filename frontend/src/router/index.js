@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isLoggedIn } from '../utils'
 import Cookies from 'universal-cookie'
-
+import { useUserStore } from '../stores/user'
 
 
 const router = createRouter({
@@ -34,6 +33,8 @@ const router = createRouter({
         beforeRouteEnter(to, from, next) {
           
           const cookies = new Cookies()
+          const userStore = useUserStore();
+
 
           fetch(import.meta.env.VITE_AUTH_URL+'logout', {
             method: 'POST',
@@ -48,6 +49,9 @@ const router = createRouter({
           .then(response => {
             // Remove the CSRF token cookie
             cookies.remove('XSRF-TOKEN')
+
+            // Remove the user from user store
+            userStore.logout()
 
             // Redirect to login
             next({ name: 'login' })
@@ -82,13 +86,16 @@ const router = createRouter({
 
 // Handle auth for each route
 router.beforeEach((to, from, next) => { 
+
+  const userStore = useUserStore();
+
   // Check if the route has a middleware auth and if the user is logged in
-  if (to.meta.middleware === 'auth' && !isLoggedIn()) {
+  if (to.meta.middleware === 'auth' && !userStore.isLoggedIn) {
     next({ name: 'login' })
     return
   }
   // Check if the route has a middleware guest and if the user is logged in
-  if (to.meta.middleware === 'guest' && isLoggedIn()) {
+  if (to.meta.middleware === 'guest' && userStore.isLoggedIn) {
     next({ name: 'my-list' })
     return
   }

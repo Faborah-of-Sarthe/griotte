@@ -2,8 +2,11 @@
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { watch, ref } from 'vue'
 import NavMenu from './components/NavMenu.vue'
+import { useUserStore } from './stores/user'
+import Cookies from 'universal-cookie'
 
 const route = useRoute()
+const userStore = useUserStore()
 
 // Watch the changes of the route name
 watch(() => route.name, () => {
@@ -21,6 +24,13 @@ watch(() => route.name, () => {
 
 })
 
+// On mount, check if the cookie XSRF-TOKEN is set and save it to the user store
+const cookies = new Cookies()
+if(cookies.get('XSRF-TOKEN')) {
+  userStore.setUser(cookies.get('XSRF-TOKEN'))
+}
+
+
 
 </script>
 
@@ -30,8 +40,8 @@ watch(() => route.name, () => {
         <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
         <span>Griotte</span>
       </RouterLink>
-      <!-- TODO : Hide if not logged in -->
-      <NavMenu />
+      
+      <NavMenu v-if="userStore.isLoggedIn" />
     </header>
     <main>
       <RouterView />

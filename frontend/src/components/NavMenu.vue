@@ -39,7 +39,6 @@
     // Close the menu on click outside
     const closeMenu = (e) => {
         if(!e.target.closest('nav') && isActive.value && e.target.closest('.burger-icon') === null) {
-            console.log('close');
             isActive.value = false
         }
     }
@@ -113,10 +112,34 @@
     }
     
     // TODO: handle media queries cross components
-    @media screen and (min-width: 40rem) {
+    @media screen and (orientation: landscape) {
         
         .burger-icon {
             display: none;
+        }
+
+        nav {
+            position: static;
+            width: auto;
+            background: none;
+            padding: 0;
+            box-shadow: none;
+
+            ul {
+                display: flex;
+                flex-direction: row;
+                height: auto;
+                padding: 0;
+
+                li {
+                    margin-left: 2rem;
+                }
+            }
+
+            .close {
+                display: none;
+            }
+
         }
 
     }

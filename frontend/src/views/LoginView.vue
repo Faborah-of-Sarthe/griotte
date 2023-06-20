@@ -4,14 +4,15 @@ import { ref } from 'vue'
 import BaseInput from '../components/forms/BaseInput.vue'
 import Button from '../components/forms/Button.vue'
 import Card from '../components/forms/Card.vue'
-import { saveUser } from '../utils'
 import { useRouter } from 'vue-router'
 import Cookies from 'universal-cookie'
+import { useUserStore } from '../stores/user'
 
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+const userStore = useUserStore()
 
 const cookies = new Cookies()
 
@@ -47,6 +48,8 @@ const login = async () => {
 
     // If the API responds with a 200 status code
     if (res.status === 200) {
+        // Save user ton user token store
+        userStore.setUser(cookies.get('XSRF-TOKEN'))
         router.push('my-list')
     } else {
         // TODO: handle errors
