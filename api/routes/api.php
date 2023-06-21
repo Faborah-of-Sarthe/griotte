@@ -22,6 +22,10 @@ use App\Http\Controllers\ProductController;
 // Routes protected by Sanctum
 Route::middleware('auth:sanctum')->group(function() {
 
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
     // PRODUCTS
     // new product
     Route::post('/products', [ProductController::class, 'store']);
