@@ -74,7 +74,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // get the authenticated user
-        $user = User::find(1); // TODO temporary - tests
+        $user = auth('sanctum')->user();
 
         // create the product
         $product = Product::create([
@@ -129,6 +129,44 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'Product deleted successfully.'
+        ], 201);
+    }
+
+    /**
+     * Attach the product to a section 
+     */
+    public function attachToSection(Product $product, Section $section)
+    {
+        // Search for the given section
+        if (!$section) {
+            return response()->json([
+                'message' => 'Section not found.'
+            ], 404);
+        } else if (!$product) {
+            return response()->json([
+                'message' => 'Product not found.'
+            ], 404);
+        } else {
+            // Attach the product to the section
+            $section->products()->attach($product->id);
+            
+            // Get the authenticated user
+            $user = auth('sanctum')->user();
+
+            // For all this products sections
+            $sections = $product->sections;
+            foreach ($sections as $section) {
+                // Check if the section belongs to the current store
+                if ($section->store_id == $user->currentStore->id) {
+                    // If yes, detach the product from this section
+                    $section->products()->detach($product->id);
+                }
+            }
+        }
+
+        return response()->json([
+            'message' => 'Product attached successfully.',
+            'product' => $product
         ], 201);
     }
 }

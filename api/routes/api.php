@@ -35,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     // autocomplete route
     Route::get('/products/autocomplete', [ProductController::class, 'autocomplete']);
+    // attach product to section
+    Route::put('/products/{product}/set-section/{section}', [ProductController::class, 'attachToSection']);
     // route to get the current store's sections and products flagged as "to buy"
     Route::get('/products', [ProductController::class, 'index']);
 
