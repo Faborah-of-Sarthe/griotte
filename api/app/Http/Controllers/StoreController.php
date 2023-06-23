@@ -16,7 +16,8 @@ class StoreController extends Controller
      */
     public function index()
     {
-        $user = User::find(1); // temporary - tests
+        // get the authenticated user
+        $user = auth('sanctum')->user();
         return $user->stores;
     }
 
@@ -25,20 +26,37 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
+        // get the authenticated user
+        $user = auth('sanctum')->user();
+
         // create the store
         $store = new Store;
         $store->name = $request->input('name');
-        $store->user_id = 1; // temporary - tests
+        $store->user_id = $user->id;
         $store->save();
     }
 
     /**
-     * Switch the user's current store
-     * There is no classic update function, as the other informations are not editable
+     * Edit the store's name.
      */
-    public function update(Store $store)
+    public function update(Request $request, Store $store)
     {
-        $user = User::find(1); // temporary - tests
+        $store->name = $request->input('name');
+        $store->save();
+
+        return response()->json([
+            'message' => 'Current store updated successfully.'
+        ], 200);
+    }
+
+    /**
+     * Switch the user's current store
+     */
+    public function updateCurrentStore(Store $store)
+    {
+        // get the authenticated user
+        $user = auth('sanctum')->user();
+        
         $user->current_store = $store->id;
         $user->save();
 

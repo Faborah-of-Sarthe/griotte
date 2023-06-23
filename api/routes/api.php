@@ -43,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function() {
     // STORES
     // change the current store for the current user
     Route::put('/stores/{store}', [StoreController::class, 'update']);
+    // change the current store for the current user
+    Route::put('/stores/{store}/set-current', [StoreController::class, 'updateCurrentStore']);
     // return all the stores belonging to the current user
     Route::get('/stores', [StoreController::class, 'index']);
 
