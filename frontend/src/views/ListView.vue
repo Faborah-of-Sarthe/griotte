@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
-import { ref } from 'vue'
 import Cookies from 'universal-cookie'
 import { defaultOptions } from '@/utils'
+import axios from 'axios'
 
 
 const cookies = new Cookies()
@@ -14,13 +14,15 @@ const { isLoading, isError, data, error } = useQuery({
   queryKey:  ['products'],
   queryFn: async () => {
 
-    const res = await fetch(import.meta.env.VITE_API_URL+'products', {
-      method: 'GET',
-      ...defaultOptions,
-    });
-    return await res.json();
+    const res = await axios.get(import.meta.env.VITE_API_URL+'products', {
+      withCredentials: true,
 
-  }
+    })
+    return res.data
+
+
+
+  },
 })
 
 </script>

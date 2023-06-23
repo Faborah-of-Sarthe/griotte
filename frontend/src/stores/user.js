@@ -5,6 +5,7 @@ export const useUserStore = defineStore({
     state: () => ({
         user: null,
     }),
+    persist: true,
     getters: {
         isLoggedIn: (state) => {
             return state.user !== null;

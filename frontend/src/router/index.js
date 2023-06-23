@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Cookies from 'universal-cookie'
 import { useUserStore } from '../stores/user'
+import axios from 'axios'
 
 
 const router = createRouter({
@@ -35,29 +36,18 @@ const router = createRouter({
           const cookies = new Cookies()
           const userStore = useUserStore();
 
-
-          fetch(import.meta.env.VITE_AUTH_URL+'logout', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                // Add the CSRF token in the request headers
-                'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
-            },
-          })
+          axios.post(import.meta.env.VITE_AUTH_URL+'logout', {})
           .then(response => {
-            // Remove the CSRF token cookie
-            cookies.remove('XSRF-TOKEN')
 
             // Remove the user from user store
             userStore.logout()
 
             // Redirect to login
             next({ name: 'login' })
-          }
-          )
+          })
           .catch(error => console.log(error))
+
+
         }
       },
       meta: {
@@ -86,7 +76,6 @@ const router = createRouter({
 
 // Handle auth for each route
 router.beforeEach((to, from, next) => { 
-
   const userStore = useUserStore();
 
   // Check if the route has a middleware auth and if the user is logged in
@@ -104,5 +93,7 @@ router.beforeEach((to, from, next) => {
   return
 
 })
+
+
 
 export default router

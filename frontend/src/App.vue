@@ -1,9 +1,10 @@
 <script setup>
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { RouterLink, RouterView, useRoute} from 'vue-router'
 import { watch, ref } from 'vue'
 import NavMenu from './components/NavMenu.vue'
 import { useUserStore } from './stores/user'
 import Cookies from 'universal-cookie'
+import { QueryCache } from '@tanstack/vue-query'
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -24,11 +25,7 @@ watch(() => route.name, () => {
 
 })
 
-// On mount, check if the cookie XSRF-TOKEN is set and save it to the user store
-const cookies = new Cookies()
-if(cookies.get('XSRF-TOKEN')) {
-  userStore.setUser(cookies.get('XSRF-TOKEN'))
-}
+
 
 
 

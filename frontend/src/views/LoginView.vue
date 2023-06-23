@@ -7,6 +7,8 @@ import Card from '../components/forms/Card.vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'universal-cookie'
 import { useUserStore } from '../stores/user'
+import { saveUser } from '../utils'
+import axios from 'axios'
 
 
 const email = ref('')
@@ -25,31 +27,15 @@ const login = async () => {
     
 
     // Get Sanctum CSRF cookie
-    const csrfCookie = await fetch(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie', {
-        method: 'GET',
-        credentials: 'include'
-    })
-
-
+    const csrfCookie = await axios.get(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie')
 
     // Send login request
-    const res = await fetch(import.meta.env.VITE_AUTH_URL+'login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            // Add the CSRF token in the request headers
-            'X-XSRF-TOKEN': cookies.get('XSRF-TOKEN')
-        },
-        body: JSON.stringify(data)
-    })
-
+    const res = await axios.post(import.meta.env.VITE_AUTH_URL+'login', data)
 
     // If the API responds with a 200 status code
     if (res.status === 200) {
-        // Save user ton user token store
-        userStore.setUser(cookies.get('XSRF-TOKEN'))
+        // Set the user in the store
+        saveUser(res.data)
         router.push('my-list')
     } else {
         // TODO: handle errors

@@ -30,7 +30,7 @@
   })
 
   // Create name from label
-  const name = props.label.toLowerCase().replace(' ', '-');
+  const name = props.label.toLowerCase().replaceAll(' ', '-');
 
   // Change type of input
   const toggleEye = () => {
