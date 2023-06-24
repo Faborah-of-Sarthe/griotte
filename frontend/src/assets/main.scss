@@ -92,6 +92,10 @@ input {
     background-color: var(--color-#{$i});
   }
 
+  .svg-stroke-#{$i} {
+    stroke: var(--color-#{$i});
+  }
+
 }
 .bg-color-0 {
   background-color: var(--color-9);
@@ -101,6 +105,9 @@ input {
   background-color: var(--color-9-light);
 }
 
+.svg-stroke-0 {
+  stroke: var(--color-9);
+}
 .red-bg {
   background-color: var(--color-1);
 }

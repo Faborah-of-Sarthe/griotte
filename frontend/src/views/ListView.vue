@@ -2,12 +2,9 @@
 
 import { useQuery } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
-import Cookies from 'universal-cookie'
-import { defaultOptions } from '@/utils'
 import axios from 'axios'
 
 
-const cookies = new Cookies()
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -19,8 +16,6 @@ const { isLoading, isError, data, error } = useQuery({
 
     })
     return res.data
-
-
 
   },
 })

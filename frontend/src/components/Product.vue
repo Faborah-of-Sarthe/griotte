@@ -3,11 +3,16 @@
 // Imports
 import { defineProps, ref, computed } from 'vue'
 import Arrow from './icons/Arrow.vue'
+import CheckMark from './icons/CheckMark.vue'
 
 // Props
 const props = defineProps({
   product: {
     type: Object,
+    required: true
+  },
+  color: {
+    type: String,
     required: true
   }
 })
@@ -33,6 +38,12 @@ const hasComment = computed(() => {
 
 <template>
     <div class="product">
+        <div class="checkbox-container">
+          <label :for="'product' + product.id">
+            <input type="checkbox" class="check" :id="'product' + product.id" name="check">
+            <CheckMark :class="'svg-stroke-'+ color"></CheckMark>
+            <span>Cocher</span></label>
+        </div>
         <div class="product-info">
             <p class="product-name" :class="{clickable: hasComment}" @click="openProduct">{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
             <Transition name="slideDown">
@@ -44,16 +55,17 @@ const hasComment = computed(() => {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
   .comment {
     color: var(--color-9);
-    padding-left: 1rem;
     transition: all 0.15s ease-in-out;
-    white-space: pre;
+    white-space: pre-wrap;
   }
   .product {
     font-size: 1.2rem;
+    display: flex;
+    align-items: flex-start;
   }
   .arrow {
     height: .7rem;
@@ -70,5 +82,37 @@ const hasComment = computed(() => {
   .clickable {
     cursor: pointer;
   }
+
+  .check,
+  label span {
+    display: none;
+  }
+  .checkbox-container {
+    position: relative;
+    top: 2px;
+  }
+  .check:checked + .checkmark {
+    stroke-dashoffset: 0;
+    background: #474747;
+  }
+  .checkmark {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #474747;
+    border-radius: .25rem;
+    display: block;
+    stroke-width: 4px;
+    // stroke-miterlimit: 10;
+    stroke-dashoffset: 50;
+    stroke-dasharray: 50;
+    margin-right: 0.5rem;
+    transition: background-color 0.2s ease-in-out, stroke-dashoffset 0.3s ease-in-out;
+    cursor: pointer;
+
+    path {
+      transform: scale(1.4)
+    }
+  }
+
 
 </style>
