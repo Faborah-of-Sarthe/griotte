@@ -31,5 +31,9 @@ const props = defineProps({
 
 <style scoped>
 
+button:disabled{
+    background-color: var(--color-9);
+    color: var(--color-text);
+}
 
 </style>

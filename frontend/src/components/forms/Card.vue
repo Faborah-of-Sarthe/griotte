@@ -2,7 +2,9 @@
     
 <div class="card" :class="variation">
     <h2>{{ title }}</h2>
-    <slot></slot>
+    <div>
+        <slot></slot>
+    </div>
 </div>
 
 </template>
@@ -42,6 +44,9 @@ const props = defineProps({
     border-radius: 0.5rem;
     background-color: var(--color-background);
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.card--loading > *{
+    opacity: 0.5;
 }
 
 </style>

@@ -9,40 +9,50 @@ import Cookies from 'universal-cookie'
 import { useUserStore } from '../stores/user'
 import { saveUser } from '../utils'
 import axios from 'axios'
+import { useMutation } from '@tanstack/vue-query'
 
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
-const userStore = useUserStore()
 
-const cookies = new Cookies()
-
+// Function making the login request
 const login = async () => {
 
-    const data = {
-        email: email.value,
-        password: password.value
-    }
-    
-
-    // Get Sanctum CSRF cookie
-    const csrfCookie = await axios.get(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie')
-
-    // Send login request
-    const res = await axios.post(import.meta.env.VITE_AUTH_URL+'login', data)
-
-    // If the API responds with a 200 status code
-    if (res.status === 200) {
-        // Set the user in the store
-        saveUser(res.data)
-        router.push('my-list')
-    } else {
-        // TODO: handle errors
-        console.log('error')
-    }
+const data = {
+    email: email.value,
+    password: password.value
 }
 
+
+// Get Sanctum CSRF cookie
+const csrfCookie = await axios.get(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie')
+
+// Send login request
+const res = await axios.post(import.meta.env.VITE_AUTH_URL+'login', data)
+
+// If the API responds with a 200 status code
+if (res.status === 200) {
+    // Set the user in the store
+    saveUser(res.data)
+    router.push('my-list')
+} else {
+    // TODO: handle errors
+    console.log('error')
+}
+}
+
+// Handle the request with vue-query in order to get the loading state
+const { isLoading, isError, error, isSuccess, mutate } = useMutation({
+    mutationFn: login,
+})
+
+
+
+// Call the login function when the form is submitted
+function handleLogin() {
+    mutate()
+}
 
 
 </script>
@@ -51,11 +61,11 @@ const login = async () => {
     
     <div class="login card__container">
         <Transition name="slideUp" appear>
-        <Card title="Connexion">
-            <form class="login__form" @submit.prevent="login">
+        <Card title="Connexion" :class="isLoading ? 'card--loading' : ''">
+            <form class="login__form" @submit.prevent="handleLogin">
                 <BaseInput label="E-mail" type="email"  v-model="email"  ></BaseInput>
                 <BaseInput class="password" label="Mot de passe" type="password" v-model="password" ></BaseInput>
-                <Button type="submit" design="primary">Se connecter</Button>
+                <Button type="submit" :disabled="isLoading" design="primary">Se connecter</Button>
             </form>
             <div class="links">
                 <RouterLink class="login__link" to="/">Mot de passe oublié ?</RouterLink>
