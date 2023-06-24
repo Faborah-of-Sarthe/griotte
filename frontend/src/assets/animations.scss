@@ -17,3 +17,13 @@
   opacity: 0;
   transform: translateY(20px);
 }
+
+.slideDown-enter-active,
+.slideDown-leave-active {
+  transition: all 0.2s ease;
+}
+.slideDown-enter-from,
+.slideDown-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
