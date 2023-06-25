@@ -4,6 +4,10 @@
 import { defineProps, ref, computed } from 'vue'
 import Arrow from './icons/Arrow.vue'
 import CheckMark from './icons/CheckMark.vue'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import axios from 'axios'
+
+const queryClient = useQueryClient()
 
 // Props
 const props = defineProps({
@@ -12,21 +16,40 @@ const props = defineProps({
     required: true
   },
   color: {
-    type: String,
+    type: [String, Number],
     required: true
   }
 })
 
 // State
 const open = ref(false)
+const visible = ref(true)
 
 // Methods
+const { isLoading, isError, error, isSuccess, mutate } = useMutation({
+  mutationFn: (productData) => {
+    return axios.patch(import.meta.env.VITE_API_URL + 'products/' + props.product.id, productData)
+  },
+  onSuccess: () => {
+    visible.value = false
+    queryClient.invalidateQueries('products')
+  },
+  onError: (error) => {
+    console.log(error)
+  },
+});
 
 // Open the product comment if it has one
 function openProduct() {
   if (props.product.comment !== '') {
     open.value = !open.value
   }
+}
+
+function checkProduct() {
+  mutate({
+    to_buy: 0
+  })
 }
 
 // Computed
@@ -37,22 +60,24 @@ const hasComment = computed(() => {
 </script>
 
 <template>
-    <div class="product">
-        <div class="checkbox-container">
-          <label :for="'product' + product.id">
-            <input type="checkbox" class="check" :id="'product' + product.id" name="check">
-            <CheckMark :class="'svg-stroke-'+ color"></CheckMark>
-            <span>Cocher</span></label>
-        </div>
-        <div class="product-info">
-            <p class="product-name" :class="{clickable: hasComment}" @click="openProduct">{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
-            <Transition name="slideDown">
-              <p class="comment" v-if="hasComment && open">
-                {{ product.comment }}
-              </p>
-            </Transition>
-        </div>
+  <Transition name="slideIn" appear>
+    <div v-if="visible" class="product">
+      <div class="checkbox-container">
+        <label :for="'product' + product.id">
+          <input :onChange="checkProduct" type="checkbox" class="check" :id="'product' + product.id" name="check">
+          <CheckMark :class="'svg-stroke-'+ color"></CheckMark>
+          <span>Cocher</span></label>
+      </div>
+      <div class="product-info">
+        <p  class="product-name" :class="{clickable: hasComment}" @click="openProduct">{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
+        <Transition name="slideDown">
+          <p class="comment" v-if="hasComment && open">
+            {{ product.comment }}
+          </p>
+        </Transition>
+      </div>
     </div>
+  </Transition>
 </template>
 
 <style scoped lang="scss">

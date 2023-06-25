@@ -79,7 +79,7 @@ class ProductController extends Controller
         // create the product
         $product = Product::create([
             'name' => $request->input('name'),
-            'to_buy' => 1, 
+            'to_buy' => 1,
             'comment' => $request->input('comment'),
             'user_id' => $user->id,
         ]);
@@ -106,9 +106,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+
+        $request->validate([
+            'name' => 'string, max:255',
+            'to_buy' => 'boolean',
+            'comment' => 'nullable|string',
+        ]);
+
         // update the product
-        $product->to_buy = $request->input('to_buy');
-        $product->comment = $request->input('comment');
+        $product->fill($request->all());
         $product->save();
         // no section management here (other endpoint)
 
@@ -133,7 +139,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Attach the product to a section 
+     * Attach the product to a section
      */
     public function attachToSection(Product $product, Section $section)
     {
@@ -149,7 +155,7 @@ class ProductController extends Controller
         } else {
             // Attach the product to the section
             $section->products()->attach($product->id);
-            
+
             // Get the authenticated user
             $user = auth('sanctum')->user();
 

@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // new product
     Route::post('/products', [ProductController::class, 'store']);
     // update product
-    Route::put('/products/{product}', [ProductController::class, 'update']);
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
     // delete product
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
     // autocomplete route
