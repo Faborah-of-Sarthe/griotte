@@ -27,3 +27,12 @@
   opacity: 0;
   transform: translateY(-20px);
 }
+
+.fadeIn-enter-active,
+.fadeIn-leave-active {
+  transition: all 0.2s ease;
+}
+.fadeIn-enter-from,
+.fadeIn-leave-to {
+  opacity: 0;
+}

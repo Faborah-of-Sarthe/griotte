@@ -3,6 +3,7 @@
 // Imports
 import { defineProps } from 'vue'
 import Product from '@/components/Product.vue'
+import SectionIcon from '@/components/SectionIcon.vue'
 
 
 // Props
@@ -18,7 +19,7 @@ const props = defineProps({
 <template>
   <section :class="'bg-light-color-' +  section.color ">
     <header>
-        <div class="icon" :class="'bg-color-' +  section.color "></div>
+      <SectionIcon class="big" :color="section.color"></SectionIcon>
         <h2>{{ section.name }}</h2>
     </header>
     <div class="products">
@@ -41,10 +42,9 @@ const props = defineProps({
     align-items: center;
     margin-bottom: 1rem;
   }
+
   .icon {
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
     margin-right: 1rem;
   }
+  
 </style>

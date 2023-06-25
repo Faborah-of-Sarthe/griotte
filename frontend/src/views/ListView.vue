@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
+import Autocomplete from '@/components/Autocomplete.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 
@@ -43,10 +44,17 @@ const { isLoading, isError, data, error } = useQuery({
       </p>
     </div>
   </div>
+  <template v-if="!isLoading && !isError && hasProducts">
+    <Autocomplete></Autocomplete>
+  </template>
 </template>
 
 <style scoped>
 
 
+
+.sections {
+  margin-bottom: 7rem;
+}
 
 </style> 
