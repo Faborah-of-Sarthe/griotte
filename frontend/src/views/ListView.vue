@@ -1,6 +1,6 @@
 <script setup>
 
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import axios from 'axios'
@@ -8,7 +8,7 @@ import { ref } from 'vue'
 
 
 const hasProducts = ref(false);
-
+const queryClient = useQueryClient()
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -24,6 +24,29 @@ const { isLoading, isError, data, error } = useQuery({
 
   },
 })
+
+// Mutation to add a product to the list
+const productEdition = useMutation({
+  mutationFn: (productData) => {
+    return axios.patch(import.meta.env.VITE_API_URL + 'products/' + productData.id, {
+      to_buy: 1
+    })
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries('products')
+  },
+  onError: (error) => {
+    console.log(error)
+  },
+});
+
+
+// Add a product to the list
+function addProduct(product) {
+
+  productEdition.mutate(product)
+  
+}
 
 
 </script>
@@ -45,7 +68,7 @@ const { isLoading, isError, data, error } = useQuery({
     </div>
   </div>
   <template v-if="!isLoading && !isError && hasProducts">
-    <Autocomplete></Autocomplete>
+    <Autocomplete @selected="addProduct" ></Autocomplete>
   </template>
 </template>
 
