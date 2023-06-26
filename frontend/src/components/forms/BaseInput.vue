@@ -11,6 +11,7 @@
 <script setup>
 
   import { defineProps, ref} from 'vue'
+import { labelize } from '../../utils';
 
 
   const passwordClass = ref('closed')
@@ -30,7 +31,7 @@
   })
 
   // Create name from label
-  const name = props.label.toLowerCase().replaceAll(' ', '-');
+  const name = labelize(props.label);
 
   // Change type of input
   const toggleEye = () => {

@@ -18,7 +18,17 @@ main {
   justify-content: center;
   align-items: center;
 }
+.background-overlay {
+  transition: opacity 0.2s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(1px);
 
+  background: rgba(66, 31, 31, 0.3);
+}
 
 a,
 .green {

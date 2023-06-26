@@ -90,7 +90,7 @@ watch(searchTerms, (value) => {
         <input placeholder="Chercher un produit" autocomplete="off" v-model="searchTerms" ref="inputSearch" v-if="open" type="text" class="search" name="search" id="search">
     </Transition>
     <Transition name="fadeIn" appear>
-        <div class="background" @click="toggleSearch" v-if="open">
+        <div class="background-overlay" @click="toggleSearch" v-if="open">
     </div>
     </Transition>
     
@@ -116,17 +116,7 @@ watch(searchTerms, (value) => {
 
 }
 
-.background {
-    transition: opacity 0.2s ease-in-out;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    backdrop-filter: blur(1px);
 
-    background: rgba(99, 51, 51, 0.2);
-}
 .search {
 
     position: fixed;

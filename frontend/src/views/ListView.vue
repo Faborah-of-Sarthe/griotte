@@ -3,12 +3,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
+import ProductForm from '@/components/ProductForm.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 
 
 const hasProducts = ref(false);
 const queryClient = useQueryClient()
+const productFormOpen = ref(false)
+const type = ref('add')
+const currentProduct = ref({})
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -48,6 +52,17 @@ function addProduct(product) {
   
 }
 
+// Open the product form
+function openNewProductForm(product) {
+  currentProduct.value = {
+    name: product,
+    id: null,
+    comment: '',
+    to_buy: 1
+  }
+  productFormOpen.value = true
+}
+
 
 </script>
 <template>
@@ -68,8 +83,9 @@ function addProduct(product) {
     </div>
   </div>
   <template v-if="!isLoading && !isError && hasProducts">
-    <Autocomplete @selected="addProduct" ></Autocomplete>
+    <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
   </template>
+  <ProductForm v-if="productFormOpen" :type="type" :product="currentProduct" @close="productFormOpen = false"></ProductForm>
 </template>
 
 <style scoped>
