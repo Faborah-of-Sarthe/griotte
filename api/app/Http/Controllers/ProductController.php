@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Store;
 use App\Models\Product;
 use App\Models\Section;
-use App\Models\Store;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -76,29 +77,36 @@ class ProductController extends Controller
         // get the authenticated user
         $user = auth('sanctum')->user();
 
-        // create the product
-        $product = Product::create([
-            'name' => $request->input('name'),
-            'to_buy' => 1,
-            'comment' => $request->input('comment'),
-            'user_id' => $user->id,
+        $request->validate([
+            'name' => 'string|max:255',
+            'to_buy' => 'boolean',
+            'comment' => 'nullable|string',
+            'section_id' => 'nullable|integer|exists:sections,id',
         ]);
 
-        // attach the product to the given section
-        // TODO: should we allow to create a product without section?
-        $section = Section::find($request->input('section_id'));
-        if (!$section) {
-            return response()->json([
-                'message' => 'Section not found.'
-            ], 404);
-        } else {
-            $section->products()->attach($product->id);
-        }
+        // Begin a transaction
+        DB::transaction(function () use ($request, $user, &$product) {
 
-        return response()->json([
-            'message' => 'Product created successfully.',
-            'product' => $product
-        ], 201);
+
+            // create the product
+            $product = Product::create([
+                'name' => $request->input('name'),
+                'to_buy' => 1,
+                'comment' => $request->input('comment'),
+                'user_id' => $user->id,
+            ]);
+
+            // If the section_id is provided, attach the product to the given section
+            if($request->input('section_id')) {
+                $section = Section::find($request->input('section_id'));
+                $section->products()->attach($product->id);
+            }
+
+            return response()->json([
+                'message' => 'Product created successfully.',
+                'product' => $product
+            ], 201);
+        });
     }
 
     /**
@@ -108,7 +116,7 @@ class ProductController extends Controller
     {
 
         $request->validate([
-            'name' => 'string, max:255',
+            'name' => 'string|max:255',
             'to_buy' => 'boolean',
             'comment' => 'nullable|string',
         ]);

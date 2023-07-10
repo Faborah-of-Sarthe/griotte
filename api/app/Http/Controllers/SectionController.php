@@ -2,16 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Section;
 use Illuminate\Http\Request;
 
 class SectionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Return all the sections of the authenticated user's current store
      */
     public function index()
     {
-        //
+
+        $user = auth('sanctum')->user();
+        $store = $user->currentStore;
+
+        if ($store) {
+            return $store->sections;
+        }
+
+        else {
+            return response()->json([
+                'message' => 'No current store set for given user.'
+            ], 404);
+        }
+
     }
 
     /**

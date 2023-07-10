@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,10 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::put('/stores/{store}/set-current', [StoreController::class, 'updateCurrentStore']);
     // return all the stores belonging to the current user
     Route::get('/stores', [StoreController::class, 'index']);
+
+    // SECTIONS
+    // Get all sections of the current store
+    Route::get('/sections', [SectionController::class, 'index']);
 
 });
 

@@ -54,7 +54,7 @@ watchEffect(() => {
 
 // Watch for the search terms and emit the event
 watch(searchTerms, (value) => {
-    if (value.length > 2) {
+    if (value.length > 1) {
         mutate(value);
     }
 })
@@ -67,11 +67,11 @@ watch(searchTerms, (value) => {
         <button v-if="!open" @click="toggleSearch" class="add_button">Ajouter</button>
     </Transition>
     <Transition name="slideUp" appear>
-    <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 2">
+    <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 1">
         <div class="products" v-if="data?.data.length > 0">
             <div v-for="product in data?.data" :key="product.id" class="result" @click="selectProduct(product)">
                 <div class="result__name">{{ product.name }}</div>
-                <SectionIcon class="small" :color="product.section[0].color"></SectionIcon>
+                <SectionIcon class="small" :color="product.section[0] ? product.section[0].color : 0"></SectionIcon>
             </div>
         </div>
         <div class="creation">
