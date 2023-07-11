@@ -54,7 +54,7 @@ function checkProduct() {
 
 // Computed
 const hasComment = computed(() => {
-  return props.product.comment !== ''
+  return !!props.product.comment 
 })
 
 </script>

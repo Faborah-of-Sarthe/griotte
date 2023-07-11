@@ -1,10 +1,21 @@
 <template>
     <div class="section-select">
-        <label for="section">Rayon</label>
-        <select name="section" id="section" :value="currentSection" @change="handleChange">
-            <option v-for="section in data" :key="section.id" :value="section.id">{{ section.name }}</option>
-        </select>
-        <!-- TODO : Replace with custom select -->
+        <div class="sections" >
+            <div v-if="isLoading" class="loading">
+                Chargement des rayons
+            </div>
+            <template v-if="data" v-for="section in data" :key="section.id">
+                <Transition name="slideUp" appear>
+                    <div :style="{ 'transition-delay': section.id * 50 + 'ms' }" 
+                          class="section" 
+                          :class="{selected: section.id == currentSection }" 
+                          @click="handleChange(section)">
+                        <SectionIcon class="big" :color="section.color"></SectionIcon>
+                        <p>{{ section.name }}</p>
+                    </div>
+                </Transition>
+            </template>
+        </div>
 
     </div>
 </template>
@@ -14,9 +25,9 @@
 import { defineProps, ref, computed, onMounted } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
+import SectionIcon from '@/components/SectionIcon.vue'
 
 const props = defineProps({
-
     currentSection: {
         type: Number,
         required: false,
@@ -24,11 +35,14 @@ const props = defineProps({
     }
 })
 
+const currentSection = ref(props.currentSection)
+
 const emit = defineEmits(['update:currentSection'])
 
 
+
 // Get sections from API
-const {  data } = useQuery({
+const {  data, isLoading } = useQuery({
     queryKey:  ['sections'],
     queryFn: async () => {
 
@@ -39,7 +53,9 @@ const {  data } = useQuery({
         // Add a default section with id 0
         res.data.unshift({
             id: 0,
-            name: 'Aucun rayon'
+            name: 'Aucun rayon',
+            color: 0,
+            icon: 0
         })
 
         return res.data
@@ -49,7 +65,8 @@ const {  data } = useQuery({
 
 // Emit the selected section
 const handleChange = (event) => {
-    const sectionId =  parseInt(event.target.value)
+    const sectionId =  parseInt(event.id)
+    currentSection.value = sectionId
     emit('update:currentSection', sectionId)
 }
 
@@ -58,10 +75,29 @@ const handleChange = (event) => {
 
 <style scoped>
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
+.sections {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: 25rem;
+    overflow-y: scroll;
+
 }
+
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    width: 50%;
+    padding: 1rem 0.5rem;
+    border-radius: 0.5rem;
+}
+.section.selected {
+    transition: all .1s ease;
+    background-color: var(--color-1-light);
+}
+
 
 </style>

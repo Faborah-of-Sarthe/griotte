@@ -2,11 +2,18 @@
     <Transition name="slideUp" appear>
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
-                <BaseInput label="Nom" :value="currentProduct.name" v-model="currentProduct.name"></BaseInput>
-                <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="currentProduct.comment"></TextArea>
-                <SectionSelect :value="currentSection" v-model:currentSection="currentSection" ></SectionSelect> 
-                
-                <Button type="submit"  :disabled="currentProduct.name.length === 0">{{ buttonLabel }}</Button>
+                <template v-if="step == 1">
+
+                    <BaseInput label="Nom" :value="currentProduct.name" v-model="currentProduct.name"></BaseInput>
+                    <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="currentProduct.comment"></TextArea>
+                    
+                </template>
+                <template v-if="step == 2">
+
+                    <SectionSelect :value="currentSection" v-model:currentSection="currentSection" ></SectionSelect>
+                    
+                </template>
+                <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="currentProduct.name.length === 0">{{ buttonLabel }}</Button>
             </form>
         </Card>
     </Transition>
@@ -46,6 +53,8 @@ const props = defineProps({
 // State from props
 const currentProduct = ref(props.product)
 const currentSection = ref(props.section_id)
+const step = ref(1)
+const maxStep = 2;
 
 
 const emit = defineEmits(['close'])
@@ -53,7 +62,10 @@ const emit = defineEmits(['close'])
 // Computed 
 
 const title = computed(() => {
-    if (props.type === 'add') {
+    if(step.value === 2) {
+        return 'Choisir un rayon'
+    }
+    else if (props.type === 'add') {
         return 'Ajouter un produit'
     } else {
         return 'Modifier un produit'
@@ -61,10 +73,22 @@ const title = computed(() => {
 })
 
 const buttonLabel = computed(() => {
-    if (props.type === 'add') {
+
+    if(step.value === 1) {
+        return 'Suivant'
+    }
+    else if (props.type === 'add') {
         return 'Ajouter à ma liste'
     } else {
         return 'Enregistrer'
+    }
+})
+
+const buttonType = computed(() => {
+    if (step.value === 1) {
+        return 'button'
+    } else {
+        return 'submit'
     }
 })
 
@@ -112,6 +136,12 @@ function addProduct() {
     }
 
     productCreation.mutate(productData)
+}
+
+function stepUp() {
+    if (step.value < maxStep) {
+        step.value++
+    } 
 }
 
 
