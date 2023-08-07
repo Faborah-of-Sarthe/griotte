@@ -6,6 +6,7 @@ import Arrow from './icons/Arrow.vue'
 import CheckMark from './icons/CheckMark.vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
+import { useProductFormStore } from '../stores/productForm'
 
 const queryClient = useQueryClient()
 
@@ -15,11 +16,17 @@ const props = defineProps({
     type: Object,
     required: true
   },
+  section_id: {
+    type: Number,
+    required: true
+  },
   color: {
     type: [String, Number],
     required: true
   }
 })
+
+const productFormStore = useProductFormStore()
 
 // State
 const open = ref(false)
@@ -52,6 +59,13 @@ function checkProduct() {
   })
 }
 
+function handleLongPress() {
+  productFormStore.updateProduct(props.product)
+  productFormStore.updateProduct({section_id: props.section_id})
+  productFormStore.updateType('edit')
+  productFormStore.updateOpen(true)
+}
+
 // Computed
 const hasComment = computed(() => {
   return !!props.product.comment 
@@ -69,7 +83,7 @@ const hasComment = computed(() => {
           <span>Cocher</span></label>
       </div>
       <div class="product-info">
-        <p  class="product-name" :class="{clickable: hasComment}" @click="openProduct">{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
+        <p  class="product-name" :class="{clickable: hasComment}"  v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
         <Transition name="slideDown">
           <p class="comment" v-if="hasComment && open">
             {{ product.comment }}

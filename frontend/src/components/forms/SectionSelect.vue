@@ -8,7 +8,7 @@
                 <Transition name="slideUp" appear>
                     <div :style="{ 'transition-delay': section.id * 50 + 'ms' }" 
                           class="section" 
-                          :class="{selected: section.id == currentSection }" 
+                          :class="{selected: section.id == value }" 
                           @click="handleChange(section)">
                         <SectionIcon class="big" :color="section.color"></SectionIcon>
                         <p>{{ section.name }}</p>
@@ -27,17 +27,9 @@ import { useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
 import SectionIcon from '@/components/SectionIcon.vue'
 
-const props = defineProps({
-    currentSection: {
-        type: Number,
-        required: false,
-        default: 0
-    }
-})
 
-const currentSection = ref(props.currentSection)
-
-const emit = defineEmits(['update:currentSection'])
+const props = defineProps(['value'])
+const emit = defineEmits(['update:modelValue'])
 
 
 
@@ -66,8 +58,7 @@ const {  data, isLoading } = useQuery({
 // Emit the selected section
 const handleChange = (event) => {
     const sectionId =  parseInt(event.id)
-    currentSection.value = sectionId
-    emit('update:currentSection', sectionId)
+    emit('update:modelValue', sectionId)
 }
 
 </script>

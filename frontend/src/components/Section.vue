@@ -24,7 +24,7 @@ const props = defineProps({
     </header>
     <div class="products">
       <div v-for="product in section.products" :key="product.id">
-        <Product :product="product" :color="section.color"></Product>
+        <Product :product="product" :section_id="section.id" :color="section.color"></Product>
       </div>
     </div>
   </section>

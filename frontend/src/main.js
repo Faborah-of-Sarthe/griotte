@@ -9,6 +9,7 @@ import router from './router'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import axios from 'axios'
 import { logout } from './utils'
+import longpressDirective from './directives/longpress';
 
 const app = createApp(App)
 
@@ -35,5 +36,7 @@ pinia.use(piniaPluginPersistedState)
 app.use(pinia)
 app.use(router)
 app.use(VueQueryPlugin)
+app.directive('longpress', longpressDirective);
+
 
 app.mount('#app')

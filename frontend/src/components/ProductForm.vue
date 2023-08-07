@@ -4,21 +4,21 @@
             <form @submit.prevent="handleSubmit">
                 <template v-if="step == 1">
 
-                    <BaseInput label="Nom" :value="currentProduct.name" v-model="currentProduct.name"></BaseInput>
-                    <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="currentProduct.comment"></TextArea>
+                    <BaseInput label="Nom" :value="productFormStore.product.name" v-model="productFormStore.product.name"></BaseInput>
+                    <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="productFormStore.product.comment"></TextArea>
                     
                 </template>
                 <template v-if="step == 2">
 
-                    <SectionSelect :value="currentSection" v-model:currentSection="currentSection" ></SectionSelect>
+                    <SectionSelect :value="productFormStore.product.section_id" v-model="productFormStore.product.section_id" ></SectionSelect>
                     
                 </template>
-                <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="currentProduct.name.length === 0">{{ buttonLabel }}</Button>
+                <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0">{{ buttonLabel }}</Button>
             </form>
         </Card>
     </Transition>
     <Transition name="fadeIn" appear>
-        <div class="background-overlay" @click="emit('close')"></div>
+        <div class="background-overlay" @click="productFormStore.updateOpen(false)"></div>
     </Transition>
 </template>
 
@@ -32,32 +32,16 @@ import BaseInput from '@/components/forms/BaseInput.vue'
 import TextArea from '@/components/forms/TextArea.vue'
 import Button from '@/components/forms/Button.vue'
 import SectionSelect from '@/components/forms/SectionSelect.vue'
+import { useProductFormStore } from '../stores/productForm'
 
 
-// Props
-const props = defineProps({
-  product: {
-    type: Object,
-    required: true
-  },
-  type: {
-    type: String,
-    default: 'add',
-  },
-  section_id: {
-    type: Number,
-    default: 0,
-  }
-})
+const productFormStore = useProductFormStore()
 
-// State from props
-const currentProduct = ref(props.product)
-const currentSection = ref(props.section_id)
+
 const step = ref(1)
 const maxStep = 2;
 
 
-const emit = defineEmits(['close'])
 
 // Computed 
 
@@ -65,7 +49,7 @@ const title = computed(() => {
     if(step.value === 2) {
         return 'Choisir un rayon'
     }
-    else if (props.type === 'add') {
+    else if (productFormStore.type === 'add') {
         return 'Ajouter un produit'
     } else {
         return 'Modifier un produit'
@@ -77,7 +61,7 @@ const buttonLabel = computed(() => {
     if(step.value === 1) {
         return 'Suivant'
     }
-    else if (props.type === 'add') {
+    else if (productFormStore.type === 'add') {
         return 'Ajouter à ma liste'
     } else {
         return 'Enregistrer'
@@ -103,7 +87,7 @@ const productCreation = useMutation({
   },
   onSuccess: () => {
     queryClient.invalidateQueries('products')
-    emit('close')
+    productFormStore.updateOpen(false)
   },
   onError: (error) => {
     // TODO: handle error
@@ -111,13 +95,28 @@ const productCreation = useMutation({
   },
 });
 
+// Product edition query
+const productEdition = useMutation({
+  mutationFn: (productData) => {
+    return axios.patch(import.meta.env.VITE_API_URL + 'products/' + productData.id, productData)
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries('products')
+    productFormStore.updateOpen(false)
+  },
+  onError: (error) => {
+    // TODO: handle error
+    console.log(error)
+    },
+});
+
 
 
 function handleSubmit() {
-    if (props.type === 'add') {
+    if (productFormStore.type === 'add') {
         addProduct()
     } else {
-        // updateProduct()
+        productEdition.mutate(productFormStore.product)
     }
 }
 
@@ -126,13 +125,13 @@ function handleSubmit() {
 function addProduct() {
 
     const productData = {
-        name: currentProduct.value.name,
-        comment: currentProduct.value.comment,
+        name: productFormStore.product.name,
+        comment: productFormStore.product.comment,
     }
 
     // Do not send section_id if it is 0
-    if (currentSection.value !== 0) {
-        productData.section_id = currentSection.value
+    if (productFormStore.product.section_id !== 0) {
+        productData.section_id = productFormStore.product.section_id
     }
 
     productCreation.mutate(productData)

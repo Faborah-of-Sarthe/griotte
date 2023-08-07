@@ -6,13 +6,16 @@ import Autocomplete from '@/components/Autocomplete.vue'
 import ProductForm from '@/components/ProductForm.vue'
 import axios from 'axios'
 import { ref } from 'vue'
+import { useProductFormStore } from '../stores/productForm'
 
 
 const hasProducts = ref(false);
 const queryClient = useQueryClient()
-const productFormOpen = ref(false)
-const type = ref('add')
-const currentProduct = ref({})
+// const productFormOpen = ref(false)
+// const type = ref('add')
+// const currentProduct = ref({})
+
+const productFormStore = useProductFormStore();
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -54,13 +57,15 @@ function addProduct(product) {
 
 // Open the product form
 function openNewProductForm(product) {
-  currentProduct.value = {
-    name: product,
-    id: null,
-    comment: '',
-    to_buy: 1
-  }
-  productFormOpen.value = true
+
+    productFormStore.resetProduct()
+    productFormStore.updateProduct({
+      name: product,
+    })
+
+    productFormStore.updateType('add')
+
+    productFormStore.updateOpen(true)
 }
 
 
@@ -85,7 +90,7 @@ function openNewProductForm(product) {
   <template v-if="!isLoading && !isError && hasProducts">
     <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
   </template>
-  <ProductForm v-if="productFormOpen" :type="type" :product="currentProduct" @close="productFormOpen = false"></ProductForm>
+  <ProductForm v-if="productFormStore.open" ></ProductForm>
 </template>
 
 <style scoped>

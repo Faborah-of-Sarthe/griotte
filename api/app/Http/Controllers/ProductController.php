@@ -29,6 +29,7 @@ class ProductController extends Controller
             // get all products flagged as "to buy", categorised by the current store's sections
             $products = $store->sections()->with(['products' => function($query) {
                 $query->where('to_buy', 1);
+                $query->orderBy('updated_at', 'asc');
             }])->get();
 
             // add all products flagged as "to buy" and not belonging to any section
@@ -123,6 +124,11 @@ class ProductController extends Controller
 
         // update the product
         $product->fill($request->all());
+
+        if($request->input('section_id')) {
+            $product->section()->sync([$request->input('section_id')]);
+        }
+
         $product->save();
         // no section management here (other endpoint)
 

@@ -24,7 +24,7 @@ import { labelize } from '../../utils';
     },
 
     modelValue: {
-      type: String,
+      type: [String, null],
       required: true,
       default: ''
     },
