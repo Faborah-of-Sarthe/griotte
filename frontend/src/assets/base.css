@@ -85,6 +85,12 @@
   font-weight: normal;
 }
 
+*:not(input):not(textarea) {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 body {
   min-height: 100vh;
   color: var(--color-text);

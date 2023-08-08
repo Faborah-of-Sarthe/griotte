@@ -4,8 +4,6 @@ export default {
       const duration = parseInt(binding.arg) || 500; // Default long-press duration of 500ms (can be customized using v-longpress:duration="handler")
   
       const startPress = (event) => {
-        //Prevents the context menu to appear
-        event.preventDefault();
 
         if (!pressTimer) {
           pressTimer = setTimeout(() => {
