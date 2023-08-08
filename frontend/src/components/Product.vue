@@ -83,7 +83,7 @@ const hasComment = computed(() => {
           <span>Cocher</span></label>
       </div>
       <div class="product-info">
-        <p  class="product-name" :class="{clickable: hasComment}"  v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
+        <p  class="product-name"   v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
         <Transition name="slideDown">
           <p class="comment" v-if="hasComment && open">
             {{ product.comment }}
@@ -118,7 +118,8 @@ const hasComment = computed(() => {
     bottom: 5px;
     top: 0;
   }
-  .clickable {
+
+  .product-name {
     cursor: pointer;
   }
 
@@ -151,6 +152,21 @@ const hasComment = computed(() => {
     path {
       transform: scale(1.4)
     }
+  }
+
+  .longpress
+  {
+    animation: longpress 0.5s;
+    // Delay the animation to prevent it from triggering on simple clicks
+    animation-delay: 100ms;
+    transform-origin: left;
+  }
+
+  @keyframes longpress
+  {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
   }
 
 
