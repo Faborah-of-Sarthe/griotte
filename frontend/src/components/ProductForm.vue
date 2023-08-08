@@ -13,7 +13,10 @@
                     <SectionSelect :value="productFormStore.product.section_id" v-model="productFormStore.product.section_id" ></SectionSelect>
                     
                 </template>
-                <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0">{{ buttonLabel }}</Button>
+                <div class="buttons">
+                    <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
+                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0">{{ buttonLabel }}</Button>
+                </div>
             </form>
         </Card>
     </Transition>
@@ -143,6 +146,12 @@ function stepUp() {
     } 
 }
 
+function stepDown() {
+    if (step.value > 1) {
+        step.value--
+    } 
+}
+
 
 </script>
 
@@ -159,5 +168,10 @@ function stepUp() {
         padding: 1rem;
         z-index: 2;
 
+    }
+    .buttons {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 1rem;
     }
 </style>

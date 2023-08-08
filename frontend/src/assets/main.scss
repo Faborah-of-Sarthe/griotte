@@ -87,6 +87,14 @@ input {
   color: var(--color-primary);
 }
 
+.btn--secondary {
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  display: block;
+  margin: auto;
+}
+
 
 .btn.large {
   font-size: 2rem;
