@@ -27,7 +27,7 @@ class ProductController extends Controller
 
         if ($store) {
             // get all products flagged as "to buy", categorised by the current store's sections
-            $products = $store->sections()->with(['products' => function($query) {
+            $products = $store->sections()->orderBy('order')->with(['products' => function($query) {
                 $query->where('to_buy', 1);
                 $query->orderBy('updated_at', 'asc');
             }])->get();

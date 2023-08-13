@@ -20,6 +20,7 @@ class SectionFactory extends Factory
             'name' => fake()->word(),
             'color' => fake()->randomDigitNotNull(),
             'icon' => fake()->randomNumber(2),
+            'order' => fake()->randomDigitNotNull(),
         ];
     }
 }
