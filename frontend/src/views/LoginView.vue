@@ -19,27 +19,37 @@ const router = useRouter()
 // Function making the login request
 const login = async () => {
 
-const data = {
-    email: email.value,
-    password: password.value
-}
+    const data = {
+        email: email.value,
+        password: password.value
+    }
 
 
-// Get Sanctum CSRF cookie
-const csrfCookie = await axios.get(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie')
+    // Get Sanctum CSRF cookie
+    const csrfCookie = await axios.get(import.meta.env.VITE_AUTH_URL+'sanctum/csrf-cookie')
 
-// Send login request
-const res = await axios.post(import.meta.env.VITE_AUTH_URL+'login', data)
+    // Send login request
+    const res = await axios.post(import.meta.env.VITE_AUTH_URL+'login', data)
 
-// If the API responds with a 200 status code
-if (res.status === 200) {
-    // Set the user in the store
-    saveUser(res.data)
-    router.push('my-list')
-} else {
-    // TODO: handle errors
-    console.log('error')
-}
+    // If the API responds with a 200 status code
+    if (res.status === 200) {
+
+        // Get the user current store
+        const userStore = await axios.get(import.meta.env.VITE_API_URL+'stores/current', {
+            withCredentials: true,
+        });
+        const user = {
+            ...res.data,
+            currentStore: userStore.data
+        }
+
+        // Set the user in the store
+        saveUser(user)
+        router.push('my-list')
+    } else {
+        // TODO: handle errors
+        console.log('error')
+    }
 }
 
 // Handle the request with vue-query in order to get the loading state

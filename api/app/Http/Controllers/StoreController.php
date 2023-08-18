@@ -56,13 +56,24 @@ class StoreController extends Controller
     {
         // get the authenticated user
         $user = auth('sanctum')->user();
-        
+
         $user->current_store = $store->id;
         $user->save();
 
         return response()->json([
             'message' => 'Current store updated successfully.'
         ], 200);
+    }
+
+    /**
+     * Return the current store for the current user
+     */
+    public function getCurrentStore()
+    {
+        // get the authenticated user
+        $user = auth('sanctum')->user();
+
+        return $user->current_store;
     }
 
     /**
