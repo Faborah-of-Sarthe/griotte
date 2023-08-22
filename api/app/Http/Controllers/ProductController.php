@@ -32,13 +32,19 @@ class ProductController extends Controller
                 $query->orderBy('updated_at', 'asc');
             }])->get();
 
+
             // add all products flagged as "to buy" and not belonging to any section
             $noSection = new Section;
             $noSection->id = 0;
             $noSection->name = 'Non classé';
             $noSection->color = 0;
             $noSection->icon = 0;
-            $noSection->products = Product::doesntHave('section')
+            $noSection->products = Product::doesntHave('section') // Proudcts without section
+                            ->where('user_id', $user->id)
+                            ->where('to_buy', 1)
+                            ->orWhereHas('section', function($query) use ($store) { // Products with a section that doesn't belong to the current store
+                                $query->whereNotIn('section_id', $store->sections()->pluck('id'));
+                            })
                             ->where('user_id', $user->id)
                             ->where('to_buy', 1)
                             ->get();
