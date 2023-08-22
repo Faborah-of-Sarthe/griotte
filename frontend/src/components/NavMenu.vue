@@ -5,7 +5,7 @@
         </div>
         <ul>
             <li><RouterLink to="my-list">Ma liste</RouterLink></li>
-            <li><RouterLink to="#">Mes magasins</RouterLink></li>
+            <li><RouterLink to="my-stores">Mes magasins</RouterLink></li>
             <li><RouterLink to="logout">Déconnexion</RouterLink></li>
         </ul>
     </nav>

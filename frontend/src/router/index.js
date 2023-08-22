@@ -70,7 +70,15 @@ const router = createRouter({
       meta: {
         middleware: "auth"
       }
-    }
+    },
+    {
+      path: '/my-stores',
+      name: 'my-stores',
+      component: () => import('../views/StoreView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
   ]
 })
 
