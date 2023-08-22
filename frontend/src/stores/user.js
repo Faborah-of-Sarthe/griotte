@@ -17,6 +17,9 @@ export const useUserStore = defineStore({
         },
         logout() {
             this.user = null;
+        },
+        setCurrentStore(store) {
+            this.user.currentStore = store;
         }
     }
 });
