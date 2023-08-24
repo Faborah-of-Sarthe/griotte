@@ -35,6 +35,7 @@ const props = defineProps({
   section {
     padding: 1rem;
     margin-bottom: 1rem;
+    border-radius: 5px;
   }
 
   section header {

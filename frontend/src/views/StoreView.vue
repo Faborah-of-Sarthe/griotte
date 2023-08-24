@@ -6,9 +6,13 @@
         <h1>{{  data.name }}</h1>
         <h2>Rayons</h2>
         <div class="sections">
-            <div v-for="section in data.sections" :key="section.id" class="section">
-                <h3>{{ section.name }}</h3>
-            </div>
+            <section v-for="section in data.sections" :key="section.id" :class="'bg-light-color-' +  section.color ">
+                <SectionIcon class="big" :color="section.color"></SectionIcon>
+                <p>{{ section.name }}</p>
+            </section>
+        </div>
+        <div>
+            <Button type="button" >Ajouter un rayon</Button>
         </div>
     </div>
 
@@ -18,6 +22,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios';
 import { useRouter } from 'vue-router'
+import Button from '../components/forms/Button.vue'
+import SectionIcon from '../components/SectionIcon.vue'
 
 const router = useRouter()
 
@@ -36,3 +42,21 @@ const { isLoading, isError, data, error } = useQuery({
 })
 
 </script>
+
+<style scoped>
+
+    
+    .icon {
+        margin-right: 1rem;
+    }
+
+    section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem;
+    }
+
+</style>
