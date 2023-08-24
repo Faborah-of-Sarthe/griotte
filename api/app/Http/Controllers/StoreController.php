@@ -50,6 +50,16 @@ class StoreController extends Controller
     }
 
     /**
+     * Return the specified store.
+     */
+    public function show(Store $store)
+    {
+        $store->sections = $store->sections()->orderBy('order')->get();
+        return $store;
+    }
+
+
+    /**
      * Switch the user's current store
      */
     public function updateCurrentStore(Store $store)
@@ -79,9 +89,8 @@ class StoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Store $store)
     {
-        $store = Store::find($id);
         $store->delete();
 
         return response()->json([

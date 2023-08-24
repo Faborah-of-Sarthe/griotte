@@ -4,9 +4,9 @@
             <Cross></Cross>
         </div>
         <ul>
-            <li><RouterLink to="my-list">Ma liste</RouterLink></li>
-            <li><RouterLink to="my-stores">Mes magasins</RouterLink></li>
-            <li><RouterLink to="logout">Déconnexion</RouterLink></li>
+            <li><RouterLink :to="{ name: 'my-list' }">Ma liste</RouterLink></li>
+            <li><RouterLink :to="{ name: 'my-stores' }">Mes magasins</RouterLink></li>
+            <li><RouterLink :to="{ name: 'logout' }">Déconnexion</RouterLink></li>
         </ul>
     </nav>
     <div class="burger-icon" @click="toggle">

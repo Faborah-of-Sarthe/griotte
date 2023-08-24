@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/stores/current', [StoreController::class, 'getCurrentStore']);
     // return all the stores belonging to the current user
     Route::get('/stores', [StoreController::class, 'index']);
+    // get all the data of a store
+    Route::get('/stores/{store}', [StoreController::class, 'show']);
 
     // SECTIONS
     // Get all sections of the current store

@@ -74,11 +74,20 @@ const router = createRouter({
     {
       path: '/my-stores',
       name: 'my-stores',
+      component: () => import('../views/StoreListView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
+      path: '/my-stores/:id',
+      name: 'my-store',
       component: () => import('../views/StoreView.vue'),
       meta: {
         middleware: "auth"
       }
     },
+    
   ]
 })
 
