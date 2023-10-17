@@ -63,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::patch('/stores/{store}', [StoreController::class, 'update']);
         // delete a store
         // Route::delete('/stores/{store}', [StoreController::class, 'destroy']);
+        // Change the order of the sections
+        Route::put('/stores/{store}/sections/reorder', [StoreController::class, 'updateSectionsOrder']);
     });
 
     // SECTIONS

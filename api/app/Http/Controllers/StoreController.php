@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Store;
 use App\Models\User;
-use Illuminate\Http\Client\Request;
+use App\Models\Store;
+use App\Models\Section;
+use Illuminate\Http\Request;
+
 
 class StoreController extends Controller
 {
@@ -95,6 +97,33 @@ class StoreController extends Controller
 
         return response()->json([
             'message' => 'Store deleted successfully.'
+        ], 200);
+    }
+
+    /**
+     * Change the order of the sections
+     */
+    public function updateSectionsOrder(Request $request, Store $store)
+    {
+        $sections = $request->input('sections');
+
+        foreach ($sections as $section) {
+            $newOrder = $section['order'];
+            $section = Section::find($section['id']);
+
+            // Check if the section belongs to the current store
+            if ($section->store_id != $store->id) {
+                return response()->json([
+                    'message' => 'Section does not belong to the current store.'
+                ], 403);
+            }
+
+            $section->order = $newOrder;
+            $section->save();
+        }
+
+        return response()->json([
+            'message' => 'Sections order updated successfully.'
         ], 200);
     }
 
