@@ -10,6 +10,10 @@
                 <SectionIcon class="big" :color="section.color"></SectionIcon>
                 <p>{{ section.name }}</p>
             </section>
+            <div v-if="data.sections.length == 0">
+                <p>Aucun rayon pour le moment</p>
+            </div>
+
         </div>
         <div>
             <Button type="button" >Ajouter un rayon</Button>
