@@ -12,9 +12,10 @@
             </section> -->
             <draggable v-model="sections" tag="div" item-key="id" @change="reOrderSections">
                 <template #item="{ element: section }">
-                    <section :class="'bg-light-color-' +  section.color ">
+                    <section @click="handleSectionEdition(section)" :class="'bg-light-color-' +  section.color ">
                         <SectionIcon class="big" :color="section.color"></SectionIcon>
-                        <p>{{ section.name }}</p>
+                        <p >{{ section.name }}</p>
+                        <!-- TODO: drag icon -->
                     </section>
                 </template>
 
@@ -27,6 +28,7 @@
         <div>
             <Button type="button" >Ajouter un rayon</Button>
         </div>
+        <SectionForm v-if="sectionFormStore.open"></SectionForm>
     </div>
 
 </template>
@@ -38,10 +40,13 @@ import   draggable  from 'vuedraggable'
 import { useRouter } from 'vue-router'
 import Button from '../components/forms/Button.vue'
 import SectionIcon from '../components/SectionIcon.vue'
+import { useSectionFormStore } from '@/stores/sectionForm'
+import SectionForm from '@/components/SectionForm.vue'
 import { ref } from 'vue';
 
 const router = useRouter()
 const sections = ref([])
+const sectionFormStore = useSectionFormStore()
 
 // Load the store data from API
 const { isLoading, isError, data, error } = useQuery({
@@ -74,6 +79,16 @@ const reOrderSections = async (event) => {
         withCredentials: true,
     })
     queryClient.invalidateQueries('store' + router.currentRoute.value.params.id)
+}
+
+/**
+ * Handle the section edition by opening the form and setting the section to edit in the store
+ * @param { Object } selectedSection The section to edit
+ */
+function handleSectionEdition(selectedSection) {
+    sectionFormStore.updateSection(selectedSection)
+    sectionFormStore.updateType('edit')
+    sectionFormStore.updateOpen(true)
 }
 
 
