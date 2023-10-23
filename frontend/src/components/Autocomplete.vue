@@ -71,7 +71,7 @@ watch(searchTerms, (value) => {
         <div class="products" v-if="data?.data.length > 0">
             <div v-for="product in data?.data" :key="product.id" class="result" @click="selectProduct(product)">
                 <div class="result__name">{{ product.name }}</div>
-                <SectionIcon class="small" :color="product.section[0] ? product.section[0].color : 0"></SectionIcon>
+                <SectionIcon class="small" :icon="product.section[0].icon" :color="product.section[0] ? product.section[0].color : 0"></SectionIcon>
             </div>
         </div>
         <div class="creation">

@@ -6,14 +6,11 @@
         <h1>{{  data.name }}</h1>
         <h2>Rayons</h2>
         <div class="sections">
-            <!-- <section v-for="section in data.sections" :key="section.id" :class="'bg-light-color-' +  section.color ">
-                <SectionIcon class="big" :color="section.color"></SectionIcon>
-                <p>{{ section.name }}</p>
-            </section> -->
+            
             <draggable v-model="sections" tag="div" item-key="id" @change="reOrderSections">
                 <template #item="{ element: section }">
                     <section @click="handleSectionEdition(section)" :class="'bg-light-color-' +  section.color ">
-                        <SectionIcon class="big" :color="section.color"></SectionIcon>
+                        <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
                         <p >{{ section.name }}</p>
                         <!-- TODO: drag icon -->
                     </section>

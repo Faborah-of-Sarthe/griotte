@@ -19,7 +19,7 @@ const props = defineProps({
 <template>
   <section :class="'bg-light-color-' +  section.color ">
     <header>
-      <SectionIcon class="big" :color="section.color"></SectionIcon>
+      <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
         <h2>{{ section.name }}</h2>
     </header>
     <div class="products">
