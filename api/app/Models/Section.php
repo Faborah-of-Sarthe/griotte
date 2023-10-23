@@ -18,7 +18,7 @@ class Section extends Model
         'name',
         'color',
         'icon',
-        'store_id',
+        // 'store_id',
     ];
 
     /**

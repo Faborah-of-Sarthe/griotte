@@ -21,14 +21,23 @@ class CheckOwnership
         $resources = [
             'store',
             'product',
+            'section'
         ];
 
 
         // Check injected dependency's ownership
         if (in_array($request->route()->parameterNames()[0], $resources)) {
-            $resource = $request->route()->parameterNames()[0];
-            $resource = $request->route()->parameter($resource);
-            if ($resource->user_id !== $user->id) {
+            $resourceName = $request->route()->parameterNames()[0];
+            $resource = $request->route()->parameter($resourceName);
+
+            if($resourceName == "section") {
+                if($resource->store->user_id !== $user->id) {
+                    return response()->json([
+                        'message' => 'This resource does not belong to the authenticated user.'
+                    ], 403);
+                }
+            }
+            else if ($resource->user_id !== $user->id) {
                 return response()->json([
                     'message' => 'This resource does not belong to the authenticated user.'
                 ], 403);

@@ -47,9 +47,23 @@ class SectionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Section $section)
     {
-        //
+        $request->validate([
+            'name' => 'string|max:255|required',
+            'color' => 'int|required',
+            'icon' => 'string|required',
+        ]);
+
+        // update the section
+        $section->fill($request->all());
+
+        $section->save();
+
+        return response()->json([
+            'message' => 'Section updated successfully.',
+            'section' => $section
+        ], 201);
     }
 
     /**

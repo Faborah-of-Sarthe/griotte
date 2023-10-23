@@ -8,9 +8,7 @@
                     <ColorInput label="Couleur" :value="sectionFormStore.section.color" v-model="sectionFormStore.section.color"></ColorInput>
                 </template>
                 <template v-if="step == 2">
-
-                    <!-- <SectionSelect :value="productFormStore.product.section_id" v-model="productFormStore.product.section_id" ></SectionSelect>
-                     -->
+                    <IconSelect :value="sectionFormStore.section.icon" v-model="sectionFormStore.section.icon"></IconSelect>
                 </template>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
@@ -33,6 +31,7 @@ import Card  from '@/components/forms/Card.vue'
 import BaseInput from '@/components/forms/BaseInput.vue'
 import Button from '@/components/forms/Button.vue'
 import ColorInput from '@/components/forms/ColorInput.vue'
+import IconSelect from '@/components/forms/IconSelect.vue'
 import { useSectionFormStore } from '@/stores/sectionForm'
 
 const sectionFormStore = useSectionFormStore()
@@ -79,7 +78,7 @@ const buttonType = computed(() => {
 // Methods
 const queryClient = useQueryClient()
 
-// Product creation query
+// Section creation query
 // const productCreation = useMutation({
 //   mutationFn: (productData) => {
 //     return axios.post(import.meta.env.VITE_API_URL + 'products/', productData)
@@ -94,30 +93,31 @@ const queryClient = useQueryClient()
 //   },
 // });
 
-// Product edition query
-// const productEdition = useMutation({
-//   mutationFn: (productData) => {
-//     return axios.patch(import.meta.env.VITE_API_URL + 'products/' + productData.id, productData)
-//   },
-//   onSuccess: () => {
-//     queryClient.invalidateQueries('products')
-//     productFormStore.updateOpen(false)
-//   },
-//   onError: (error) => {
-//     // TODO: handle error
-//     console.log(error)
-//     },
-// });
+// Section edition query
+const sectionEdition = useMutation({
+  mutationFn: (sectionData) => {
+    console.log(sectionData);
+    return axios.patch(import.meta.env.VITE_API_URL + 'sections/' + sectionData.id, sectionData)
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries('sections')
+    sectionFormStore.updateOpen(false)
+  },
+  onError: (error) => {
+    // TODO: handle error
+    console.log(error)
+    },
+});
 
 
 
-// function handleSubmit() {
-//     if (productFormStore.type === 'add') {
-//         addProduct()
-//     } else {
-//         productEdition.mutate(productFormStore.product)
-//     }
-// }
+function handleSubmit() {
+    if (sectionFormStore.type === 'add') {
+        // addProduct()
+    } else {
+        sectionEdition.mutate(sectionFormStore.section)
+    }
+}
 
 
 // Handle the product creation

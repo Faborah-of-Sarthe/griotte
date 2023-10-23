@@ -65,11 +65,17 @@ Route::middleware('auth:sanctum')->group(function() {
         // Route::delete('/stores/{store}', [StoreController::class, 'destroy']);
         // Change the order of the sections
         Route::put('/stores/{store}/sections/reorder', [StoreController::class, 'updateSectionsOrder']);
+
     });
 
     // SECTIONS
     // Get all sections of the current store
     Route::get('/sections', [SectionController::class, 'index']);
+
+    Route::middleware(CheckOwnership::class)->group(function() {
+        //udpdate a section
+        Route::patch('/sections/{section}', [SectionController::class, 'update']);
+    });
 
 });
 

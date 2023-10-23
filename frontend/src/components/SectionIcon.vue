@@ -1,15 +1,33 @@
 <template>
-    <div class="icon" v-bind="$attrs" :class="'bg-color-' +  color "></div>
+    <div class="icon" v-bind="$attrs" :class="'bg-color-' +  color ">
+        <component v-if="icon" :is="icon" />
+    </div>
 </template>
 
 <script setup>
 
+import { computed, defineAsyncComponent } from 'vue'
+
 // Props
 const props = defineProps({
-  color: {
-    type: [String, Number],
-    required: true
-  }
+    color: {
+        type: [String, Number],
+        required: true
+    },
+    icon: {
+        type: String,
+        required: false,
+        default: ''
+    },
+})
+
+const icons = import.meta.glob('@/assets/icons/*.vue')
+const icon = computed(() => {
+    if(props.icon) {
+        return defineAsyncComponent(() => import('/src/assets/icons/' + props.icon + '.vue'))
+    } else {
+       return false;
+    }
 })
 
 </script>
@@ -18,6 +36,13 @@ const props = defineProps({
 .icon {
   
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.icon svg {
+    width: 80%;
+    height: 80%;
 }
 
 .big {
