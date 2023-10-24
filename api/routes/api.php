@@ -72,6 +72,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // Get all sections of the current store
     Route::get('/sections', [SectionController::class, 'index']);
 
+    // Create a new section
+    Route::post('/sections', [SectionController::class, 'store']);
+
     Route::middleware(CheckOwnership::class)->group(function() {
         //udpdate a section
         Route::patch('/sections/{section}', [SectionController::class, 'update']);

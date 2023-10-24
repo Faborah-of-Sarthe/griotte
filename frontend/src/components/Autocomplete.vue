@@ -124,7 +124,7 @@ watch(searchTerms, (value) => {
     left: 1rem;
     right: 1rem;
     width: calc(100% - 2rem);
-    z-index: 1;
+    z-index: 25;
     transition-delay: .2s;
     border: none;
     border-radius: .25rem;
@@ -139,7 +139,7 @@ watch(searchTerms, (value) => {
     left: 1rem;
     right: 1rem;
     width: calc(100% - 2rem);
-    z-index: 1;
+    z-index: 25;
     border: none;
     border-radius: .25rem;
     padding: .8rem 1rem;

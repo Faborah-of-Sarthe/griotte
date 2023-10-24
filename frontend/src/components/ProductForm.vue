@@ -156,19 +156,7 @@ function stepDown() {
 </script>
 
 <style scoped>
-    .card {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        max-width: 30rem;
-        background: var(--color-background);
-        border-radius: .5rem;
-        padding: 1rem;
-        z-index: 2;
 
-    }
     .buttons {
         display: flex;
         justify-content: space-around;

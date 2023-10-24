@@ -43,7 +43,20 @@ const props = defineProps({
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: var(--color-background);
+}
+.card {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 30rem;
+    background: var(--color-background);
+    border-radius: .5rem;
+    padding: 1rem;
+    z-index: 25;
+
 }
 .card--loading > *{
     opacity: 0.5;

@@ -33,7 +33,38 @@ class SectionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'string|max:255|required',
+            'color' => 'int|required',
+            'icon' => 'string|required',
+            'store_id' => 'int|required|exists:stores,id'
+        ]);
+
+        // Check if the store belongs to the authenticated user
+        $user = auth('sanctum')->user();
+        $store = $user->stores()->find($request->input('store_id'));
+
+
+        if ($store) {
+            // create the section
+            $section = new Section;
+            $section->name = $request->input('name');
+            $section->color = $request->input('color');
+            $section->icon = $request->input('icon');
+            $section->store_id = $request->input('store_id');
+            $section->save();
+
+            return response()->json([
+                'message' => 'Section created successfully.',
+                'section' => $section
+            ], 201);
+        }
+
+        else {
+            return response()->json([
+                'message' => 'The given store does not belong to the authenticated user.'
+            ], 403);
+        }
     }
 
     /**

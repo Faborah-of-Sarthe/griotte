@@ -1,10 +1,12 @@
 <template>
     
     <div class="icons-list">
-        <template v-for="iconName in iconNames" :key="iconName">
-            <div class="icon-wrapper" :class="{selected: iconName == value}"  @click="handleChange(iconName)">
-                <SectionIcon color="0" class="big" :icon="iconName"></SectionIcon>
-            </div>
+        <template v-for="(iconName, index) in iconNames" :key="iconName">
+            <Transition name="slideUp" appear>
+                <div :style="{ 'transition-delay': index * 50 + 'ms'}" class="icon-wrapper" :class="{selected: iconName == value}"  @click="handleChange(iconName)">
+                    <SectionIcon color="0" class="big" :icon="iconName"></SectionIcon>
+                </div>
+            </Transition>
         </template>
     </div>
 

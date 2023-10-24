@@ -4,13 +4,13 @@
             <div v-if="isLoading" class="loading">
                 Chargement des rayons
             </div>
-            <template v-if="data" v-for="section in data" :key="section.id">
+            <template v-if="data" v-for="(section, index) in data" :key="section.id">
                 <Transition name="slideUp" appear>
-                    <div :style="{ 'transition-delay': section.id * 50 + 'ms' }" 
+                    <div :style="{ 'transition-delay': index  * 50 + 'ms' }" 
                           class="section" 
                           :class="{selected: section.id == value }" 
                           @click="handleChange(section)">
-                        <SectionIcon class="big" :color="section.color"></SectionIcon>
+                        <SectionIcon :icon="section.icon" class="big" :color="section.color"></SectionIcon>
                         <p>{{ section.name }}</p>
                     </div>
                 </Transition>

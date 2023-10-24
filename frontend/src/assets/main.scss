@@ -26,7 +26,7 @@ main {
   width: 100vw;
   height: 100vh;
   backdrop-filter: blur(1px);
-
+  z-index: 20;
   background: rgba(66, 31, 31, 0.3);
 }
 

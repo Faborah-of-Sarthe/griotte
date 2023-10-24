@@ -23,7 +23,7 @@
 
         </div>
         <div>
-            <Button type="button" >Ajouter un rayon</Button>
+            <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
         </div>
         <SectionForm v-if="sectionFormStore.open"></SectionForm>
     </div>
@@ -88,6 +88,18 @@ function handleSectionEdition(selectedSection) {
     sectionFormStore.updateOpen(true)
 }
 
+/**
+ * Handle the new section by opening the form and resetting the store
+ */
+function handleNewSection() {
+    sectionFormStore.resetSection()
+    // Add the current store id to the section
+    sectionFormStore.updateSection({
+        store_id: router.currentRoute.value.params.id
+    })
+    sectionFormStore.updateType('add')
+    sectionFormStore.updateOpen(true)
+}
 
 </script>
 
