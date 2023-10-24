@@ -19,13 +19,13 @@ class DatabaseSeeder extends Seeder
     {
         $user = User::factory()->create();
 
-        for ($i=0; $i < 1; $i++) { 
+        for ($i=0; $i < 1; $i++) {
             $store = Store::factory()->for($user)->create();
-            for ($j=0; $j < 5; $j++) { 
+            for ($j=0; $j < 5; $j++) {
                 $section = Section::factory()->for($store)->create();
-                for ($k=0; $k < 5; $k++) { 
+                for ($k=0; $k < 5; $k++) {
                     $product = Product::factory()->for($user)->create();
-                    $product->section()->attach($section);
+                    $product->sections()->attach($section);
                 }
             }
         }

@@ -39,10 +39,10 @@ class ProductController extends Controller
             $noSection->name = 'Non classé';
             $noSection->color = 0;
             $noSection->icon = 0;
-            $noSection->products = Product::doesntHave('section') // Proudcts without section
+            $noSection->products = Product::doesntHave('sections') // Proudcts without section
                             ->where('user_id', $user->id)
                             ->where('to_buy', 1)
-                            ->orWhereHas('section', function($query) use ($store) { // Products with a section that doesn't belong to the current store
+                            ->orWhereHas('sections', function($query) use ($store) { // Products with a section that doesn't belong to the current store
                                 $query->whereNotIn('section_id', $store->sections()->pluck('id'));
                             })
                             ->where('user_id', $user->id)
@@ -70,7 +70,7 @@ class ProductController extends Controller
 
         // load section for each product
         foreach ($products as $product) {
-            $product->section;
+            $product->sections;
         }
 
         return $products->makeHidden('comment');
@@ -131,9 +131,26 @@ class ProductController extends Controller
         // update the product
         $product->fill($request->all());
 
+
+        // If the section_id is provided, attach the product to the given section and detach the product from all other sections of this store
         if($request->input('section_id')) {
-            $product->section()->sync([$request->input('section_id')]);
+
+            $user = auth('sanctum')->user();
+
+            // Detach the product from all sections of this store
+            $sections = $product->sections;
+            foreach ($sections as $section) {
+                // Check if the section belongs to the current store
+                if ($section->store_id == $user->currentStore->id) {
+                    // If yes, detach the product from this section
+                    $section->products()->detach($product->id);
+                }
+            }
+
+            // Attach the product to the given section
+            $product->sections()->attach($request->input('section_id'));
         }
+
 
         $product->save();
         // no section management here (other endpoint)

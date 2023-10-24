@@ -21,17 +21,17 @@ class Product extends Model
         'user_id',
     ];
 
-    /** 
+    /**
      * Hide unnecessary fields from the JSON response
      */
     protected $hidden = [
         'pivot', 'user_id', 'created_at', 'updated_at'
     ];
-    
+
     /**
      * Get all the sections where this product is located
      */
-    public function section()
+    public function sections()
     {
         return $this->belongsToMany(Section::class);
     }
