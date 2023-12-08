@@ -39,15 +39,16 @@ class ProductController extends Controller
             $noSection->name = 'Non classé';
             $noSection->color = 0;
             $noSection->icon = 0;
-            $noSection->products = Product::doesntHave('sections') // Proudcts without section
-                            ->where('user_id', $user->id)
-                            ->where('to_buy', 1)
-                            ->orWhereHas('sections', function($query) use ($store) { // Products with a section that doesn't belong to the current store
-                                $query->whereNotIn('section_id', $store->sections()->pluck('id'));
-                            })
-                            ->where('user_id', $user->id)
-                            ->where('to_buy', 1)
-                            ->get();
+            $noSection->products = Product::where('user_id', $user->id)
+                                ->where('to_buy', 1)
+                                ->where(function ($query) use ($store) {
+                                    $query->doesntHave('sections') // Products with no section
+                                        ->orWhereDoesntHave('sections', function ($innerQuery) use ($store) {
+                                            // Products with sections that don't belong to the current store
+                                            $innerQuery->whereIn('section_id', $store->sections()->pluck('id'));
+                                        });
+                                })
+                                ->get();
 
             $products->push($noSection);
             return $products;
@@ -133,7 +134,7 @@ class ProductController extends Controller
 
 
         // If the section_id is provided, attach the product to the given section and detach the product from all other sections of this store
-        if($request->input('section_id')) {
+        if($request->input('section_id') || $request->input('section_id') == 0) {
 
             $user = auth('sanctum')->user();
 
@@ -147,8 +148,10 @@ class ProductController extends Controller
                 }
             }
 
-            // Attach the product to the given section
-            $product->sections()->attach($request->input('section_id'));
+            // Attach the product to the given section if it is not the "no section" section
+            if($request->input('section_id') != 0) {
+                $product->sections()->attach($request->input('section_id'));
+            }
         }
 
 
