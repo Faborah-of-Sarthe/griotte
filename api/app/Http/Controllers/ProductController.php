@@ -66,12 +66,11 @@ class ProductController extends Controller
      */
     public function autocomplete(Request $request)
     {
-        $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')
-        ->get();
+        $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')->where('user_id', auth('sanctum')->user()->id)->get();
 
-        // load section for each product
+        // load section for current store for each product
         foreach ($products as $product) {
-            $product->sections;
+            $product->loadSections();
         }
 
         return $products->makeHidden('comment');
