@@ -119,5 +119,7 @@ function handleNewSection() {
         font-size: 1.2rem;
         cursor:grab;
     }
-
+    .btn {
+        margin-bottom: 1rem;
+    }
 </style>

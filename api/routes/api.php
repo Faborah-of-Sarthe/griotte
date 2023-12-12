@@ -53,7 +53,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/stores/current', [StoreController::class, 'getCurrentStore']);
     // return all the stores belonging to the current user
     Route::get('/stores', [StoreController::class, 'index']);
-
+    // Create a new store
+    Route::post('/stores', [StoreController::class, 'store']);
 
     Route::middleware(CheckOwnership::class)->group(function() {
 

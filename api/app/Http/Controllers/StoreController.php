@@ -31,11 +31,18 @@ class StoreController extends Controller
         // get the authenticated user
         $user = auth('sanctum')->user();
 
+        // Validate the request
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
         // create the store
         $store = new Store;
         $store->name = $request->input('name');
         $store->user_id = $user->id;
         $store->save();
+
+        return $store;
     }
 
     /**

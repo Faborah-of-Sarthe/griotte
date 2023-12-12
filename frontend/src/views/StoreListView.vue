@@ -1,8 +1,6 @@
 <template>
     <h1>Mes magasins</h1>
     <div v-if="data">
-        
-        <!-- Loop through data -->
         <ol>
             <li v-for="store in data" :key="store.id"  :class="userStore.user.currentStore == store.id ? 'current' : ''" class="store">
                 <RouterLink :to="{name: 'my-store', params: {id: store.id}}" class="store__name" >
@@ -12,6 +10,13 @@
             </li>
         </ol>  
     </div>
+    <div v-else>
+        <p>Aucun magasin pour le moment</p>
+    </div>
+    <div>
+        <Button @click="handleNewStore" type="button" >Ajouter un magasin</Button>
+    </div>
+    <StoreForm v-if="storeFormStore.open"></StoreForm>
 </template>
 
 <script setup>
@@ -19,10 +24,15 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios';
 import CheckMark from '../components/icons/CheckMark.vue'
+import Button from '../components/forms/Button.vue'
+import StoreForm from '../components/StoreForm.vue'
 import { useUserStore } from '../stores/user'
+import { useStoreFormStore } from '../stores/storeForm'
 
 // Get the user from the store
 const userStore = useUserStore()
+// Get the store form store
+const storeFormStore = useStoreFormStore()
 
 // Load the stores from API
 const { isLoading, isError, data, error } = useQuery({
@@ -54,6 +64,17 @@ const setCurrentStore = useMutation({
   },
 });
 
+
+/**
+ * Handle the new store by opening the form and resetting the store
+ */
+ function handleNewStore() {
+    storeFormStore.resetStore()
+    storeFormStore.updateType('add')
+    storeFormStore.updateOpen(true)
+}
+
+
 </script>
 
 <style scoped>
@@ -78,12 +99,15 @@ const setCurrentStore = useMutation({
     .current {
         background: var(--color-primary);
     }
+    .btn {
+        margin-bottom: 1rem;
+    }
     .current .store__name{
         color: var(--color-background);
     }
     .store__name{
         font-weight: 700;
-        color: var(--color-primary);
+        color: var(--color-text);
     }
     li {
         display: flex;
@@ -101,8 +125,8 @@ const setCurrentStore = useMutation({
         color: var(--color-background);
     }
     .checkmark {
-        stroke: var(--color-primary);
-        border: 2px solid var(--color-primary);
+        stroke: var(--color-text);
+        border: 2px solid var(--color-text);
         width: 1.5rem;
         height: 1.5rem;
         border-radius: .25rem;
