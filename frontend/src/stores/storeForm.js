@@ -6,6 +6,7 @@ export const useStoreFormStore = defineStore('storeFormStore', () => {
   const blankStore = {
     name: '',
     id: null,
+    copyFrom: null,
   }
 
   // State

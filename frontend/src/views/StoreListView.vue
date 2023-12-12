@@ -124,22 +124,8 @@ const setCurrentStore = useMutation({
     .current::before {
         color: var(--color-background);
     }
-    .checkmark {
-        stroke: var(--color-text);
-        border: 2px solid var(--color-text);
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: .25rem;
-        display: block;
-        stroke-width: 4px;
-        stroke-dashoffset: 50;
-        stroke-dasharray: 50;
-        transition: background-color 0.2s ease-in-out, stroke-dashoffset 0.3s ease-in-out;
-        cursor: pointer;
-        margin-left: auto;
-    }
+ 
     .current .checkmark {
-        stroke-dashoffset: 0;
         stroke: var(--color-background);
         border: 2px solid var(--color-background);
     }

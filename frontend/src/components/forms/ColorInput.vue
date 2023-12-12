@@ -54,11 +54,7 @@ const handleChange = (number) => {
 </script>
 
 <style scoped>
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
-} 
+
 .section
 {
     width: calc(100% / 3);

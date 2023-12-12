@@ -53,6 +53,11 @@ h2 {
 input {
   font-family: inherit;
 }
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
 
 .no-header header {
   display: none !important;

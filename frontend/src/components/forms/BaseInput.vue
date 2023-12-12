@@ -44,11 +44,7 @@ import { labelize } from '../../utils';
 
 <style scoped>
 
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
-  }
+
 
   input {
     display: block;

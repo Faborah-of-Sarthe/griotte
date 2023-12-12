@@ -39,7 +39,5 @@ export function useDebouncedRef(value, delay = 200) {
 
 // Labelize a string
 export function labelize(value) {
-
-  return value.toLowerCase().replaceAll(' ', '-')
-
+  return value.replace(/\W/g, ' ').trim().toLowerCase().replace(/ /g, '-').replace(/^\d+/, '')
 } 

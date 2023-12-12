@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class StoreController extends Controller
@@ -34,15 +36,43 @@ class StoreController extends Controller
         // Validate the request
         $request->validate([
             'name' => 'required|string|max:255',
+            'copyFrom' => 'nullable|integer|exists:stores,id',
         ]);
 
-        // create the store
-        $store = new Store;
-        $store->name = $request->input('name');
-        $store->user_id = $user->id;
-        $store->save();
+        // Begin a transaction
+        DB::transaction(function () use ($request, $user, &$store) {
 
-        return $store;
+            // create the store
+            $store = Store::create([
+                'name' => $request->input('name'),
+                'user_id' => $user->id,
+            ]);
+
+            // If the copyFrom parameter is provided, copy the sections from the given store
+            if($request->input('copyFrom')) {
+                $storeToCopyFrom = Store::find($request->input('copyFrom'));
+                $sectionsToCopy = $storeToCopyFrom->sections()->get();
+
+                foreach ($sectionsToCopy as $sectionToCopy) {
+                    $section = $sectionToCopy->replicate();
+                    $section->store_id = $store->id;
+                    $section->save();
+
+                    $productsToCopy = $sectionToCopy->products()->get();
+
+                    foreach ($productsToCopy as $productToCopy) {
+                        $section->products()->attach($productToCopy->id);
+                    }
+                }
+            }
+
+
+        });
+        return response()->json([
+            'message' => 'Store created successfully.',
+            'store' => $store
+        ], 201);
+
     }
 
     /**
