@@ -135,6 +135,17 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
+
+        // Check if the store has sections
+        if ($store->sections()->count() > 0) {
+           // Detach all products from the sections and delete the sections
+            $sections = $store->sections()->get();
+            foreach ($sections as $section) {
+                $section->products()->detach();
+                $section->delete();
+            }
+        }
+
         $store->delete();
 
         return response()->json([

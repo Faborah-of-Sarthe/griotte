@@ -105,8 +105,20 @@ label {
 .btn.large {
   font-size: 2rem;
 }
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.buttons.wide {
+  flex-direction: column-reverse;
+  align-items: center;
 
-
+  button {
+    width: 100%;
+  }
+  
+}
 @for $i from 1 through 9 {
   .bg-light-color-#{$i} {
     background-color: var(--color-#{$i}-light);
@@ -141,8 +153,15 @@ label {
   }
 }
 
-@media (min-width: 1024px) {
-  body {
+@media (min-width: 30rem) {
+  .buttons.wide {
+    flex-direction: row;
+    align-items: center;
+  
+    button {
+      width: auto;
+    }
+    
   }
 
  

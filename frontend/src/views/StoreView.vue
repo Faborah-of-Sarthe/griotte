@@ -22,11 +22,18 @@
             </div>
 
         </div>
-        <div>
+        <div class="buttons wide">
+            <Button @click="openModal = true" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
         </div>
         <SectionForm v-if="sectionFormStore.open"></SectionForm>
         <StoreForm v-if="storeFormStore.open"></StoreForm>
+        <Modal v-if="openModal" @close="openModal = false" title="Suppression" :buttons="true" @validate="handleDeleteStore">
+            <template #content>
+                <p>Voulez-vous vraiment supprimer ce magasin ?</p>
+                <p>Attention, cette action est définitive !</p>
+            </template>
+        </Modal>
     </div>
 </template>
 <script setup>
@@ -42,6 +49,7 @@ import SectionForm from '@/components/SectionForm.vue'
 import StoreForm from '../components/StoreForm.vue'
 import { ref } from 'vue';
 import { useStoreFormStore } from '../stores/storeForm'
+import Modal from '../components/Modal.vue';
 
 
 const router = useRouter()
@@ -49,6 +57,8 @@ const sections = ref([])
 const sectionFormStore = useSectionFormStore()
 // Get the store form store
 const storeFormStore = useStoreFormStore()
+
+const openModal = ref(false)
 
 // Load the store data from API
 const { isLoading, isError, data, error } = useQuery({
@@ -113,6 +123,18 @@ function handleNewSection() {
     storeFormStore.updateStore(selectedStore)
     storeFormStore.updateType('edit')
     storeFormStore.updateOpen(true)
+}
+
+/**
+ * Handle the store deletion by sending a delete request to the API
+ */
+function handleDeleteStore() {
+    axios.delete(import.meta.env.VITE_API_URL+'stores/' +  router.currentRoute.value.params.id, {
+        withCredentials: true,
+    }).then(() => {
+        queryClient.invalidateQueries('stores')
+        router.push({ name: 'my-stores' })
+    })
 }
 
 </script>
