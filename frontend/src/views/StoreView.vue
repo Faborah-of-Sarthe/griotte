@@ -142,4 +142,19 @@ function handleNewSection() {
     h1 {
         cursor: pointer;
     }
+    .sortable-ghost {
+        padding: .25rem;
+        background: var(--color-primary);
+        overflow: hidden;
+        transition: all 0.3s;
+        /* transform: scaleY(0.25%); */
+
+        & * {
+            display: none;
+        }
+    }
+    .sortable-ghost + section {
+        transform: translate(5px, 0);
+        transition: transform 0.3s;
+    }
 </style>
