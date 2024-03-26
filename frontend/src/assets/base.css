@@ -2,6 +2,7 @@
 :root {
 
   --color-text:  #2f2f2f;
+  --color-text-alt: #777;
   --color-background: #fff;
   --color-primary: #e83e3e;
 
@@ -102,4 +103,13 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
 }

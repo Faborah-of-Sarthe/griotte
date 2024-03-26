@@ -56,7 +56,7 @@ class ProductController extends Controller
 
         else {
             return response()->json([
-                'message' => 'No current store set for given user.'
+                'message' => 'Aucun magasin sélectionné. Veuillez en sélectionner un dans la liste de vos magasins.'
             ], 404);
         }
     }

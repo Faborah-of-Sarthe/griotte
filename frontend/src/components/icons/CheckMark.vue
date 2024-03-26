@@ -15,6 +15,7 @@
         transition: background-color 0.2s ease-in-out, stroke-dashoffset 0.3s ease-in-out;
         cursor: pointer;
         margin-left: auto;
+        flex-shrink: 0;
     }
     .checked.checkmark,
     .current .checkmark {

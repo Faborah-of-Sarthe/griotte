@@ -30,6 +30,7 @@ const { isLoading, isError, data, error } = useQuery({
     return res.data
 
   },
+
 })
 
 // Mutation to add a product to the list
@@ -41,9 +42,6 @@ const productEdition = useMutation({
   },
   onSuccess: () => {
     queryClient.invalidateQueries('products')
-  },
-  onError: (error) => {
-    console.log(error)
   },
 });
 
@@ -74,7 +72,7 @@ function openNewProductForm(product) {
   <h1>Ma liste</h1>
   <div class="sections">
     <div v-if="isLoading">Loading...</div>
-    <div v-if="isError">Error: {{ error }}</div>
+    <div v-if="isError">{{ error.response.data.message }}</div>
     <div v-if="data">
       <!-- Loop through section array with animation -->
       <template v-for="section in data" :key="section.id">

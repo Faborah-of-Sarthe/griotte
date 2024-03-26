@@ -122,4 +122,7 @@ function handleNewSection() {
     .btn {
         margin-bottom: 1rem;
     }
+    h2 {
+        color: var(--color-text-alt);
+    }
 </style>
