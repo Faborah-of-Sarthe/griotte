@@ -80,6 +80,11 @@ class StoreController extends Controller
      */
     public function update(Request $request, Store $store)
     {
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
         $store->name = $request->input('name');
         $store->save();
 

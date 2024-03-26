@@ -3,7 +3,7 @@
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
                 <BaseInput autocomplete="off" label="Nom" :value="storeFormStore.store.name" v-model="storeFormStore.store.name"></BaseInput>
-                <Checkbox class="checkmark" label="Copier les rayons d'un magasin existant ?" :checked="copySections" v-model="copySections"></Checkbox>
+                <Checkbox v-if="storeFormStore.type == 'add'" class="checkmark" label="Copier les rayons d'un magasin existant ?" :checked="copySections" v-model="copySections"></Checkbox>
                 <div v-if="copySections">
                     <Select label="Magasin" :options="storesList" v-model="storeFormStore.store.copyFrom"></Select>
                     
@@ -100,21 +100,20 @@ const storeCreation = useMutation({
   },
 });
 
-// Section edition query
-// const sectionEdition = useMutation({
-//   mutationFn: (sectionData) => {
-//     console.log(sectionData);
-//     return axios.patch(import.meta.env.VITE_API_URL + 'sections/' + sectionData.id, sectionData)
-//   },
-//   onSuccess: () => {
-//     queryClient.invalidateQueries('sections')
-//     storeFormStore.updateOpen(false)
-//   },
-//   onError: (error) => {
-//     // TODO: handle error
-//     console.log(error)
-//     },
-// });
+// Store edition query
+const storeEdition = useMutation({
+  mutationFn: (storeData) => {
+    return axios.patch(import.meta.env.VITE_API_URL + 'stores/' + storeData.id, storeData)
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries('stores')
+    storeFormStore.updateOpen(false)
+  },
+  onError: (error) => {
+    // TODO: handle error
+    console.log(error)
+    },
+});
 
 
 /**
@@ -125,7 +124,7 @@ function handleSubmit() {
     if (storeFormStore.type === 'add') {
         storeCreation.mutate(storeFormStore.store)
     } else {
-        // sectionEdition.mutate(storeFormStore.store)
+        storeEdition.mutate(storeFormStore.store)
     }
 }
 

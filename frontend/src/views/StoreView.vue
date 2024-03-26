@@ -3,7 +3,7 @@
     <div v-if="isLoading">Loading...</div>
     <div v-if="data">
 
-        <h1>{{  data.name }}</h1>
+        <h1 @click="handleEditStore(data)">{{  data.name }}</h1>
         <h2>Rayons</h2>
         <div class="sections">
             
@@ -26,8 +26,8 @@
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
         </div>
         <SectionForm v-if="sectionFormStore.open"></SectionForm>
+        <StoreForm v-if="storeFormStore.open"></StoreForm>
     </div>
-
 </template>
 <script setup>
 
@@ -39,11 +39,16 @@ import Button from '../components/forms/Button.vue'
 import SectionIcon from '../components/SectionIcon.vue'
 import { useSectionFormStore } from '@/stores/sectionForm'
 import SectionForm from '@/components/SectionForm.vue'
+import StoreForm from '../components/StoreForm.vue'
 import { ref } from 'vue';
+import { useStoreFormStore } from '../stores/storeForm'
+
 
 const router = useRouter()
 const sections = ref([])
 const sectionFormStore = useSectionFormStore()
+// Get the store form store
+const storeFormStore = useStoreFormStore()
 
 // Load the store data from API
 const { isLoading, isError, data, error } = useQuery({
@@ -101,6 +106,15 @@ function handleNewSection() {
     sectionFormStore.updateOpen(true)
 }
 
+/**
+ * Handle the store edition by opening the form and resetting the store
+ */
+ function handleEditStore(selectedStore) {
+    storeFormStore.updateStore(selectedStore)
+    storeFormStore.updateType('edit')
+    storeFormStore.updateOpen(true)
+}
+
 </script>
 
 <style scoped>
@@ -124,5 +138,8 @@ function handleNewSection() {
     }
     h2 {
         color: var(--color-text-alt);
+    }
+    h1 {
+        cursor: pointer;
     }
 </style>
