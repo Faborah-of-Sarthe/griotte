@@ -13,6 +13,7 @@
                         <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
                         <p >{{ section.name }}</p>
                         <!-- TODO: drag icon -->
+                        <div class="cross" @click.stop="openModalSection = true; deleteSectionId = section.id">✕</div>
                     </section>
                 </template>
 
@@ -26,11 +27,17 @@
             <Button @click="openModal = true" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
         </div>
-        <SectionForm v-if="sectionFormStore.open"></SectionForm>
+        <SectionForm  v-if="sectionFormStore.open"></SectionForm>
         <StoreForm v-if="storeFormStore.open"></StoreForm>
         <Modal v-if="openModal" @close="openModal = false" title="Suppression" :buttons="true" @validate="handleDeleteStore">
             <template #content>
                 <p>Voulez-vous vraiment supprimer ce magasin ?</p>
+                <p>Attention, cette action est définitive !</p>
+            </template>
+        </Modal>
+        <Modal v-if="openModalSection" @close="openModalSection = false; deleteSectionId = null" title="Suppression" :buttons="true" @validate="handleDeleteSection">
+            <template #content>
+                <p>Voulez-vous vraiment supprimer ce rayon ?</p>
                 <p>Attention, cette action est définitive !</p>
             </template>
         </Modal>
@@ -59,6 +66,8 @@ const sectionFormStore = useSectionFormStore()
 const storeFormStore = useStoreFormStore()
 
 const openModal = ref(false)
+const openModalSection = ref(false)
+const deleteSectionId = ref(null)
 
 // Load the store data from API
 const { isLoading, isError, data, error } = useQuery({
@@ -97,7 +106,7 @@ const reOrderSections = async (event) => {
  * Handle the section edition by opening the form and setting the section to edit in the store
  * @param { Object } selectedSection The section to edit
  */
-function handleSectionEdition(selectedSection) {
+function handleSectionEdition(selectedSection, e) {
     sectionFormStore.updateSection(selectedSection)
     sectionFormStore.updateType('edit')
     sectionFormStore.updateOpen(true)
@@ -137,6 +146,18 @@ function handleDeleteStore() {
     })
 }
 
+/**
+ * Handle the section deletion by sending a delete request to the API
+ */
+function handleDeleteSection() {
+    axios.delete(import.meta.env.VITE_API_URL+'sections/' + deleteSectionId.value, {
+        withCredentials: true,
+    }).then(() => {
+        queryClient.invalidateQueries('sections')
+        openModalSection.value = false
+    })
+}
+
 </script>
 
 <style scoped>
@@ -154,6 +175,9 @@ function handleDeleteStore() {
         align-items: center;
         font-size: 1.2rem;
         cursor:grab;
+    }
+    section .cross {
+        margin-left: auto;
     }
     .btn {
         margin-bottom: 1rem;

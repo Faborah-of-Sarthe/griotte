@@ -100,8 +100,13 @@ class SectionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Section $section)
     {
-        //
+        $section->delete();
+
+        return response()->json([
+            'message' => 'Section deleted successfully.'
+        ], 200);
+
     }
 }

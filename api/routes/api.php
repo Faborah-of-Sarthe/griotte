@@ -79,6 +79,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::middleware(CheckOwnership::class)->group(function() {
         //udpdate a section
         Route::patch('/sections/{section}', [SectionController::class, 'update']);
+        // delete a section
+        Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
     });
 
 });
