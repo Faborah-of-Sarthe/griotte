@@ -16,6 +16,8 @@
     "universal-cookie": "^4.0.4",
     "vue": "^3.3.2",
     "vue-router": "^4.2.0",
+    "vue-toast-notification": "^3.1.2",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

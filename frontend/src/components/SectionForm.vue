@@ -33,8 +33,10 @@ import Button from '@/components/forms/Button.vue'
 import ColorInput from '@/components/forms/ColorInput.vue'
 import IconSelect from '@/components/forms/IconSelect.vue'
 import { useSectionFormStore } from '@/stores/sectionForm'
+import { useToast } from 'vue-toastification'
 
 const sectionFormStore = useSectionFormStore()
+const toast = useToast()
 
 const step = ref(1)
 const maxStep = 2;
@@ -86,11 +88,8 @@ const sectionCreation = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('sections')
     sectionFormStore.updateOpen(false)
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
-  },
+    toast.success('Le rayon a bien été ajouté')
+  }
 });
 
 // Section edition query
@@ -102,11 +101,7 @@ const sectionEdition = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('sections')
     sectionFormStore.updateOpen(false)
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
-    },
+  }
 });
 
 

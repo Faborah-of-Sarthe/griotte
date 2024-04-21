@@ -46,9 +46,6 @@ const login = async () => {
         // Set the user in the store
         saveUser(user)
         router.push('my-list')
-    } else {
-        // TODO: handle errors
-        console.log('error')
     }
 }
 

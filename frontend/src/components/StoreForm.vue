@@ -31,6 +31,7 @@ import Select from '@/components/forms/Select.vue'
 import { useStoreFormStore } from '@/stores/storeForm'
 import { useRouter } from 'vue-router'
 import Checkbox from './forms/Checkbox.vue'
+import { useToast } from 'vue-toastification'
 
 const storeFormStore = useStoreFormStore()
 const router = useRouter()
@@ -38,6 +39,7 @@ const router = useRouter()
 const copySections = ref(false)
 
 const queryClient = useQueryClient()
+const toast = useToast()
 
 // Get the stores list from the cache
 const storeData = queryClient.getQueryData({queryKey:  ['stores']})
@@ -92,11 +94,8 @@ const storeCreation = useMutation({
     // Redirect to the store page
     router.push({ name: 'my-store', params: { id: storeId } })
     
-    // TODO: handle success message
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
+    toast.success('Le magasin a été créé !')
+
   },
 });
 
@@ -108,11 +107,7 @@ const storeEdition = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('stores')
     storeFormStore.updateOpen(false)
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
-    },
+  }
 });
 
 

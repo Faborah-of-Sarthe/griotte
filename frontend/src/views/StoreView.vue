@@ -57,6 +57,7 @@ import StoreForm from '../components/StoreForm.vue'
 import { ref } from 'vue';
 import { useStoreFormStore } from '../stores/storeForm'
 import Modal from '../components/Modal.vue';
+import { useToast } from 'vue-toastification'
 
 
 const router = useRouter()
@@ -68,6 +69,7 @@ const storeFormStore = useStoreFormStore()
 const openModal = ref(false)
 const openModalSection = ref(false)
 const deleteSectionId = ref(null)
+const toast = useToast()
 
 // Load the store data from API
 const { isLoading, isError, data, error } = useQuery({
@@ -141,8 +143,8 @@ function handleDeleteStore() {
     axios.delete(import.meta.env.VITE_API_URL+'stores/' +  router.currentRoute.value.params.id, {
         withCredentials: true,
     }).then(() => {
-        queryClient.invalidateQueries('stores')
         router.push({ name: 'my-stores' })
+        toast.success('Le magasin a été supprimé !')
     })
 }
 
@@ -155,6 +157,7 @@ function handleDeleteSection() {
     }).then(() => {
         queryClient.invalidateQueries('sections')
         openModalSection.value = false
+        toast.success('Le rayon a été supprimé !')
     })
 }
 

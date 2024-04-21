@@ -10,8 +10,18 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 import axios from 'axios'
 import { logout } from './utils'
 import longpressDirective from './directives/longpress';
+import Toast, {useToast} from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
 
 const app = createApp(App)
+
+const options = {
+    hideProgressBar: true,
+    transition: "Vue-Toastification__fade",
+}; 
+
+app.use(Toast, options);
 
 // Handle the 401 error by logging out the user and reloading the page
 axios.interceptors.response.use(
@@ -20,6 +30,16 @@ axios.interceptors.response.use(
         if (error.response?.status === 401) {
             logout()
             window.location.reload()
+        }
+        if(error.response?.status === 404){ 
+            router.push({name: 'NotFound'})
+        }
+        if(error.response?.status === 403){ 
+            router.push({name: 'NotFound'})
+        }
+        if(error.response?.data?.message) {
+            const toast = useToast()
+            toast.error(error.response.data.message);
         }
         return Promise.reject(error)
     }

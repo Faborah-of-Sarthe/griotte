@@ -87,6 +87,11 @@ const router = createRouter({
         middleware: "auth"
       }
     },
+    {
+      path: '/not-found',
+      name: 'NotFound',
+      component: () => import('../views/NotFoundView.vue'),
+    }
     
   ]
 })

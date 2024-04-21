@@ -91,11 +91,7 @@ const productCreation = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('products')
     productFormStore.updateOpen(false)
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
-  },
+  }
 });
 
 // Product edition query
@@ -106,11 +102,7 @@ const productEdition = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('products')
     productFormStore.updateOpen(false)
-  },
-  onError: (error) => {
-    // TODO: handle error
-    console.log(error)
-    },
+  }
 });
 
 

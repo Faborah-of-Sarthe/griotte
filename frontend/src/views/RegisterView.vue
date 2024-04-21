@@ -32,10 +32,6 @@ const register = async () => {
 // Handle the request with vue-query in order to get the loading state
 const { isLoading, isError, error, isSuccess, mutate } = useMutation({
     mutationFn: register,
-    onError: (error) => {
-        // TODO: handle errors
-        console.log(error)
-    },
 })
 
 

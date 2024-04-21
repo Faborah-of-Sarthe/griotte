@@ -6,12 +6,12 @@ import { useUserStore } from './stores/user'
 import Cookies from 'universal-cookie'
 import { QueryCache } from '@tanstack/vue-query'
 
+
 const route = useRoute()
 const userStore = useUserStore()
 
 // Watch the changes of the route name
 watch(() => route.name, () => {
-
   // Set the className variable to the route name
   let className = route.name;
 
