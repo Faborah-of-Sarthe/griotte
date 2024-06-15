@@ -28,14 +28,6 @@ class Product extends Model
         'pivot', 'user_id', 'created_at', 'updated_at'
     ];
 
-    /**
-     * Load the sections of the product for the current store
-     */
-    public function loadSections()
-    {
-        $store = auth('sanctum')->user()->currentStore;
-        $this->sections = $this->sections()->where('store_id', $store->id)->get();
-    }
 
     /**
      * Get all the sections where this product is located

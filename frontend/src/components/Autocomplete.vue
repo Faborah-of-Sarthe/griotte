@@ -65,8 +65,7 @@ watch(searchTerms, (value) => {
 
 <template>
     <Transition name="slideUp" appear>
-        <button v-if="!open" @click="toggleSearch" class="add_button"><Cross />
-</button>
+        <button v-if="!open" @click="toggleSearch" class="add_button"><Cross /></button>
     </Transition>
     <Transition name="slideUp" appear>
     <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 1">
@@ -81,10 +80,7 @@ watch(searchTerms, (value) => {
                 <p>
                     Créer  <strong>"{{ searchTerms }}"</strong>
                 </p>
-                <!-- TODO : replace with the plus icon -->
-                <!-- <SectionIcon class="small" color="1"> -->
-                    <Cross class="small plus" />
-                <!-- </SectionIcon> -->
+                <Cross class="small plus" />
             </div>
         </div>
     </div>
@@ -107,10 +103,6 @@ watch(searchTerms, (value) => {
   border-radius: 50%;
   width: 5rem;
   height: 5rem;
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
 
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -199,7 +191,6 @@ strong {
 .slideUp-enter-from.add_button,
 .slideUp-leave-to.add_button {
   opacity: 0;
-  transform: translateY(20px) translateX(-50%);
 }
 
 </style>

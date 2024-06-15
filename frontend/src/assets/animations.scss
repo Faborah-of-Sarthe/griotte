@@ -18,6 +18,17 @@
   transform: translateY(20px);
 }
 
+.slideLeft-enter-active,
+.slideLeft-leave-active {
+  transition: all 0.2s ease;
+}
+.slideLeft-enter-from,
+.slideLeft-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+
 .slideDown-enter-active,
 .slideDown-leave-active {
   transition: all 0.2s ease;

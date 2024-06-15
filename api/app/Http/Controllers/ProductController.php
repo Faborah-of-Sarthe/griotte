@@ -66,12 +66,14 @@ class ProductController extends Controller
      */
     public function autocomplete(Request $request)
     {
-        $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')->where('user_id', auth('sanctum')->user()->id)->get();
-
-        // load section for current store for each product
-        foreach ($products as $product) {
-            $product->loadSections();
-        }
+        $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')
+                    ->where('user_id', auth('sanctum')->user()->id)
+                    ->with([
+                        'sections' => function($query) {
+                            $query->where('store_id', auth('sanctum')->user()->currentStore->id);
+                        }
+                    ])
+                    ->get();
 
         return $products->makeHidden('comment');
     }
@@ -133,7 +135,7 @@ class ProductController extends Controller
 
 
         // If the section_id is provided, attach the product to the given section and detach the product from all other sections of this store
-        if($request->input('section_id') || $request->input('section_id') == 0) {
+        if($request->has('section_id')) {
 
             $user = auth('sanctum')->user();
 

@@ -7,6 +7,7 @@ import CheckMark from './icons/CheckMark.vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
 import { useProductFormStore } from '../stores/productForm'
+import { useActionsStore } from '../stores/actions'
 
 const queryClient = useQueryClient()
 
@@ -27,13 +28,14 @@ const props = defineProps({
 })
 
 const productFormStore = useProductFormStore()
+const actionsStore = useActionsStore()
 
 // State
 const open = ref(false)
 const visible = ref(true)
 
 // Methods
-const { isLoading, isError, error, isSuccess, mutate } = useMutation({
+const { mutate } = useMutation({
   mutationFn: (productData) => {
     return axios.patch(import.meta.env.VITE_API_URL + 'products/' + props.product.id, productData)
   },
@@ -57,6 +59,12 @@ function checkProduct() {
   mutate({
     to_buy: 0
   })
+
+  actionsStore.addAction({
+    type: 'uncheck',
+    product: props.product
+  })
+  
 }
 
 function handleLongPress() {

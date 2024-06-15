@@ -4,10 +4,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import ProductForm from '@/components/ProductForm.vue'
+import RollbackButton from '@/components/RollbackButton.vue'
 import Loader from '@/components/Loader.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 import { useProductFormStore } from '../stores/productForm'
+import { useActionsStore } from '../stores/actions'
 
 
 const hasProducts = ref(false);
@@ -17,6 +19,7 @@ const queryClient = useQueryClient()
 // const currentProduct = ref({})
 
 const productFormStore = useProductFormStore();
+const actionsStore = useActionsStore();
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -87,17 +90,29 @@ function openNewProductForm(product) {
     </div>
   </div>
   <template v-if="!isLoading && !isError && hasProducts">
-    <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
+    <div class="controls">
+      <RollbackButton v-if="actionsStore.visible"></RollbackButton>
+      <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
+    </div>
   </template>
   <ProductForm v-if="productFormStore.open" ></ProductForm>
 </template>
 
 <style scoped>
 
-
-
 .sections {
   margin-bottom: 7rem;
+}
+.controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2rem;
+  align-items: center;
 }
 
 </style> 
