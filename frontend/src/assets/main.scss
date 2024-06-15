@@ -129,7 +129,7 @@ label {
   }
 
   .svg-stroke-#{$i} {
-    stroke: var(--color-#{$i});
+    stroke: var(--color-#{$i}) !important;
   }
 
 }
@@ -142,7 +142,7 @@ label {
 }
 
 .svg-stroke-0 {
-  stroke: var(--color-9);
+  stroke: var(--color-9) !important;
 }
 .red-bg {
   background-color: var(--color-1);
