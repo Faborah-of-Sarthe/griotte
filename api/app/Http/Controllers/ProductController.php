@@ -56,7 +56,7 @@ class ProductController extends Controller
 
         else {
             return response()->json([
-                'message' => 'Aucun magasin sélectionné. Veuillez en sélectionner un dans la liste de vos magasins.'
+                'message' => __('No current store set for given user. Please select a store.')
             ], 404);
         }
     }
@@ -110,7 +110,7 @@ class ProductController extends Controller
             }
 
             return response()->json([
-                'message' => 'Product created successfully.',
+                'message' => __('Product created successfully.'),
                 'product' => $product
             ], 201);
         });
@@ -158,7 +158,7 @@ class ProductController extends Controller
         // no section management here (other endpoint)
 
         return response()->json([
-            'message' => 'Product updated successfully.',
+            'message' => __('Product updated successfully.'),
             'product' => $product
         ], 201);
     }
@@ -173,7 +173,7 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json([
-            'message' => 'Product deleted successfully.'
+            'message' => __('Product deleted successfully.')
         ], 201);
     }
 
@@ -185,11 +185,11 @@ class ProductController extends Controller
         // Search for the given section
         if (!$section) {
             return response()->json([
-                'message' => 'Section not found.'
+                'message' => __('Section not found.')
             ], 404);
         } else if (!$product) {
             return response()->json([
-                'message' => 'Product not found.'
+                'message' => __('Product not found.')
             ], 404);
         } else {
             // Attach the product to the section
@@ -210,7 +210,7 @@ class ProductController extends Controller
         }
 
         return response()->json([
-            'message' => 'Product attached successfully.',
+            'message' => __('Product attached successfully.'),
             'product' => $product
         ], 201);
     }

@@ -22,7 +22,7 @@ class SectionController extends Controller
 
         else {
             return response()->json([
-                'message' => 'No current store set for given user.'
+                'message' => __('No current store set for given user.')
             ], 404);
         }
 
@@ -55,14 +55,14 @@ class SectionController extends Controller
             $section->save();
 
             return response()->json([
-                'message' => 'Section created successfully.',
+                'message' => __('Section created successfully.'),
                 'section' => $section
             ], 201);
         }
 
         else {
             return response()->json([
-                'message' => 'The given store does not belong to the authenticated user.'
+                'message' => __('The given store does not belong to the authenticated user.')
             ], 403);
         }
     }
@@ -92,7 +92,7 @@ class SectionController extends Controller
         $section->save();
 
         return response()->json([
-            'message' => 'Section updated successfully.',
+            'message' => __('Section updated successfully.'),
             'section' => $section
         ], 201);
     }
@@ -105,7 +105,7 @@ class SectionController extends Controller
         $section->delete();
 
         return response()->json([
-            'message' => 'Section deleted successfully.'
+            'message' => __('Section deleted successfully.')
         ], 200);
 
     }

@@ -69,7 +69,7 @@ class StoreController extends Controller
 
         });
         return response()->json([
-            'message' => 'Store created successfully.',
+            'message' => __('Store created successfully.'),
             'store' => $store
         ], 201);
 
@@ -89,7 +89,7 @@ class StoreController extends Controller
         $store->save();
 
         return response()->json([
-            'message' => 'Current store updated successfully.'
+            'message' => __('Current store updated successfully.')
         ], 200);
     }
 
@@ -115,7 +115,7 @@ class StoreController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Current store updated successfully.'
+            'message' => __('Current store updated successfully.')
         ], 200);
     }
 
@@ -140,7 +140,7 @@ class StoreController extends Controller
         $user = auth('sanctum')->user();
         if ($user->current_store == $store->id) {
             return response()->json([
-                'message' => 'You cannot delete your current store.'
+                'message' => __('You cannot delete your current store.')
             ], 403);
         }
 
@@ -148,7 +148,7 @@ class StoreController extends Controller
         $store->delete();
 
         return response()->json([
-            'message' => 'Store deleted successfully.'
+            'message' => __('Store deleted successfully.')
         ], 200);
     }
 
@@ -166,7 +166,7 @@ class StoreController extends Controller
             // Check if the section belongs to the current store
             if ($section->store_id != $store->id) {
                 return response()->json([
-                    'message' => 'Section does not belong to the current store.'
+                    'message' => __('Section does not belong to the current store.')
                 ], 403);
             }
 
@@ -175,7 +175,7 @@ class StoreController extends Controller
         }
 
         return response()->json([
-            'message' => 'Sections order updated successfully.'
+            'message' => __('Sections order updated successfully.')
         ], 200);
     }
 

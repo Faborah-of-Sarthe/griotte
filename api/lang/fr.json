@@ -1,0 +1,20 @@
+{
+    "Store deleted successfully." : "Magasin supprimé avec succès.",
+    "Store updated successfully." : "Magasin mis à jour avec succès.",
+    "You cannot delete your current store." : "Vous ne pouvez pas supprimer votre magasin actuel.",
+    "Section does not belong to the current store." : "Le rayon n'appartient pas au magasin actuel.",
+    "Sections order updated successfully." : "Ordre des rayons mis à jour avec succès.",
+    "Section deleted successfully." : "Rayon supprimé avec succès.",
+    "Section updated successfully." : "Rayon mis à jour avec succès.",
+    "The given store does not belong to the authenticated user." : "Le magasin donné n'appartient pas à l'utilisateur connecté.",
+    "Store created successfully." : "Magasin créé avec succès.",
+    "No current store set for given user." : "Aucun magasin n'a été sélectionné par l'utilisateur.",
+    "No current store set for given user. Please select a store." : "'Aucun magasin sélectionné. Veuillez en sélectionner un dans la liste de vos magasins.'",
+    "Product created successfully." : "Produit créé avec succès.",
+    "Product updated successfully." : "Produit mis à jour avec succès.",
+    "Product deleted successfully." : "Produit supprimé avec succès.",
+    "Section not found." : "Rayon introuvable.",
+    "Product not found." : "Produit introuvable.",
+    "Product attached successfully." : "Produit bien ajouté au rayon."
+
+}
