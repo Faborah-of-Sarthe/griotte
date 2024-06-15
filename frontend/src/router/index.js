@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Cookies from 'universal-cookie'
 import { useUserStore } from '../stores/user'
 import axios from 'axios'
+import NProgress from 'nprogress'
+
 
 
 const router = createRouter({
@@ -99,7 +101,10 @@ const router = createRouter({
 // Handle auth for each route
 router.beforeEach((to, from, next) => { 
   const userStore = useUserStore();
-
+  if (to.name) {
+      // Start the route progress bar.
+      NProgress.start()
+  }
   // Check if the route has a middleware auth and if the user is logged in
   if (to.meta.middleware === 'auth' && !userStore.isLoggedIn) {
     next({ name: 'login' })
@@ -114,6 +119,12 @@ router.beforeEach((to, from, next) => {
   next()
   return
 
+})
+
+
+router.afterEach(() => {
+  // Complete the animation of the route progress bar.
+  NProgress.done()
 })
 
 
