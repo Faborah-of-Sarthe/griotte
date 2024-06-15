@@ -1,5 +1,6 @@
 <template>
     <h1>Mes magasins</h1>
+    <div v-if="isLoading"><Loader /></div>
     <div v-if="data">
         <ol>
             <li v-for="store in data" :key="store.id"  :class="userStore.user.currentStore == store.id ? 'current' : ''" class="store">
@@ -10,7 +11,7 @@
             </li>
         </ol>  
     </div>
-    <div v-else>
+    <div v-if="!isLoading && !data">
         <p>Aucun magasin pour le moment</p>
     </div>
     <div>
@@ -28,6 +29,7 @@ import Button from '../components/forms/Button.vue'
 import StoreForm from '../components/StoreForm.vue'
 import { useUserStore } from '../stores/user'
 import { useStoreFormStore } from '../stores/storeForm'
+import Loader from '../components/Loader.vue';
 
 // Get the user from the store
 const userStore = useUserStore()

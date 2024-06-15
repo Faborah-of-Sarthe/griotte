@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
 import Autocomplete from '@/components/Autocomplete.vue'
 import ProductForm from '@/components/ProductForm.vue'
+import Loader from '@/components/Loader.vue'
 import axios from 'axios'
 import { ref } from 'vue'
 import { useProductFormStore } from '../stores/productForm'
@@ -71,7 +72,7 @@ function openNewProductForm(product) {
 <template>
   <h1>Ma liste</h1>
   <div class="sections">
-    <div v-if="isLoading">Loading...</div>
+    <div v-if="isLoading"><Loader/></div>
     <div v-if="isError">{{ error.response.data.message }}</div>
     <div v-if="data">
       <!-- Loop through section array with animation -->

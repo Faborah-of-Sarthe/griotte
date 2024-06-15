@@ -1,6 +1,6 @@
 <template>
     <div v-if="isError">{{  error }}</div>
-    <div v-if="isLoading">Loading...</div>
+    <div v-if="isLoading"><Loader /></div>
     <div v-if="data">
 
         <h1 @click="handleEditStore(data)">{{  data.name }}</h1>
@@ -59,6 +59,7 @@ import { useStoreFormStore } from '../stores/storeForm'
 import Modal from '../components/Modal.vue';
 import { useToast } from 'vue-toastification'
 import { useUserStore } from '../stores/user';
+import Loader from '../components/Loader.vue';
 
 
 const router = useRouter()

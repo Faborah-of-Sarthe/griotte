@@ -16,7 +16,7 @@
     "Section not found." : "Rayon introuvable.",
     "Product not found." : "Produit introuvable.",
     "Product attached successfully." : "Produit bien ajouté au rayon.",
+    "unauthenticated" : "Non authentifié",
     "(and :count more error)" : "(et :count erreur supplémentaire)",
     "(and :count more errors)" : "(et :count erreurs supplémentaires)"
-
 }
