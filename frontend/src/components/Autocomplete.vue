@@ -4,6 +4,7 @@ import {  ref, watchEffect, watch } from 'vue'
 import { useDebouncedRef } from '../utils'
 import { useMutation } from '@tanstack/vue-query'
 import SectionIcon from '@/components/SectionIcon.vue'
+import Cross from './icons/Cross.vue'
 import axios from 'axios'
 
 const open = ref(false)
@@ -64,7 +65,8 @@ watch(searchTerms, (value) => {
 
 <template>
     <Transition name="slideUp" appear>
-        <button v-if="!open" @click="toggleSearch" class="add_button">Ajouter</button>
+        <button v-if="!open" @click="toggleSearch" class="add_button"><Cross />
+</button>
     </Transition>
     <Transition name="slideUp" appear>
     <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 1">
@@ -80,7 +82,9 @@ watch(searchTerms, (value) => {
                     Créer  <strong>"{{ searchTerms }}"</strong>
                 </p>
                 <!-- TODO : replace with the plus icon -->
-                <SectionIcon class="small" color="1"></SectionIcon>
+                <!-- <SectionIcon class="small" color="1"> -->
+                    <Cross class="small plus" />
+                <!-- </SectionIcon> -->
             </div>
         </div>
     </div>
@@ -98,7 +102,6 @@ watch(searchTerms, (value) => {
 
 <style scoped>
 .add_button {
-  font-size: 0;
   background: var(--color-primary);
   border: none;
   border-radius: 50%;
@@ -112,11 +115,22 @@ watch(searchTerms, (value) => {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   outline: none;
-  /* TODO: Cross background */
 
 }
 
+.add_button svg {
+  fill: var(--color-background);
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: rotate(45deg);
+}
 
+.plus {
+    height: .9rem;
+    width: .9rem;
+    transform: rotate(45deg);
+
+}
 .search {
 
     position: fixed;
