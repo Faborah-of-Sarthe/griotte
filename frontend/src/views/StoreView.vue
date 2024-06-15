@@ -24,7 +24,7 @@
 
         </div>
         <div class="buttons wide">
-            <Button @click="openModal = true" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
+            <Button @click="openModal = true" v-if="data.id != userStore.user.currentStore" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
         </div>
         <SectionForm  v-if="sectionFormStore.open"></SectionForm>
@@ -58,11 +58,13 @@ import { ref } from 'vue';
 import { useStoreFormStore } from '../stores/storeForm'
 import Modal from '../components/Modal.vue';
 import { useToast } from 'vue-toastification'
+import { useUserStore } from '../stores/user';
 
 
 const router = useRouter()
 const sections = ref([])
 const sectionFormStore = useSectionFormStore()
+const userStore = useUserStore()
 // Get the store form store
 const storeFormStore = useStoreFormStore()
 

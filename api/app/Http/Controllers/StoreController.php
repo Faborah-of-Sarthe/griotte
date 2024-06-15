@@ -136,6 +136,15 @@ class StoreController extends Controller
     public function destroy(Store $store)
     {
 
+        // Prevent delete if the store is the current store of the user
+        $user = auth('sanctum')->user();
+        if ($user->current_store == $store->id) {
+            return response()->json([
+                'message' => 'You cannot delete your current store.'
+            ], 403);
+        }
+
+
         $store->delete();
 
         return response()->json([
