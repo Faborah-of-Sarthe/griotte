@@ -22,6 +22,11 @@
     "If you did not create an account, no further action is required." : "Si vous n'avez pas créé de compte, aucune autre action n'est requise.",
     "Regards" : "Cerisement",
     "Hello!" : "Bonjour!",
+    "Reset Password Notification" : "Réinitialisation du mot de passe",
+    "You are receiving this email because we received a password reset request for your account." : "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.",
+    "Reset Password" : "Réinitialiser le mot de passe",
+    "This password reset link will expire in :count minutes." : "Ce lien de réinitialisation de mot de passe expirera dans :count minutes.",
+    "If you did not request a password reset, no further action is required." : "Si vous n'avez pas demandé de réinitialisation de mot de passe, aucune autre action n'est requise.",
     "(and :count more error)" : "(et :count erreur supplémentaire)",
     "(and :count more errors)" : "(et :count erreurs supplémentaires)"
 }

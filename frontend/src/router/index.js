@@ -5,7 +5,6 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
 
@@ -24,6 +23,24 @@ const router = createRouter({
       path:'/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+      meta: {
+        middleware: "guest",
+        class: "red-bg"
+      }
+    },
+    {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('../views/ForgotPasswordView.vue'),
+      meta: {
+        middleware: "guest",
+        class: "red-bg"
+      }
+    },
+    {
+      path: '/reset-password/:token',
+      name: 'reset-password',
+      component: () => import('../views/ResetPasswordView.vue'),
       meta: {
         middleware: "guest",
         class: "red-bg"

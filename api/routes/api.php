@@ -85,6 +85,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
 
 });
 
-
+// Override the default route for password reset
+Route::get('/reset-password/{token}', function (string $token) {
+    return;
+})->middleware('guest')->name('password.reset');
 
 

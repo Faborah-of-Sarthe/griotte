@@ -81,7 +81,7 @@ function handleLogin() {
                 <Button type="submit" :disabled="isLoading" design="primary">Se connecter</Button>
             </form>
             <div class="links">
-                <RouterLink class="login__link" to="/">Mot de passe oublié ?</RouterLink>
+                <RouterLink class="login__link" to="forgot-password">Mot de passe oublié ?</RouterLink>
             </div>
         </Card>
         </Transition>

@@ -25,7 +25,13 @@ app.use(Toast, options);
 
 // Handle the 401 error by logging out the user and reloading the page
 axios.interceptors.response.use(
-    response => response,
+    response => {
+        if(response.status === 200 && response.data.message){
+            const toast = useToast()
+            toast.success(response.data.message);
+        }
+        return Promise.resolve(response)
+    },
     error => {
         if (error.response?.status === 401) {
             logout()
@@ -42,7 +48,7 @@ axios.interceptors.response.use(
             toast.error(error.response.data.message);
         }
         return Promise.reject(error)
-    }
+    },
 )
 
 // Axios default headers

@@ -18,6 +18,6 @@ class VerifyResponse implements VerifyEmailResponseContract
     {
         return $request->wantsJson()
             ? new JsonResponse('', 204)
-            : redirect()->intended((env('APP_ENV') == 'local' ? 'http://' : 'https://') . env('SANCTUM_STATEFUL_DOMAINS').'/login?verified=1');
+            : redirect()->intended(getFrontUrl().'/login?verified=1');
     }
 }
