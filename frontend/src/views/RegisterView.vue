@@ -58,7 +58,7 @@ const title = computed(() => {
         <div v-if="isSuccess && !isError">
             <p>
                 Votre compte a bien été créé !<br>
-                Un email  contenant un lien de confirmation a été envoyé à l'adresse : <strong>{{ email }}</strong> <br>Veuillez cliquer celui-ci pour activer votre compte.
+                Un email  contenant un lien de confirmation a été envoyé à l'adresse : <strong>{{ email }}</strong> <br>Veuillez cliquer sur celui-ci pour activer votre compte.
             </p>
         </div>
         <form v-else @submit.prevent="handleRegister">

@@ -17,6 +17,11 @@
     "Product not found." : "Produit introuvable.",
     "Product attached successfully." : "Produit bien ajouté au rayon.",
     "unauthenticated" : "Non authentifié",
+    "Verify Email Address" : "Vérifiez votre adresse e-mail",
+    "Please click the button below to verify your email address." : "Veuillez cliquer sur le bouton ci-dessous pour vérifier votre adresse e-mail.",
+    "If you did not create an account, no further action is required." : "Si vous n'avez pas créé de compte, aucune autre action n'est requise.",
+    "Regards" : "Cerisement",
+    "Hello!" : "Bonjour!",
     "(and :count more error)" : "(et :count erreur supplémentaire)",
     "(and :count more errors)" : "(et :count erreurs supplémentaires)"
 }

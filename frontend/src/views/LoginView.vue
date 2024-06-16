@@ -5,16 +5,22 @@ import BaseInput from '../components/forms/BaseInput.vue'
 import Button from '../components/forms/Button.vue'
 import Card from '../components/forms/Card.vue'
 import { useRouter } from 'vue-router'
-import Cookies from 'universal-cookie'
-import { useUserStore } from '../stores/user'
 import { saveUser } from '../utils'
 import axios from 'axios'
 import { useMutation } from '@tanstack/vue-query'
+import { useToast } from 'vue-toastification'
 
 
 const email = ref('')
 const password = ref('')
 const router = useRouter()
+
+// Handle the verification query parameter
+if (router.currentRoute.value.query.verified) {
+    const toast = useToast()
+    toast.success('Votre compte a bien été vérifié ! Vous pouvez maintenant vous connecter.')
+}
+
 
 // Function making the login request
 const login = async () => {
