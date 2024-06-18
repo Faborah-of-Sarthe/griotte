@@ -14,9 +14,6 @@ import { useActionsStore } from '../stores/actions'
 
 const hasProducts = ref(false);
 const queryClient = useQueryClient()
-// const productFormOpen = ref(false)
-// const type = ref('add')
-// const currentProduct = ref({})
 
 const productFormStore = useProductFormStore();
 const actionsStore = useActionsStore();

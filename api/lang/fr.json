@@ -27,6 +27,7 @@
     "Reset Password" : "Réinitialiser le mot de passe",
     "This password reset link will expire in :count minutes." : "Ce lien de réinitialisation de mot de passe expirera dans :count minutes.",
     "If you did not request a password reset, no further action is required." : "Si vous n'avez pas demandé de réinitialisation de mot de passe, aucune autre action n'est requise.",
+    "The :attribute must be at least :length characters.": "Le champ :attribute doit contenir au moins :length caractères.",
     "(and :count more error)" : "(et :count erreur supplémentaire)",
     "(and :count more errors)" : "(et :count erreurs supplémentaires)"
 }

@@ -147,7 +147,6 @@ function handleDeleteStore() {
         withCredentials: true,
     }).then(() => {
         router.push({ name: 'my-stores' })
-        toast.success('Le magasin a été supprimé !')
     })
 }
 

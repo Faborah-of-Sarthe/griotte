@@ -11,7 +11,13 @@ export const useUserStore = defineStore({
             return state.user !== null;
         },
         hasStore: (state) => {
-            return state.user?.currentStore !== null;
+            return state.user?.currentStore != "" && state.user?.currentStore != null;
+        },
+        currentStore: (state) => {
+            return state.user?.currentStore;
+        },
+        tutorial: (state) => {
+            return state.user?.finished_tutorial;
         },
     },
     actions: {
@@ -23,6 +29,9 @@ export const useUserStore = defineStore({
         },
         setCurrentStore(store) {
             this.user.currentStore = store;
-        }
+        },
+        setTutorial() {
+            this.user.finished_tutorial = true;
+        },
     }
 });

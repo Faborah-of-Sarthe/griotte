@@ -3,13 +3,14 @@
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
                 <BaseInput autocomplete="off" label="Nom" :value="storeFormStore.store.name" v-model="storeFormStore.store.name"></BaseInput>
-                <Checkbox v-if="storeFormStore.type == 'add'" class="checkmark" label="Copier les rayons d'un magasin existant ?" :checked="copySections" v-model="copySections"></Checkbox>
-                <div v-if="copySections">
-                    <Select label="Magasin" :options="storesList" v-model="storeFormStore.store.copyFrom"></Select>
-                    
+                <div v-if="userStore.hasStore">
+                    <Checkbox v-if="storeFormStore.type == 'add'" class="checkmark" label="Copier les rayons d'un magasin existant ?" :checked="copySections" v-model="copySections"></Checkbox>
+                    <div v-if="copySections">
+                        <Select label="Magasin" :options="storesList" v-model="storeFormStore.store.copyFrom"></Select>
+                    </div>
                 </div>
                 <div class="buttons">
-                    <Button  type="submit" :disabled="storeFormStore.store.name.length === 0">{{ buttonLabel }}</Button>
+                <Button type="submit" :disabled="storeFormStore.store.name.length === 0 || loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>
@@ -29,11 +30,13 @@ import BaseInput from '@/components/forms/BaseInput.vue'
 import Button from '@/components/forms/Button.vue'
 import Select from '@/components/forms/Select.vue'
 import { useStoreFormStore } from '@/stores/storeForm'
+import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import Checkbox from './forms/Checkbox.vue'
 import { useToast } from 'vue-toastification'
 
 const storeFormStore = useStoreFormStore()
+const userStore = useUserStore()
 const router = useRouter()
 
 const copySections = ref(false)
@@ -81,18 +84,18 @@ const buttonLabel = computed(() => {
 
 
 // Store creation query
-const storeCreation = useMutation({
+const {mutate: storeCreationMutate, isLoading: loadingCreation } = useMutation({
   mutationFn: (storeData) => {
     return axios.post(import.meta.env.VITE_API_URL + 'stores/', storeData)
   },
   onSuccess: (data) => {
+    let storeId = data.data.store.id
+    // Redirect to the store page
+    router.push({ name: 'my-store', params: { id: storeId } })
     queryClient.invalidateQueries('stores')
     storeFormStore.updateOpen(false)
 
-    let storeId = data.data.store.id
 
-    // Redirect to the store page
-    router.push({ name: 'my-store', params: { id: storeId } })
     
     toast.success('Le magasin a été créé !')
 
@@ -100,7 +103,7 @@ const storeCreation = useMutation({
 });
 
 // Store edition query
-const storeEdition = useMutation({
+const {mutate: storeEditionMutate, isLoading: loadingEdition} = useMutation({
   mutationFn: (storeData) => {
     return axios.patch(import.meta.env.VITE_API_URL + 'stores/' + storeData.id, storeData)
   },
@@ -117,9 +120,9 @@ const storeEdition = useMutation({
  * */
 function handleSubmit() {
     if (storeFormStore.type === 'add') {
-        storeCreation.mutate(storeFormStore.store)
+        storeCreationMutate(storeFormStore.store)
     } else {
-        storeEdition.mutate(storeFormStore.store)
+        storeEditionMutate(storeFormStore.store)
     }
 }
 

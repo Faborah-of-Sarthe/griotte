@@ -51,7 +51,14 @@ const login = async () => {
 
         // Set the user in the store
         saveUser(user)
-        router.push('my-list')
+
+        // Redirect to the user's list if the user has a store
+        if (user.currentStore) {
+            router.push('my-list')
+        } else {
+            // Redirect to the store creation page if the user has no store
+            router.push('my-stores')
+        }
     }
 }
 

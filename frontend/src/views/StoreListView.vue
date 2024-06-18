@@ -1,5 +1,6 @@
 <template>
-    <h1>Mes magasins</h1>
+    <h1 v-if="userStore.hasStore">Mes magasins</h1>
+    <h1 v-else>Bienvenue !</h1>
     <div v-if="isLoading"><Loader /></div>
     <div v-if="data">
         <ol>
@@ -11,8 +12,8 @@
             </li>
         </ol>  
     </div>
-    <div v-if="!isLoading && !data">
-        <p>Aucun magasin pour le moment</p>
+    <div class="empty" v-if="!isLoading && data.length == 0 && !userStore.tutorial">
+       <WelcomeCherry :step="'store'"/>
     </div>
     <div>
         <Button @click="handleNewStore" type="button" >Ajouter un magasin</Button>
@@ -30,6 +31,7 @@ import StoreForm from '../components/StoreForm.vue'
 import { useUserStore } from '../stores/user'
 import { useStoreFormStore } from '../stores/storeForm'
 import Loader from '../components/Loader.vue';
+import WelcomeCherry from '../components/WelcomeCherry.vue'
 
 // Get the user from the store
 const userStore = useUserStore()
@@ -130,5 +132,8 @@ const setCurrentStore = useMutation({
     .current .checkmark {
         stroke: var(--color-background);
         border: 2px solid var(--color-background);
+    }
+    .empty {
+        min-height: 50vh;
     }
 </style>
