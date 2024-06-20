@@ -12,7 +12,7 @@
                 </template>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
-                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0">{{ buttonLabel }}</Button>
+                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0 || loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>
@@ -81,19 +81,18 @@ const buttonType = computed(() => {
 const queryClient = useQueryClient()
 
 // Section creation query
-const sectionCreation = useMutation({
+const {mutate: sectionCreationMutate, isLoading: loadingCreation} = useMutation({
   mutationFn: (sectionData) => {
     return axios.post(import.meta.env.VITE_API_URL + 'sections/', sectionData)
   },
   onSuccess: () => {
     queryClient.invalidateQueries('sections')
     sectionFormStore.updateOpen(false)
-    toast.success('Le rayon a bien été ajouté')
   }
 });
 
 // Section edition query
-const sectionEdition = useMutation({
+const {mutate: sectionEditionMutate, isLoading: loadingEdition} = useMutation({
   mutationFn: (sectionData) => {
     console.log(sectionData);
     return axios.patch(import.meta.env.VITE_API_URL + 'sections/' + sectionData.id, sectionData)
@@ -109,9 +108,9 @@ const sectionEdition = useMutation({
  * Handle the form submission and dispatch the creation or edition p*/
 function handleSubmit() {
     if (sectionFormStore.type === 'add') {
-        sectionCreation.mutate(sectionFormStore.section)
+        sectionCreationMutate(sectionFormStore.section)
     } else {
-        sectionEdition.mutate(sectionFormStore.section)
+        sectionEditionMutate.mutate(sectionFormStore.section)
     }
 }
 

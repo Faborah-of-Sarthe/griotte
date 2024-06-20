@@ -10,13 +10,17 @@ import axios from 'axios'
 import { ref } from 'vue'
 import { useProductFormStore } from '../stores/productForm'
 import { useActionsStore } from '../stores/actions'
+import { useUserStore } from '../stores/user'
+import WelcomeCherry from '../components/WelcomeCherry.vue'
 
 
-const hasProducts = ref(false);
+const hasProducts = ref(true);
 const queryClient = useQueryClient()
 
 const productFormStore = useProductFormStore();
 const actionsStore = useActionsStore();
+const userStore = useUserStore()
+
 
 // Get sections and products from API
 const { isLoading, isError, data, error } = useQuery({
@@ -76,14 +80,15 @@ function openNewProductForm(product) {
     <div v-if="isError">{{ error.response.data.message }}</div>
     <div v-if="data">
       <!-- Loop through section array with animation -->
-      <template v-for="section in data" :key="section.id">
+      <template v-for="(section, index) in data" :key="section.id">
           <Transition name="slideIn" appear>
-            <Section :style="{ 'transition-delay': section.id * 50 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
+            <Section :style="{ 'transition-delay': section.index * 25 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
           </Transition>
       </template>
-      <p v-if="!hasProducts">
+      <p v-if="!hasProducts && !isLoading && data">
         Il n'y a pas encore de produits dans votre liste. <br>Utilisez le bouton ci-dessous pour en ajouter !
       </p>
+      <WelcomeCherry v-if="!userStore.tutorial && !isLoading" :step="'product'"/>
     </div>
   </div>
   <template v-if="!isLoading && !isError && hasProducts">

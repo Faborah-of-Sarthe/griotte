@@ -133,6 +133,11 @@ router.beforeEach((to, from, next) => {
     return
   }
 
+  if(to.name === 'my-list' && !userStore.currentStore){
+    next({ name: 'my-stores' })
+    return
+  }
+
   next()
   return
 

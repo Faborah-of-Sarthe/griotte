@@ -65,12 +65,21 @@ class StoreController extends Controller
                     }
                 }
             }
+            else {
+                Section::firstSection($store);
+            }
 
+            // If the user has no current store, set the current store to the newly created store
+            if (!$user->current_store) {
+                $user->current_store = $store->id;
+                $user->save();
+            }
 
         });
         return response()->json([
             'message' => __('Store created successfully.'),
-            'store' => $store
+            'store' => $store,
+            'current_store' => $user->current_store,
         ], 201);
 
     }
@@ -89,7 +98,7 @@ class StoreController extends Controller
         $store->save();
 
         return response()->json([
-            'message' => __('Current store updated successfully.')
+            'message' => __('Store updated successfully.')
         ], 200);
     }
 
@@ -174,9 +183,7 @@ class StoreController extends Controller
             $section->save();
         }
 
-        return response()->json([
-            'message' => __('Sections order updated successfully.')
-        ], 200);
+        return response()->json('', 200);
     }
 
 }

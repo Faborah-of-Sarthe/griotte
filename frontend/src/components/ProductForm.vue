@@ -65,7 +65,7 @@ const buttonLabel = computed(() => {
         return 'Suivant'
     }
     else if (productFormStore.type === 'add') {
-        return 'Ajouter à ma liste'
+        return 'Ajouter'
     } else {
         return 'Enregistrer'
     }

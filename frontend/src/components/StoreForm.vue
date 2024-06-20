@@ -89,7 +89,12 @@ const {mutate: storeCreationMutate, isLoading: loadingCreation } = useMutation({
     return axios.post(import.meta.env.VITE_API_URL + 'stores/', storeData)
   },
   onSuccess: (data) => {
-    let storeId = data.data.store.id
+    const storeId = data.data.store.id
+
+    if(data.data.current_store) {
+        userStore.setCurrentStore(data.data.current_store)
+    }
+
     // Redirect to the store page
     router.push({ name: 'my-store', params: { id: storeId } })
     queryClient.invalidateQueries('stores')

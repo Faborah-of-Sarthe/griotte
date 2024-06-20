@@ -7,7 +7,7 @@
         <h2>Rayons</h2>
         <div class="sections">
             
-            <draggable v-model="sections" tag="div" item-key="id" @change="reOrderSections">
+            <draggable v-if="!userStore.tutorial && sections.length > 1" v-model="sections" tag="div" item-key="id" @change="reOrderSections">
                 <template #item="{ element: section }">
                     <section @click="handleSectionEdition(section)" :class="'bg-light-color-' +  section.color ">
                         <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
@@ -18,14 +18,15 @@
                 </template>
 
             </draggable>
-            <div v-if="data.sections.length == 0">
-                <p>Aucun rayon pour le moment</p>
-            </div>
+            <p v-if="sections.length == 0 && userStore.tutorial">Aucun rayon pour le moment</p>
+            <WelcomeCherry v-else-if="!userStore.tutorial && sections.length <= 1" :step="'section'"/>
+            <WelcomeCherry v-else-if="!userStore.tutorial && sections.length > 1" :step="'section2'"/>
 
         </div>
         <div class="buttons wide">
-            <Button @click="openModal = true" v-if="data.id != userStore.user.currentStore" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
+            <Button  @click="openModal = true" v-if="data.id != userStore.user.currentStore && userStore.tutorial" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
+            <Button v-if="!userStore.tutorial && sections.length > 1" @click="router.push({ name: 'my-list' })" type="button" >Voir ma liste de courses</Button>
         </div>
         <SectionForm  v-if="sectionFormStore.open"></SectionForm>
         <StoreForm v-if="storeFormStore.open"></StoreForm>
@@ -60,6 +61,7 @@ import Modal from '../components/Modal.vue';
 import { useToast } from 'vue-toastification'
 import { useUserStore } from '../stores/user';
 import Loader from '../components/Loader.vue';
+import WelcomeCherry from '../components/WelcomeCherry.vue';
 
 
 const router = useRouter()
@@ -159,7 +161,6 @@ function handleDeleteSection() {
     }).then(() => {
         queryClient.invalidateQueries('sections')
         openModalSection.value = false
-        toast.success('Le rayon a été supprimé !')
     })
 }
 
@@ -194,18 +195,15 @@ function handleDeleteSection() {
         cursor: pointer;
     }
     .sortable-ghost {
-        padding: .25rem;
-        background: var(--color-primary);
+        background: var(--color-9-light);
         overflow: hidden;
-        transition: all 0.3s;
-        /* transform: scaleY(0.25%); */
-
-        & * {
-            display: none;
+        transition: all 0.3s; 
+        .icon {
+            background: var(--color-9);
         }
     }
     .sortable-ghost + section {
         transform: translate(5px, 0);
-        transition: transform 0.3s;
+        transition: transform 0.1s;
     }
 </style>

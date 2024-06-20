@@ -47,3 +47,23 @@
 .fadeIn-leave-to {
   opacity: 0;
 }
+
+@keyframes blink {
+  0%, 100% {
+      opacity: 0.5;
+  }
+  50% {
+      opacity: 1;
+  }
+}
+
+@keyframes shake {
+
+  0%,100% {
+      transform: translateX(-10px) rotate(-10deg);
+  }
+  50% {
+      transform: translateX(10px) rotate(10deg);
+  }
+
+}
