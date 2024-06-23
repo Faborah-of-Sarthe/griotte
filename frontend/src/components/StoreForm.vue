@@ -2,7 +2,7 @@
     <Transition name="slideUp" appear>
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
-                <BaseInput autocomplete="off" label="Nom" :value="storeFormStore.store.name" v-model="storeFormStore.store.name"></BaseInput>
+                <BaseInput autocomplete="off" label="Nom" :placeholder="randomName" :value="storeFormStore.store.name" v-model="storeFormStore.store.name"></BaseInput>
                 <div v-if="userStore.hasStore">
                     <Checkbox v-if="storeFormStore.type == 'add'" class="checkmark" label="Copier les rayons d'un magasin existant ?" :checked="copySections" v-model="copySections"></Checkbox>
                     <div v-if="copySections">
@@ -57,7 +57,11 @@ const storesList = computed(() => {
     })
 })
 
-
+// Generate a random name for the placeholder
+const randomName = computed(() => {
+    const names = ['Croisement', 'Intramarché', 'Le Clair', 'Au champ', 'Méga U', 'Uniprix', "L'idole", 'Aldo', 'Meneur prix', 'Tripot', 'Simple marché' ];
+    return names[Math.floor(Math.random() * names.length)]
+})
 
 // Computed 
 

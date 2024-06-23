@@ -73,6 +73,7 @@ class ProductController extends Controller
                             $query->where('store_id', auth('sanctum')->user()->currentStore->id);
                         }
                     ])
+                    ->limit(7)
                     ->get();
 
         return $products->makeHidden('comment');
@@ -111,9 +112,15 @@ class ProductController extends Controller
                 $section->products()->attach($product->id);
             }
 
+            if(!$user->finished_tutorial) {
+                $user->finished_tutorial = 1;
+                $user->save();
+            }
+
             return response()->json([
                 'message' => __('Product created successfully.'),
-                'product' => $product
+                'product' => $product,
+                'user' => $user
             ], 201);
         });
     }
@@ -123,6 +130,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $user = auth('sanctum')->user();
 
         $request->validate([
             'name' => 'string|max:255',
@@ -157,11 +165,16 @@ class ProductController extends Controller
 
 
         $product->save();
-        // no section management here (other endpoint)
+
+        if(!$user->finished_tutorial) {
+            $user->finished_tutorial = 1;
+            $user->save();
+        }
 
         return response()->json([
             'message' => __('Product updated successfully.'),
-            'product' => $product
+            'product' => $product,
+            'user' => $user
         ], 201);
     }
 

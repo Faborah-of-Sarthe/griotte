@@ -36,9 +36,11 @@ import TextArea from '@/components/forms/TextArea.vue'
 import Button from '@/components/forms/Button.vue'
 import SectionSelect from '@/components/forms/SectionSelect.vue'
 import { useProductFormStore } from '../stores/productForm'
+import { useUserStore } from '../stores/user'
 
 
 const productFormStore = useProductFormStore()
+const userStore = useUserStore()
 
 
 const step = ref(1)
@@ -91,6 +93,9 @@ const productCreation = useMutation({
   onSuccess: () => {
     queryClient.invalidateQueries('products')
     productFormStore.updateOpen(false)
+    if(!userStore.tutorial) {
+      userStore.setTutorial();
+    }
   }
 });
 

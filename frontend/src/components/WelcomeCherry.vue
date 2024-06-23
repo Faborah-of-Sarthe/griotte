@@ -22,9 +22,8 @@
                 Top ! Je me suis permis d'ajouter un 1er produit à la liste ;) <br>
                 En cliquant dessus, vous pouvez voir les commentaires qui y sont liés (quantité, plat...). <br>
                 En appuyant longuement sur un produit, vous pouvez modifier son nom ou son commentaire mais aussi l'assigner à un autre rayon !<br><br>
-                Enfin, vous pouvez ajouter un produit à votre liste en cliquant sur le gros bouton +. En cas de produit qui m'est inconnu, vous pourrez renseigner ses informations et son rayon, il sera classé automatiquement la prochaine fois !
-
-
+                Enfin, vous pouvez ajouter un produit à votre liste en cliquant sur le gros bouton <Cross class="plus" />. Si je ne le connais pas, vous pourrez renseigner ses informations et son rayon, il sera classé automatiquement la prochaine fois ! <br><br>
+                Je vous ai déjà ajouté une bonne partie des fruits et légumes, vous pouvez essayer d'en chercher ou d'en ajouter un nouveau ! Bonnes courses !
             </p>
         </div>
         <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
@@ -55,10 +54,20 @@
         animation: shake 15s linear infinite;
 
     }
+    .plus {
+        height: .7rem;
+        width: .7rem;
+        transform: rotate(45deg);
+
+    
+    }
+
 
 
 </style>
 <script setup>
+import Cross from './icons/Cross.vue';
+
 
 
 // Props

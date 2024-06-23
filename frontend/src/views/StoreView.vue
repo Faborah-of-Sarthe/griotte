@@ -7,18 +7,18 @@
         <h2>Rayons</h2>
         <div class="sections">
             
-            <draggable v-if="!userStore.tutorial && sections.length > 1" v-model="sections" tag="div" item-key="id" @change="reOrderSections">
+            <draggable v-if="(!userStore.tutorial && sections.length > 1) || userStore.tutorial" v-model="sections" tag="div" item-key="id" @change="reOrderSections">
                 <template #item="{ element: section }">
                     <section @click="handleSectionEdition(section)" :class="'bg-light-color-' +  section.color ">
                         <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
                         <p >{{ section.name }}</p>
-                        <!-- TODO: drag icon -->
-                        <div class="cross" @click.stop="openModalSection = true; deleteSectionId = section.id">✕</div>
+                        <DragIcon class="drag" />
+                        <div class="cross" @click.stop="openModalSection = true; deleteSectionId = section.id"><Cross></Cross></div>
                     </section>
                 </template>
 
             </draggable>
-            <p v-if="sections.length == 0 && userStore.tutorial">Aucun rayon pour le moment</p>
+            <p v-if="!isStale && !isLoading && sections.length == 0 && userStore.tutorial">Aucun rayon pour le moment</p>
             <WelcomeCherry v-else-if="!userStore.tutorial && sections.length <= 1" :step="'section'"/>
             <WelcomeCherry v-else-if="!userStore.tutorial && sections.length > 1" :step="'section2'"/>
 
@@ -62,6 +62,9 @@ import { useToast } from 'vue-toastification'
 import { useUserStore } from '../stores/user';
 import Loader from '../components/Loader.vue';
 import WelcomeCherry from '../components/WelcomeCherry.vue';
+import Cross from '@/components/icons/Cross.vue'
+import DragIcon from '@/components/icons/Drag.vue'
+
 
 
 const router = useRouter()
@@ -77,7 +80,7 @@ const deleteSectionId = ref(null)
 const toast = useToast()
 
 // Load the store data from API
-const { isLoading, isError, data, error } = useQuery({
+const { isLoading, isError, data, error, isStale } = useQuery({
   queryKey:  ['store' + router.currentRoute.value.params.id],
   refetchOnWindowFocus: false, 
   queryFn: async () => {
@@ -182,9 +185,6 @@ function handleDeleteSection() {
         font-size: 1.2rem;
         cursor:grab;
     }
-    section .cross {
-        margin-left: auto;
-    }
     .btn {
         margin-bottom: 1rem;
     }
@@ -205,5 +205,13 @@ function handleDeleteSection() {
     .sortable-ghost + section {
         transform: translate(5px, 0);
         transition: transform 0.1s;
+    }
+    .cross {
+        width: 1rem;
+    }
+    .drag {
+        width: 2rem;
+        margin-left: auto;
+        color: var(--color-text-alt)
     }
 </style>

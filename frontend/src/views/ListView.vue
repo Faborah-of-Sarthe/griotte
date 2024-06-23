@@ -23,7 +23,7 @@ const userStore = useUserStore()
 
 
 // Get sections and products from API
-const { isLoading, isError, data, error } = useQuery({
+const { isLoading, isError, data, error, isStale } = useQuery({
   queryKey:  ['products'],
   queryFn: async () => {
 
@@ -47,6 +47,10 @@ const productEdition = useMutation({
   },
   onSuccess: () => {
     queryClient.invalidateQueries('products')
+
+    if(!userStore.tutorial) {
+      userStore.setTutorial();
+    }
   },
 });
 
@@ -85,10 +89,12 @@ function openNewProductForm(product) {
             <Section :style="{ 'transition-delay': section.index * 25 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
           </Transition>
       </template>
-      <p v-if="!hasProducts && !isLoading && data">
+      <p v-if="!hasProducts && !isLoading && !isStale">
         Il n'y a pas encore de produits dans votre liste. <br>Utilisez le bouton ci-dessous pour en ajouter !
       </p>
-      <WelcomeCherry v-if="!userStore.tutorial && !isLoading" :step="'product'"/>
+      <Transition name="fadeIn" appear>
+        <WelcomeCherry v-if="!userStore.tutorial && !isLoading" :step="'product'"/>
+      </Transition>
     </div>
   </div>
   <template v-if="!isLoading && !isError && hasProducts">

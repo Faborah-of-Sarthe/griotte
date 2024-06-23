@@ -4,6 +4,7 @@ import {  ref, watchEffect, watch } from 'vue'
 import { useDebouncedRef } from '../utils'
 import { useMutation } from '@tanstack/vue-query'
 import SectionIcon from '@/components/SectionIcon.vue'
+import Loader from '@/components/Loader.vue'
 import Cross from './icons/Cross.vue'
 import axios from 'axios'
 
@@ -69,7 +70,8 @@ watch(searchTerms, (value) => {
     </Transition>
     <Transition name="slideUp" appear>
     <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 1">
-        <div class="products" v-if="data?.data.length > 0">
+        <div class="products" v-if="data?.data.length > 0 || isLoading">
+            <Loader v-if="isLoading" :inline="true" loading-text="Je cherche..." />
             <div v-for="product in data?.data" :key="product.id" class="result" @click="selectProduct(product)">
                 <div class="result__name">{{ product.name }}</div>
                 <SectionIcon class="small" :icon="product.sections[0]?.icon ?? 'default'" :color=" product.sections[0]?.color ?? 0"></SectionIcon>
