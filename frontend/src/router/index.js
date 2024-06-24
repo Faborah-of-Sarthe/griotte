@@ -107,6 +107,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/my-account',
+      name: 'my-account',
+      component: () => import('../views/AccountView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
       path: '/not-found',
       name: 'NotFound',
       component: () => import('../views/NotFoundView.vue'),

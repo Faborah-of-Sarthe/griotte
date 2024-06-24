@@ -3,10 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Middleware\CheckOwnership;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
-use App\Http\Middleware\CheckOwnership;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::put('/user', [UserController::class, 'update']);
 
     // PRODUCTS
     // new product

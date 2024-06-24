@@ -68,6 +68,12 @@ label {
   color: #bbb;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
 
 .btn {
   padding: 0.5rem 1rem;

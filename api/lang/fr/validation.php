@@ -253,6 +253,7 @@ return [
         "month" => "mois",
         "name" => "nom",
         "names" => "noms",
+        "new_password" => "nouveau mot de passe",
         "office" => "bureau",
         "offices" => "bureaux",
         "other" => "autre",

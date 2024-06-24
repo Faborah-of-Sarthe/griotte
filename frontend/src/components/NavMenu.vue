@@ -6,6 +6,7 @@
         <ul>
             <li><RouterLink :to="{ name: 'my-list' }">Ma liste</RouterLink></li>
             <li><RouterLink :to="{ name: 'my-stores' }">Mes magasins</RouterLink></li>
+            <li><RouterLink :to="{ name: 'my-account' }">Mon compte</RouterLink></li>
             <li><RouterLink :to="{ name: 'logout' }">Déconnexion</RouterLink></li>
         </ul>
     </nav>
@@ -95,7 +96,7 @@
             flex-direction: column;
             height: 100%;
 
-            li:last-child {
+            li:nth-last-child(2){
                 margin-top: auto;
             }
         }
