@@ -3,6 +3,9 @@
     <h1 v-else>Bienvenue !</h1>
     <div v-if="isLoading"><Loader /></div>
     <div v-if="data">
+        <div v-if="data.length > 1" class="alert-info">
+            Pour sélectionner un magasin, et ainsi classer votre liste selon ses rayons, cliquez sur la case à cocher à côté de son nom.
+        </div>
         <ol>
             <li v-for="store in data" :key="store.id"  :class="userStore.user.currentStore == store.id ? 'current' : ''" class="store">
                 <RouterLink :to="{name: 'my-store', params: {id: store.id}}" class="store__name" >
@@ -38,6 +41,7 @@ const userStore = useUserStore()
 // Get the store form store
 const storeFormStore = useStoreFormStore()
 
+
 // Load the stores from API
 const { isLoading, isError, data, error } = useQuery({
   queryKey:  ['stores'],
@@ -61,6 +65,7 @@ const setCurrentStore = useMutation({
   },
   onSuccess: (data, store) => {
     queryClient.invalidateQueries('stores')
+    queryClient.invalidateQueries({ queryKey: ['products'], refetchType: 'all' })
     userStore.setCurrentStore(store)
   },
   onError: (error) => {
