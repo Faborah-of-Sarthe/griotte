@@ -110,7 +110,7 @@ function handleSubmit() {
     if (sectionFormStore.type === 'add') {
         sectionCreationMutate(sectionFormStore.section)
     } else {
-        sectionEditionMutate.mutate(sectionFormStore.section)
+        sectionEditionMutate(sectionFormStore.section)
     }
 }
 
