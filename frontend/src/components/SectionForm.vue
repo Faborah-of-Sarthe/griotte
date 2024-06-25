@@ -12,7 +12,7 @@
                 </template>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
-                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0 || loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
+                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0 || loadingCreation || loadingEdition" :loading="loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>
@@ -94,7 +94,6 @@ const {mutate: sectionCreationMutate, isLoading: loadingCreation} = useMutation(
 // Section edition query
 const {mutate: sectionEditionMutate, isLoading: loadingEdition} = useMutation({
   mutationFn: (sectionData) => {
-    console.log(sectionData);
     return axios.patch(import.meta.env.VITE_API_URL + 'sections/' + sectionData.id, sectionData)
   },
   onSuccess: () => {

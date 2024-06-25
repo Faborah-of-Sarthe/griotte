@@ -74,7 +74,7 @@ watch(searchTerms, (value) => {
             <Loader v-if="isLoading" :inline="true" loading-text="Je cherche..." />
             <div v-for="product in data?.data" :key="product.id" class="result" @click="selectProduct(product)">
                 <div class="result__name">{{ product.name }}</div>
-                <SectionIcon class="small" :icon="product.sections[0]?.icon ?? 'default'" :color=" product.sections[0]?.color ?? 0"></SectionIcon>
+                <SectionIcon class="small" :icon="product.sections[0]?.icon ?? 'question'" :color=" product.sections[0]?.color ?? 0"></SectionIcon>
             </div>
         </div>
         <div class="creation">

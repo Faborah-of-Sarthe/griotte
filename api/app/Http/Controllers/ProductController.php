@@ -38,7 +38,7 @@ class ProductController extends Controller
             $noSection->id = 0;
             $noSection->name = 'Non classé';
             $noSection->color = 0;
-            $noSection->icon = 0;
+            $noSection->icon = 'question';
             $noSection->products = Product::where('user_id', $user->id)
                                 ->where('to_buy', 1)
                                 ->where(function ($query) use ($store) {

@@ -229,7 +229,7 @@ Loader
   bottom: 15px;
   right: 15px;
 }
-
+.custom-loader,
 #nprogress .spinner-icon {
   width: 18px;
   height: 18px;
@@ -242,6 +242,12 @@ Loader
 
   -webkit-animation: nprogress-spinner 400ms linear infinite;
           animation: nprogress-spinner 400ms linear infinite;
+}
+
+.custom-loader {
+  border-top-color: inherit;
+  border-left-color: inherit;
+  display: inline-block;
 }
 
 .nprogress-custom-parent {

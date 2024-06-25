@@ -64,7 +64,7 @@ const title = computed(() => {
         <form v-else @submit.prevent="handleRegister">
             <BaseInput label="E-mail" type="email" placeholder="Ex : ramene-ta@fraise.com" v-model="email"  ></BaseInput>
             <BaseInput label="Mot de passe" class="password" type="password" placeholder="Ex : gri0tt3-0u-big4rr34u?" v-model="password" ></BaseInput>
-            <Button type="submit" :disabled="isLoading" design="primary">M'inscrire</Button>
+            <Button type="submit" :disabled="isLoading" :loading="isLoading" design="primary">M'inscrire</Button>
         </form>
       
 

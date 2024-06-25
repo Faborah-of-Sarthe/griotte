@@ -8,7 +8,7 @@
                 </p>
                 <BaseInput class="password" label="Nouveau mot de passe" type="password" v-model="password" ></BaseInput>
 
-                <Button type="submit" :disabled="isLoading" design="primary">Réinitialiser</Button>
+                <Button type="submit" :disabled="isLoading" :loading="isLoading" design="primary">Réinitialiser</Button>
             </form>
         </Card>
         </Transition>

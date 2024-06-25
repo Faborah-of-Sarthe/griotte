@@ -85,7 +85,7 @@ function handleLogin() {
             <form class="login__form" @submit.prevent="handleLogin">
                 <BaseInput label="E-mail" type="email"  v-model="email"  ></BaseInput>
                 <BaseInput class="password" label="Mot de passe" type="password" v-model="password" ></BaseInput>
-                <Button type="submit" :disabled="isLoading" design="primary">Se connecter</Button>
+                <Button type="submit" :disabled="isLoading" :loading="isLoading" design="primary">Se connecter</Button>
             </form>
             <div class="links">
                 <RouterLink class="login__link" to="forgot-password">Mot de passe oublié ?</RouterLink>

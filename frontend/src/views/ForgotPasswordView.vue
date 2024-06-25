@@ -7,7 +7,7 @@
                     Entrez votre adresse e-mail pour recevoir un lien de réinitialisation de mot de passe.
                 </p>
                 <BaseInput label="E-mail" type="email"  v-model="email"  ></BaseInput>
-                <Button type="submit" :disabled="isLoading" design="primary">Envoyer</Button>
+                <Button type="submit" :disabled="isLoading" :loading="isLoading" design="primary">Envoyer</Button>
             </form>
         </Card>
         </Transition>

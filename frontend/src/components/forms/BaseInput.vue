@@ -4,14 +4,20 @@
     </label>
     <div class="input_wrapper">
       <input :id="name" ref="inputElement" :name="name" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" v-bind="$attrs"/>
-      <span @click="toggleEye" :class="passwordClass" class="eye" v-if="$attrs.type == 'password'"></span>
+      <span @click="toggleEye" :class="passwordClass" class="eye" v-if="$attrs.type == 'password'">
+        <component :is="passwordClass == 'closed' ? Eye : EyeOff" />
+      </span>
     </div>
 </template>
 
 <script setup>
 
   import { defineProps, ref} from 'vue'
-import { labelize } from '../../utils';
+  import { labelize } from '../../utils';
+  import Eye from '../icons/Eye.vue';
+  import EyeOff from '../icons/EyeOff.vue';
+
+
 
 
   const passwordClass = ref('closed')
@@ -69,20 +75,13 @@ import { labelize } from '../../utils';
   .eye {
     position: absolute;
     right: 0.5rem;
-    top: 0.6rem;
+    top: 0.5rem;
     font-size: 1.5rem;
     cursor: pointer;
     color: #b2b2b2;
     height: 1.5rem;
     width: 1.5rem;
-    background: #000;
-    border-radius: 50%;
-    /* TODO: Add an eye background */
 
-  }
-
-  .eye.closed {
-    background: #b2b2b2;
   }
 
   .password {

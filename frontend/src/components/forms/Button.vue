@@ -1,6 +1,6 @@
 <template>
     <button :type="type" class="btn" :class="'btn--' + design" :disabled="disabled">
-        <slot></slot>
+        <slot></slot> <span v-if="loading" class="custom-loader"></span>
     </button>
 </template>
 
@@ -23,6 +23,11 @@ const props = defineProps({
         type: Boolean,
         required: false,
         default: false
+    },
+    loading: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 })
 
@@ -34,6 +39,14 @@ const props = defineProps({
 button:disabled{
     background-color: var(--color-9);
     color: var(--color-text);
+}
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.custom-loader {
+    margin-left: 0.5rem;
 }
 
 </style>

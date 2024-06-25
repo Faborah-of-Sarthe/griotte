@@ -10,7 +10,7 @@
                     </div>
                 </div>
                 <div class="buttons">
-                <Button type="submit" :disabled="storeFormStore.store.name.length === 0 || loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
+                <Button type="submit" :disabled="storeFormStore.store.name.length === 0 || loadingCreation || loadingEdition" :loading="loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>

@@ -15,7 +15,7 @@
                 </template>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
-                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0">{{ buttonLabel }}</Button>
+                    <Button :key="buttonType" :loading="loading" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0 || loading">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>
@@ -59,6 +59,10 @@ const title = computed(() => {
     } else {
         return 'Modifier un produit'
     }
+})
+
+const loading = computed(() => {
+    return productCreation.isLoading.value || productEdition.isLoading.value
 })
 
 const buttonLabel = computed(() => {
