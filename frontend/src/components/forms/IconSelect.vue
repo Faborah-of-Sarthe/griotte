@@ -54,6 +54,8 @@ const handleChange = (iconName) => {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    max-height: 60vh;
+    overflow-y: scroll;
 }
 
 </style>

@@ -50,7 +50,7 @@ class Section extends Model
         $section = new Section();
         $section->name = 'Fruits & Légumes';
         $section->color = 4;
-        $section->icon = 'fruits-legumes';
+        $section->icon = '0-cerises';
         $section->store_id = $store->id;
         $section->save();
 
