@@ -1,4 +1,4 @@
-@import './base.css';
+@import './base.scss';
 @import './animations.scss';
 
 
@@ -13,6 +13,16 @@ main {
   padding: 0 1rem;
 }
 
+body:not(.bg-red) main {
+  @include respond-to('small') {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  @include respond-to('medium') {
+    max-width: 40rem;
+  }
+}
 .card__container {
   display: flex;
   justify-content: center;
@@ -109,7 +119,7 @@ input:-webkit-autofill:active{
 
 
 .btn.large {
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 .buttons {
   display: flex;
@@ -165,23 +175,22 @@ input:-webkit-autofill:active{
 
 }
 
+
 @media (hover: hover) {
   a:hover {
   }
 }
 
-@media (min-width: 30rem) {
-  .buttons.wide {
+
+.buttons.wide {
+  @include respond-to('small') {
     flex-direction: row;
     align-items: center;
   
     button {
       width: auto;
     }
-    
   }
-
- 
 }
 
 /**

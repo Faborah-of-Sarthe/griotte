@@ -45,6 +45,20 @@
 
 
 }
+$breakpoints: (
+  "small": 30rem, 
+  "medium": 48rem, 
+  "large": 64rem, 
+);
+@mixin respond-to($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` not found in `$breakpoints` map.";
+  }
+}
 
 /* Fonts */
 

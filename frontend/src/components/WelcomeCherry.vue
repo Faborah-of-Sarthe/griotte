@@ -10,7 +10,7 @@
                 Parfait !  Si besoin de modifier le nom du magasin, cliquez simplement sur son nom. <br>
                 Maintenant, on va pouvoir créer les rayons de votre magasin. <br>
                 Pour vous aider à vous y retrouver, vous pouvez même choisir une icône et une couleur pour chaque rayon. <br> 
-                Cliquez sur le bouton ci-dessous pour commencer !
+                Essayez de créer un rayon "Boulangerie" par exemple, en cliquant sur le bouton ci-dessous ! 
             </p>
             <p v-else-if="step == 'section2'">
                 Vous avez créé votre premier rayon ! <br>

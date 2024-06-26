@@ -4,7 +4,7 @@
             <slot name="content"></slot>
             <div v-if="buttons" class="buttons">
                 <Button type="button" @click="$emit('close')" class="btn btn--secondary">Annuler</Button>
-                <Button type="button" @click="$emit('validate')" class="btn btn--primary">Supprimer</Button>
+                <Button type="button" @click="$emit('validate'); loading = true;" :loading="loading" :disabled="loading" class="btn btn--primary" >Supprimer</Button>
             </div>
         </Card>
     </Transition>
@@ -17,11 +17,14 @@
     
 import Card  from '@/components/forms/Card.vue'
 import Button from '@/components/forms/Button.vue'
+import { defineProps, ref } from 'vue'
 
 const props = defineProps({
     title: String,
     buttons: Boolean
 })
+
+const loading = ref(false)
 
 
 </script>   

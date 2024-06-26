@@ -190,6 +190,7 @@ function handleDeleteSection() {
     }
     h2 {
         color: var(--color-text-alt);
+        margin-bottom: 2rem;
     }
     h1 {
         cursor: pointer;

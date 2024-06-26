@@ -98,7 +98,8 @@ watch(searchTerms, (value) => {
     
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/assets/base.scss';
 .add_button {
   background: var(--color-primary);
   border: none;
@@ -139,6 +140,12 @@ watch(searchTerms, (value) => {
     padding: .8rem 1rem;
     font-size: 1.5rem;
     outline: none;
+
+    @include respond-to('medium') {
+        width: 40rem;
+        left: auto;
+        right: auto;
+    }
 }
 
 .results {
@@ -160,6 +167,11 @@ watch(searchTerms, (value) => {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    @include respond-to('medium') {
+        width: 40rem;
+        left: auto;
+        right: auto;
+    }
 }
 
 .products::after {

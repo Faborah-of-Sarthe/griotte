@@ -23,8 +23,8 @@ import Button from '../components/forms/Button.vue'
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+@import '@/assets/base.scss';
 .intro {
   text-align: center;
   margin-top: 5rem;
@@ -38,15 +38,15 @@ import Button from '../components/forms/Button.vue'
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  width: 20rem;
-  height: 20rem;
+  width: 15rem;
+  height: 15rem;
   background-color: #fff;
   z-index: -1;
 }
 
 .logo {
-  width: 20rem;
-  height: 20rem;
+  width: 15rem;
+  height: 15rem;
 }
 
 .title {
@@ -71,11 +71,20 @@ import Button from '../components/forms/Button.vue'
 
 .buttons {
   margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  @include respond-to('medium') {
+    flex-direction: row;
+  }
 }
 
 .buttons .btn {
-  width: 20rem;
-  margin-bottom: 1rem;
+  width: 15rem;
+  font-weight: bold;
 }
 
 </style>
