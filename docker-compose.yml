@@ -3,11 +3,13 @@ services:
   web:
     build: .
     restart: unless-stopped
+    container_name: griotte_web
     ports:
       - "8042:80"
   db:
     image: mariadb:11.3
     restart: unless-stopped
+    container_name: griotte_db
     ports:
       - "3342:3306"
     environment:
