@@ -1,6 +1,7 @@
 FROM webdevops/php-apache:8.2-alpine
 
 # Installation dans votre Image du minimum pour que Docker fonctionne
+RUN apk add oniguruma-dev libxml2-dev nano
 RUN docker-php-ext-install \
         bcmath \
         ctype \
@@ -36,7 +37,7 @@ RUN php artisan route:cache
 # Optimizing View loading
 RUN php artisan view:cache
 
-WORKDIR frontend
+WORKDIR ../frontend
 # Compilation des assets de Breeze (ou de votre site)
 RUN npm install
 RUN npm run build
