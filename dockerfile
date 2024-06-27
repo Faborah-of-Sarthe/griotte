@@ -4,7 +4,6 @@ FROM webdevops/php-apache:8.2-alpine
 RUN docker-php-ext-install \
         bcmath \
         ctype \
-        fileinfo \
         mbstring \
         pdo_mysql \
         xml
