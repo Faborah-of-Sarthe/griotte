@@ -4,6 +4,8 @@ services:
     build: .
     restart: unless-stopped
     container_name: griotte_web
+    volumes:
+      - .:/app
     ports:
       - "8042:80"
   db:
@@ -13,9 +15,12 @@ services:
     ports:
       - "3342:3306"
     environment:
-      MARIADB_DATABASE: demo
-      MARIADB_USER: demo
-      MARIADB_PASSWORD: demo
-      MARIADB_ROOT_PASSWORD: root
+      - MARIADB_DATABASE=${DB_DATABASE}
+      - MARIADB_USER=${DB_USERNAME}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - ./data/db:/var/lib/mysql
+
+
+

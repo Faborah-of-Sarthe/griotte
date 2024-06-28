@@ -15,15 +15,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Installation dans votre image de NodeJS
 RUN apk add nodejs npm
 
-ENV WEB_DOCUMENT_ROOT /app/api/public
+ENV WEB_DOCUMENT_ROOT /app
 ENV APP_ENV production
 WORKDIR /app
-COPY . .
+# COPY . .
 
 WORKDIR api
-# On copie le fichier .env.example pour le renommer en .env
-# Vous pouvez modifier le .env.example pour indiquer la configuration de votre site pour la production
-RUN cp -n .env.example .env
+
+
 
 # Installation et configuration de votre site pour la production
 # https://laravel.com/docs/10.x/deployment#optimizing-configuration-loading
