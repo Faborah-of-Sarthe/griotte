@@ -18,7 +18,7 @@ RUN apk add nodejs npm
 ENV WEB_DOCUMENT_ROOT /app
 ENV APP_ENV production
 WORKDIR /app
-# COPY . .
+COPY . .
 
 WORKDIR api
 

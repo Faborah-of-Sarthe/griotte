@@ -4,8 +4,6 @@ services:
     build: .
     restart: unless-stopped
     container_name: griotte_web
-    volumes:
-      - .:/app
     ports:
       - "8042:80"
   db:
