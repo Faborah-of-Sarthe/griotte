@@ -56,6 +56,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'front_url' => env('SANCTUM_STATEFUL_DOMAINS', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
 

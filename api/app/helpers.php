@@ -6,5 +6,5 @@
  * @return string
  */
 function getFrontUrl() {
-    return (env('APP_ENV') == 'local' ? 'http://' : 'https://') . env('SANCTUM_STATEFUL_DOMAINS');
+    return (config('app.env') == 'local' ? 'http://' : 'https://') . config('app.front_url');
 }
