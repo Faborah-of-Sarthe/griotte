@@ -89,7 +89,7 @@ function openNewProductForm(product) {
             <Section :style="{ 'transition-delay': section.index * 25 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
           </Transition>
       </template>
-      <p v-if="!hasProducts && !isLoading && !isStale">
+      <p v-if="!hasProducts && !isLoading " class="alert-info">
         Il n'y a pas encore de produits dans votre liste. <br>Utilisez le bouton ci-dessous pour en ajouter !
       </p>
       <Transition name="fadeIn" appear>
@@ -97,7 +97,7 @@ function openNewProductForm(product) {
       </Transition>
     </div>
   </div>
-  <template v-if="!isLoading && !isError && hasProducts">
+  <template v-if="!isLoading && !isError">
     <div class="controls">
       <RollbackButton v-if="actionsStore.visible"></RollbackButton>
       <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>

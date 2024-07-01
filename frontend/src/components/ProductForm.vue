@@ -92,7 +92,7 @@ const queryClient = useQueryClient()
 // Product creation query
 const productCreation = useMutation({
   mutationFn: (productData) => {
-    return axios.post(import.meta.env.VITE_API_URL + 'products/', productData)
+    return axios.post(import.meta.env.VITE_API_URL + 'products', productData)
   },
   onSuccess: () => {
     queryClient.invalidateQueries('products')

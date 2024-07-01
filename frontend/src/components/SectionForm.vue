@@ -2,17 +2,20 @@
     <Transition name="slideUp" appear>
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
-                <template v-if="step == 1">
-
-                    <BaseInput autocomplete="off" label="Nom" :value="sectionFormStore.section.name" v-model="sectionFormStore.section.name"></BaseInput>
-                    <ColorInput label="Couleur" :value="sectionFormStore.section.color" v-model="sectionFormStore.section.color"></ColorInput>
-                </template>
-                <template v-if="step == 2">
-                    <IconSelect :value="sectionFormStore.section.icon" v-model="sectionFormStore.section.icon"></IconSelect>
-                </template>
+                <div>
+                    <div v-show="step == 1">
+                        
+                        <BaseInput autocomplete="off" label="Nom" :value="sectionFormStore.section.name" v-model="sectionFormStore.section.name"></BaseInput>
+                        <ColorInput label="Couleur" :value="sectionFormStore.section.color" v-model="sectionFormStore.section.color"></ColorInput>
+                    </div>
+                    <div v-show="step == 2">
+                        <IconSelect :value="sectionFormStore.section.icon" v-model="sectionFormStore.section.icon"></IconSelect>
+                    </div>
+                </div>
                 <div class="buttons">
-                    <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
-                    <Button :key="buttonType" :type="buttonType" @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0 || loadingCreation || loadingEdition" :loading="loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
+                    <Button type="button" design="secondary" @click="stepDown" v-show="step > 1">Précédent</Button>
+                    <Button key="button-next" type="button" v-show="step < maxStep"  @click="stepUp" :disabled="sectionFormStore.section.name.length === 0 || sectionFormStore.section.color.length === 0">Suivant</Button>
+                    <Button key="button-submit" type="submit"  v-show="step == maxStep"  :disabled="sectionFormStore.section.icon.length === 0 || loadingCreation || loadingEdition" :loading="loadingCreation || loadingEdition">{{ buttonLabel }}</Button>
                 </div>
             </form>
         </Card>
@@ -83,7 +86,7 @@ const queryClient = useQueryClient()
 // Section creation query
 const {mutate: sectionCreationMutate, isLoading: loadingCreation} = useMutation({
   mutationFn: (sectionData) => {
-    return axios.post(import.meta.env.VITE_API_URL + 'sections/', sectionData)
+    return axios.post(import.meta.env.VITE_API_URL + 'sections', sectionData)
   },
   onSuccess: () => {
     queryClient.invalidateQueries('sections')

@@ -90,7 +90,7 @@ const buttonLabel = computed(() => {
 // Store creation query
 const {mutate: storeCreationMutate, isLoading: loadingCreation } = useMutation({
   mutationFn: (storeData) => {
-    return axios.post(import.meta.env.VITE_API_URL + 'stores/', storeData)
+    return axios.post(import.meta.env.VITE_API_URL + 'stores', storeData)
   },
   onSuccess: (data) => {
     const storeId = data.data.store.id
