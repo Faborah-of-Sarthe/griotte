@@ -2,17 +2,19 @@
     <Transition name="slideUp" appear>
         <Card :title="title">
             <form @submit.prevent="handleSubmit">
-                <template v-if="step == 1">
-
-                    <BaseInput label="Nom" :value="productFormStore.product.name" v-model="productFormStore.product.name"></BaseInput>
-                    <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="productFormStore.product.comment"></TextArea>
-                    
-                </template>
-                <template v-if="step == 2">
-
-                    <SectionSelect :value="productFormStore.product.section_id" v-model="productFormStore.product.section_id" ></SectionSelect>
-                    
-                </template>
+                <div>
+                    <div v-show="step == 1">
+                        
+                        <BaseInput label="Nom" :value="productFormStore.product.name" v-model="productFormStore.product.name"></BaseInput>
+                        <TextArea label="Commentaire" placeholder="Quantité, variante, recette, etc" v-model="productFormStore.product.comment"></TextArea>
+                        
+                    </div>
+                    <div v-show="step == 2">
+                        
+                        <SectionSelect :value="productFormStore.product.section_id" v-model="productFormStore.product.section_id" ></SectionSelect>
+                        
+                    </div>
+                </div>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
                     <Button :key="buttonType" :loading="loading" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0 || loading">{{ buttonLabel }}</Button>
