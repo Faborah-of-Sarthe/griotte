@@ -17,7 +17,9 @@
                 </div>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-show="step > 1">Précédent</Button>
-                    <Button :key="buttonType" :loading="loading" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0 || loading">{{ buttonLabel }}</Button>
+                    <Button key="button-next" type="button" v-show="step < maxStep"  @click="stepUp" :disabled="productFormStore.product.name.length === 0">Suivant</Button>
+                    <Button key="button-submit" type="submit"  v-show="step == maxStep"  :disabled="loading" :loading="loading">{{ buttonLabel }}</Button>
+                  
                 </div>
             </form>
         </Card>
@@ -79,13 +81,6 @@ const buttonLabel = computed(() => {
     }
 })
 
-const buttonType = computed(() => {
-    if (step.value === 1) {
-        return 'button'
-    } else {
-        return 'submit'
-    }
-})
 
 
 // Methods
