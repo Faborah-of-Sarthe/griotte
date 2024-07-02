@@ -16,16 +16,16 @@
 
 import { defineProps, defineEmits } from 'vue'
 import SectionIcon from '@/components/SectionIcon.vue'
-
 const props = defineProps(['value', 'icon', 'modelValue'])
 const emit = defineEmits(['update:modelValue'])
 
 //parse all the svg icons in the folder assets/icons
-const icons = import.meta.glob('@/assets/icons/*.vue')
-// For each icon, get the name without the extension
+const icons = import.meta.glob('../section-icons/*.vue')
+// // For each icon, get the name without the extension
 const iconNames = Object.keys(icons).map((icon) => {
-    return icon.replace('/src/assets/icons/', '').replace('.vue', '')
+    return icon.replace('../section-icons/', '').replace('.vue', '')
 })
+
 
 const handleChange = (iconName) => {
     emit('update:modelValue', iconName)

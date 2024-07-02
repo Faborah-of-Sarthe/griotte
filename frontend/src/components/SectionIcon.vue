@@ -21,10 +21,10 @@ const props = defineProps({
     },
 })
 
-const icons = import.meta.glob('@/assets/icons/*.vue')
+
 const icon = computed(() => {
     if(props.icon) {
-        return defineAsyncComponent(() => import('/src/assets/icons/' + props.icon + '.vue'))
+        return defineAsyncComponent(() => import(`./section-icons/${props.icon}.vue`))
     } else {
        return false;
     }
