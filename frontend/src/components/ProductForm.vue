@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="buttons">
-                    <Button type="button" design="secondary" @click="stepDown" v-if="step > 1">Précédent</Button>
+                    <Button type="button" design="secondary" @click="stepDown" v-show="step > 1">Précédent</Button>
                     <Button :key="buttonType" :loading="loading" :type="buttonType" @click="stepUp" :disabled="productFormStore.product.name.length === 0 || loading">{{ buttonLabel }}</Button>
                 </div>
             </form>
