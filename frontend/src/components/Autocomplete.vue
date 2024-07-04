@@ -106,7 +106,9 @@ watch(searchTerms, (value) => {
   border-radius: 50%;
   width: 5rem;
   height: 5rem;
-
+  display: flex;
+  align-items: center;    
+  justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   outline: none;

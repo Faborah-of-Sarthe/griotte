@@ -17,7 +17,7 @@ class SectionController extends Controller
         $store = $user->currentStore;
 
         if ($store) {
-            return $store->sections;
+            return $store->sections()->orderBy('order')->get();
         }
 
         else {

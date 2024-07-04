@@ -89,6 +89,9 @@ const handleChange = (event) => {
     transition: all .1s ease;
     background-color: var(--color-1-light);
 }
+p{
+    text-align: center;
+}
 
 
 </style>
