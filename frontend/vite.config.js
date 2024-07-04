@@ -10,33 +10,36 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      workbox: {
+        cleanupOutdatedCaches: true,
+        globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,json,vue,txt,woff2}']
+      },
       manifest: {
         name: 'Griotte',
         short_name: 'Griotte',
         theme_color: '#ffffff',
-        icons: [
+        background_color: '#e83e3e',
+        icons :[
           {
-            src: '/img/logo.svg',
-            sizes: '192x192',
-            type: 'image/svg'
+            purpose: "maskable",
+            sizes: "512x512",
+            src: "icon512_maskable.png",
+            type: "image/png"
           },
           {
-            src: '/img/logo.svg',
-            sizes: '512x512',
-            type: 'image/svg'
+            purpose :"any",
+            sizes :"512x512",
+            src :"icon512_rounded.png",
+            type :"image/png"
           }
-        ]
+        ],
       },
 
       devOptions: {
         enabled: true
       },
-      workbox: {
-        globPatterns: [
-          '**/*.{js,css,html,json,ico,png,jpg,jpeg,svg}'
-        ],
-        cleanupOutdatedCaches: true,
-      }
+    
     })
 ],
   resolve: {
