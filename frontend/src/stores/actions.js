@@ -18,7 +18,7 @@ export const useActionsStore = defineStore({
             this.visible = true;
             setTimeout(() => {
                 this.visible = false;
-            }, 5000);
+            }, 10000);
         },
         removeLastAction() {
             this.actions.pop();

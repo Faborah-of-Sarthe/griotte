@@ -86,7 +86,7 @@ function openNewProductForm(product) {
       <!-- Loop through section array with animation -->
       <template v-for="(section, index) in data" :key="section.id">
           <Transition name="slideIn" appear>
-            <Section :style="{ 'transition-delay': section.index * 25 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
+            <Section :style="{ 'transition-delay': index * 25 + 'ms' }" :section="section" v-if="section.products.length > 0"></Section>
           </Transition>
       </template>
       <p v-if="!hasProducts && !isLoading " class="alert-info">

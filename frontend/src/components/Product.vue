@@ -3,6 +3,7 @@
 // Imports
 import { defineProps, ref, computed } from 'vue'
 import Arrow from './icons/Arrow.vue'
+import Pencil from './icons/Pencil.vue'
 import CheckMark from './icons/CheckMark.vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
@@ -91,12 +92,15 @@ const hasComment = computed(() => {
           <span>Cocher</span></label>
       </div>
       <div class="product-info">
-        <p  class="product-name"   v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
-        <Transition name="slideDown">
-          <p class="comment" v-if="hasComment && open">
-            {{ product.comment }}
-          </p>
-        </Transition>
+        <div>
+          <p  class="product-name"   v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
+          <Transition name="slideDown">
+            <p class="comment" v-if="hasComment && open">
+              {{ product.comment }}
+            </p>
+          </Transition>
+        </div>
+        <Pencil class="edit" @click="handleLongPress"></Pencil>
       </div>
     </div>
   </Transition>
@@ -130,6 +134,27 @@ const hasComment = computed(() => {
   .product-name {
     cursor: pointer;
   }
+
+  .product-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    align-items: first baseline;
+  }
+
+
+
+  .edit {
+    display: none;
+    width: 1rem;
+    cursor: pointer;
+  }
+
+  .product-info:hover .edit {
+    display: block;
+  }
+
 
   .check,
   label span {

@@ -163,6 +163,11 @@ class ProductController extends Controller
             }
         }
 
+        // In case of checking, clear the comment
+        if($request->input('to_buy') == 0) {
+            $product->comment = null;
+        }
+
 
         $product->save();
 

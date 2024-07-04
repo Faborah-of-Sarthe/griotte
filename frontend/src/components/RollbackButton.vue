@@ -1,6 +1,6 @@
 <template>
     <Transition name="slideLeft" appear>
-        <button v-if="actionsStore.actions.length > 0" class="rollback_button" @click="rollback" >
+        <button v-if="actionsStore.actions.length > 0" :disabled="isLoading" class="rollback_button" @click="rollback" >
             <Arrow class="arrow" ></Arrow>
         </button>
     </Transition>
@@ -18,7 +18,7 @@ const actionsStore = useActionsStore()
 const productId = ref('')
 
 
-const { mutate } = useMutation({
+const { mutate, isLoading } = useMutation({
   mutationFn: (productData) => {
     return axios.patch(import.meta.env.VITE_API_URL + 'products/' + productId.value, productData)
   },
@@ -36,7 +36,8 @@ const rollback = () => {
     productId.value = action.product.id
 
     mutate({
-        to_buy: action.type == 'uncheck' ? 1 : 0
+        to_buy: action.type == 'uncheck' ? 1 : 0,
+        comment: action.product.comment
     })
 }
 
@@ -65,6 +66,10 @@ const rollback = () => {
     fill: var(--color-background);
     transform: rotate(180deg);
     transition: all 0.1s ease-in-out;
+}
+
+.rollback_button:disabled {
+  background-color: var(--color-9);
 }
 
 
