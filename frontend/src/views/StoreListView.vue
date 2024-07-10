@@ -56,23 +56,6 @@ const { isLoading, isError, data, error } = useQuery({
   },
 })
 
-const queryClient = useQueryClient()
-
-// Mutation to set the current store
-const setCurrentStore = useMutation({
-  mutationFn: (storeData) => {
-    return axios.put(import.meta.env.VITE_API_URL + 'stores/' + storeData + '/set-current')
-  },
-  onSuccess: (data, store) => {
-    queryClient.invalidateQueries('stores')
-    queryClient.invalidateQueries({ queryKey: ['products'], refetchType: 'all' })
-    userStore.setCurrentStore(store)
-  },
-  onError: (error) => {
-    console.log(error)
-  },
-});
-
 
 /**
  * Handle the new store by opening the form and resetting the store
