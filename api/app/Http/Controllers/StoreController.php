@@ -98,7 +98,7 @@ class StoreController extends Controller
         $store->save();
 
         return response()->json([
-            'message' => __('Store updated successfully.')
+            'message' => __('Store updated successfully.'),
         ], 200);
     }
 
@@ -124,7 +124,8 @@ class StoreController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => __('Current store updated successfully.')
+            'message' => __('Current store updated successfully.'),
+            'store' => $store,
         ], 200);
     }
 

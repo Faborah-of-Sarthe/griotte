@@ -40,20 +40,6 @@ const { isLoading, isError, data, error, isStale } = useQuery({
 
 })
 
-// Get all stores
-const storesQuery = useQuery({
-  queryKey:  ['storeslist'],
-  queryFn: async () => {
-
-    const res = await axios.get(import.meta.env.VITE_API_URL+'stores', {
-      withCredentials: true,
-
-    })
-    //stores.value = res.data
-    return res.data
-
-  },
-})
 
 // Mutation to add a product to the list
 const productEdition = useMutation({
@@ -95,7 +81,7 @@ function openNewProductForm(product) {
 
 </script>
 <template>
-  <h1>Ma liste <StoreSelector :stores="storesQuery.data" v-show="!storesQuery.isLoading"></StoreSelector></h1>
+  <h1>Ma liste <StoreSelector></StoreSelector></h1>
   <div class="sections">
     <div v-if="isLoading"><Loader/></div>
     <div v-if="isError">{{ error.response.data.message }}</div>
