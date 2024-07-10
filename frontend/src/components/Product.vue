@@ -150,9 +150,10 @@ const hasComment = computed(() => {
     width: 1rem;
     cursor: pointer;
   }
-
-  .product-info:hover .edit {
-    display: block;
+  @media(hover: hover) and (pointer: fine) {
+      .product-info:hover .edit {
+        display: block;
+      }
   }
 
 

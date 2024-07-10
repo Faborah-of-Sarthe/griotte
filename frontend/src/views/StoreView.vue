@@ -7,7 +7,7 @@
         <h2>Rayons</h2>
         <div class="sections">
             
-            <draggable v-if="(!userStore.tutorial && sections.length > 1) || userStore.tutorial" v-model="sections" tag="div" item-key="id" @change="reOrderSections">
+            <draggable handle=".drag" v-if="(!userStore.tutorial && sections.length > 1) || userStore.tutorial" v-model="sections" tag="div" item-key="id" @change="reOrderSections">
                 <template #item="{ element: section }">
                     <section @click="handleSectionEdition(section)" :class="'bg-light-color-' +  section.color ">
                         <SectionIcon class="big" :icon="section.icon" :color="section.color"></SectionIcon>
@@ -174,6 +174,8 @@ function handleDeleteSection() {
     
     .icon {
         margin-right: 1rem;
+        flex-shrink: 0;
+
     }
 
     section {
@@ -183,7 +185,6 @@ function handleDeleteSection() {
         display: flex;
         align-items: center;
         font-size: 1.2rem;
-        cursor:grab;
     }
     .btn {
         margin-bottom: 1rem;
@@ -209,10 +210,17 @@ function handleDeleteSection() {
     }
     .cross {
         width: 1rem;
+        display: flex;
+        justify-content: center;
+        margin-left: .5rem;
+        flex-shrink: 0;
     }
     .drag {
+        flex-shrink: 0;
         width: 2rem;
         margin-left: auto;
-        color: var(--color-text-alt)
+        color: var(--color-text-alt);
+        cursor:grab;
+
     }
 </style>

@@ -46,6 +46,8 @@ const props = defineProps({
 
   .icon {
     margin-right: 1rem;
+    flex-shrink: 0;
+  
   }
   
 </style>
