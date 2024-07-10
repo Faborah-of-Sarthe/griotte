@@ -26,7 +26,6 @@
         <div class="buttons wide">
             <Button  @click="openModal = true" v-if="data.id != userStore.user.currentStore && userStore.tutorial" class="btn btn--secondary" type="button" >Supprimer le magasin</Button>
             <Button @click="handleNewSection" type="button" >Ajouter un rayon</Button>
-            <Button v-if="!userStore.tutorial && sections.length > 1" @click="router.push({ name: 'my-list' })" type="button" >Voir ma liste de courses</Button>
         </div>
         <SectionForm  v-if="sectionFormStore.open"></SectionForm>
         <StoreForm v-if="storeFormStore.open"></StoreForm>

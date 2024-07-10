@@ -16,7 +16,7 @@
                 Vous avez créé votre premier rayon ! <br>
                 Je vous ai au passage ajouté un rayon Fruits & Légumes, c'est plus pratique pour trouver des cerises ! <br><br>
                 Pour optimiser vos trajets dans le magasin, vous pouvez réorganiser vos rayons en les faisant glisser. <br><br>
-                Sinon vous pouvez accéder à votre liste de courses en cliquant sur le bouton ci-dessous !
+                Sinon vous pouvez accéder à votre liste de courses en revenant à l'accueil grâce au logo en haut à gauche - ou <RouterLink :to="{ name: 'my-list' }">en cliquant ici</RouterLink> !
             </p>
             <p v-else-if="step == 'product'">
                 Top ! Je me suis permis d'ajouter un 1er produit à la liste ;) <br>
