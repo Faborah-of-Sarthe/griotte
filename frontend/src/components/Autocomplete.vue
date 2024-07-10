@@ -70,14 +70,14 @@ watch(searchTerms, (value) => {
     </Transition>
     <Transition name="slideUp" appear>
     <div class="results" v-if="open && (isSuccess || isLoading) && searchTerms.length > 1">
-        <div class="products" v-if="data?.data.length > 0 || isLoading">
+        <div class="products" v-if="data?.data.length > 0 || isLoading" :class="{loaded: !isLoading}">
             <Loader v-if="isLoading" :inline="true" loading-text="Je cherche..." />
             <div v-for="product in data?.data" :key="product.id" class="result" @click="selectProduct(product)">
                 <div class="result__name">{{ product.name }}</div>
                 <SectionIcon class="small" :icon="product.sections[0]?.icon ?? 'question'" :color=" product.sections[0]?.color ?? 0"></SectionIcon>
             </div>
         </div>
-        <div class="creation">
+        <div class="creation" v-if="!isLoading">
             <div class="creation_wrapper" @click="createProduct(searchTerms)">
                 <p>
                     Créer  <strong>"{{ searchTerms }}"</strong>
@@ -176,7 +176,7 @@ watch(searchTerms, (value) => {
     }
 }
 
-.products::after {
+.products.loaded::after {
     content: '';
     display: block;
     width: 70%;

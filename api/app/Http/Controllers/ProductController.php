@@ -138,7 +138,9 @@ class ProductController extends Controller
             'comment' => 'nullable|string',
         ]);
 
-        $request['name'] = ucfirst($request->input('name'));
+        if($request->has('name')) {
+            $request['name'] = ucfirst($request->input('name'));
+        }
 
         // update the product
         $product->fill($request->all());
