@@ -100,7 +100,7 @@ class ProductController extends Controller
 
             // create the product
             $product = Product::create([
-                'name' => $request->input('name'),
+                'name' => ucfirst($request->input('name')),
                 'to_buy' => 1,
                 'comment' => $request->input('comment'),
                 'user_id' => $user->id,
@@ -137,6 +137,8 @@ class ProductController extends Controller
             'to_buy' => 'boolean',
             'comment' => 'nullable|string',
         ]);
+
+        $request['name'] = ucfirst($request->input('name'));
 
         // update the product
         $product->fill($request->all());
