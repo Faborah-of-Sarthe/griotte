@@ -11,7 +11,7 @@
                 <RouterLink :to="{name: 'my-store', params: {id: store.id}}" class="store__name" >
                     {{ store.name }}
                 </RouterLink>
-                <CheckMark class="checkbox" @click="setCurrentStore.mutate(store.id)"></CheckMark>
+                <!-- <CheckMark class="checkbox" @click="setCurrentStore.mutate(store.id)"></CheckMark> -->
             </li>
         </ol>  
     </div>

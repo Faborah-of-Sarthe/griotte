@@ -81,7 +81,7 @@ function openNewProductForm(product) {
 
 </script>
 <template>
-  <h1>Ma liste <StoreSelector></StoreSelector></h1>
+  <h1><span class="title">Ma liste</span> <StoreSelector></StoreSelector></h1>
   <div class="sections">
     <div v-if="isLoading"><Loader/></div>
     <div v-if="isError">{{ error.response.data.message }}</div>
@@ -129,5 +129,7 @@ h1 {
   display: flex;
   align-items: center;
 }
-
+.title {
+  flex-shrink: 0;
+}
 </style> 

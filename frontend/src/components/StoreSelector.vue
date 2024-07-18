@@ -2,16 +2,29 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
-import { ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '../stores/user'
 import Arrow from './icons/Arrow.vue'
 
 const open = ref(false)
 const currentStoreName = ref('')
+const containerMaxSize = ref(10)
+const container = ref(null)
 
 // Get the user from the store
 const userStore = useUserStore()
 const queryClient = useQueryClient()
+
+
+const resizeObserver = new ResizeObserver(resizeContainer);
+
+function resizeContainer() {
+    containerMaxSize.value = Math.round(container.value.offsetWidth / 16) - 3
+}
+
+onMounted(() => {
+  resizeObserver.observe(container.value.parentElement);
+})
 
 // Mutation to set the current store
 const setCurrentStore = useMutation({
@@ -59,14 +72,19 @@ const openStoreSelector = (data) => {
   }
 }
 
-
+const truncateText = (text) => {
+  if (text.length > containerMaxSize.value) {
+    return text.slice(0, containerMaxSize.value) + '...'
+  }
+  return text
+}
 
 </script>
 
 <template>
-  <div class="stores dropdown">
+  <div ref="container" v-show="currentStoreName" class="stores dropdown">
     <span class="option current" :class="{openable: data && data.length > 1}" @click="openStoreSelector(data)">
-        {{currentStoreName }} 
+        <span>{{ truncateText(currentStoreName) }} </span>
         <Arrow class="arrow"  v-if="data && data.length > 1"></Arrow>
     </span>
     <Transition name="slideDown">
@@ -85,6 +103,9 @@ const openStoreSelector = (data) => {
   }
   .stores.dropdown {
     color: var(--color-primary);
+    flex: 1;
+    min-width: 0;
+
   }
   .options {
     transition: all 0.15s ease-in-out;
@@ -113,5 +134,6 @@ const openStoreSelector = (data) => {
     transform: rotate(90deg);
     transition: all 0.1s ease-in-out;
     margin-left: .25em;
+    flex-shrink: 0;
   }
 </style>
