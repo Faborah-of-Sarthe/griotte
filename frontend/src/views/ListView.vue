@@ -129,6 +129,9 @@ h1 {
   display: flex;
   align-items: center;
 }
+h1 span {
+  font-weight: bold;
+}
 .title {
   flex-shrink: 0;
 }

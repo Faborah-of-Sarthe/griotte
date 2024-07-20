@@ -107,6 +107,22 @@ const router = createRouter({
       }
     },
     {
+      path: '/my-recipes',
+      name: 'my-recipes',
+      component: () => import('../views/RecipeListView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
+      path: '/my-recipes/:id',
+      name: 'recipe',
+      component: () => import('../views/RecipeListView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
       path: '/my-account',
       name: 'my-account',
       component: () => import('../views/AccountView.vue'),

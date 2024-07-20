@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\RecipeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +85,10 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         // delete a section
         Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
     });
+
+    // RECIPES
+    // Get all recipes of the current user
+    Route::get('/recipes', [RecipeController::class, 'index']);
 
 });
 

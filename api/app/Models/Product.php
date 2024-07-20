@@ -44,4 +44,12 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the recipes that use this product
+     */
+    public function recipes()
+    {
+        return $this->belongsToMany(Recipe::class);
+    }
 }
