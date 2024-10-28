@@ -2,9 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useUserStore } from '../stores/user'
 import Arrow from './icons/Arrow.vue'
+import { useDebouncedRef } from '../utils'
 
 const open = ref(false)
 const currentStoreName = ref('')
@@ -15,15 +16,16 @@ const container = ref(null)
 const userStore = useUserStore()
 const queryClient = useQueryClient()
 
+const debouncedStoreId = useDebouncedRef(null, 300) // 300ms de délai
 
 const resizeObserver = new ResizeObserver(resizeContainer);
 
 function resizeContainer() {
-    containerMaxSize.value = Math.round(container.value.offsetWidth / 16) - 3
+  containerMaxSize.value = Math.round(container.value.offsetWidth / 16) - 3
 }
 
 onMounted(() => {
-  resizeObserver.observe(container.value.parentElement);
+  resizeObserver.observe(container.value);
 })
 
 // Mutation to set the current store
@@ -35,6 +37,7 @@ const setCurrentStore = useMutation({
     queryClient.invalidateQueries({ queryKey: ['storeslist'], refetchType: 'all' })
     queryClient.invalidateQueries({ queryKey: ['products'], refetchType: 'all' })
     queryClient.invalidateQueries({ queryKey: ['sections'], refetchType: 'all' })
+    queryClient.invalidateQueries({ queryKey: ['stores'], refetchType: 'all' })
     userStore.setCurrentStore(storeId)
 
     currentStoreName.value = data.data.store.name
@@ -44,6 +47,13 @@ const setCurrentStore = useMutation({
     console.log(error)
   },
 });
+
+// Surveiller les changements du storeId débounce
+watch(debouncedStoreId, (newStoreId) => {
+  if (newStoreId && !setCurrentStore.isLoading.value) {
+    setCurrentStore.mutate(newStoreId)
+  }
+})
 
 // Get all stores
 const {data} = useQuery({
@@ -66,6 +76,10 @@ const {data} = useQuery({
 
   },
 })
+
+function handleStoreClick(storeId) {
+  debouncedStoreId.value = storeId
+}
 
 const openStoreSelector = (data) => {
   if(data && data.length > 1) {
@@ -91,7 +105,7 @@ const truncateText = (text) => {
     <Transition name="slideDown">
       <div class="options" v-if="open">
         <template v-for="store in data" :key="store.id">
-            <div @click="setCurrentStore.mutate(store.id)" class="option">{{ store.name }}</div>
+            <div @click="handleStoreClick(store.id)" class="option">{{ store.name }}</div>
         </template>
       </div>
     </Transition>
