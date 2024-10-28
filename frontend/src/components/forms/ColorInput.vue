@@ -6,7 +6,7 @@
         <div class="colors">
             <template v-for="index in 9" :key="index">
                 <Transition name="slideUp" appear>
-                    <div :style="{ 'transition-delay':index * 50 + 'ms' }" 
+                    <div :style="{ '--slide-delay': index * 25 + 'ms' }" 
                     class="section" 
                     :class="{selected: index == value}"
                     @click="handleChange(index)">
@@ -76,6 +76,11 @@ const handleChange = (number) => {
     flex-wrap: wrap;
     margin-bottom: 1rem;
     margin-top: 1rem;
+}
+
+.slideUp-enter-active {
+    transition: all 0.2s ease;
+    transition-delay: var(--slide-delay);
 }
   
 </style>

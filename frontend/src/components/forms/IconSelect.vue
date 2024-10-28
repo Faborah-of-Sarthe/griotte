@@ -2,8 +2,8 @@
     
     <div class="icons-list">
         <template v-for="(iconName, index) in iconNames" :key="iconName">
-            <Transition name="slideUp" appear>
-                <div :style="{ 'transition-delay': index * 50 + 'ms'}" class="icon-wrapper" :class="{selected: iconName == value}"  @click="handleChange(iconName)">
+            <Transition name="slideUp" >
+                <div :style="{ '--slide-delay': index * 25 + 'ms'}" class="icon-wrapper" :class="{selected: iconName == value}"  @click="handleChange(iconName)">
                     <SectionIcon color="0" class="big" :icon="iconName"></SectionIcon>
                 </div>
             </Transition>
@@ -43,7 +43,7 @@ const handleChange = (iconName) => {
     align-items: center;
     padding: 1rem;
     border-radius: 0.5rem;
-
+    transition: all 0.2s ease-in-out;
 
 }
 .selected {
@@ -56,6 +56,10 @@ const handleChange = (iconName) => {
     justify-content: center;
     max-height: 60vh;
     overflow-y: scroll;
+}
+.slideUp-enter-active { 
+    transition: all 0.2s ease;
+    transition-delay: var(--slide-delay);
 }
 
 </style>

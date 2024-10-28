@@ -6,7 +6,7 @@
             </div>
             <template v-if="data" v-for="(section, index) in data" :key="section.id">
                 <Transition name="slideUp" appear>
-                    <div :style="{ 'transition-delay': index  * 50 + 'ms' }" 
+                    <div :style="{ '--slide-delay': index  * 25 + 'ms' }" 
                           class="section" 
                           :class="{selected: section.id == value }" 
                           @click="handleChange(section)">
@@ -93,5 +93,9 @@ p{
     text-align: center;
 }
 
+.slideUp-enter-active {
+    transition: all 0.2s ease;
+    transition-delay: var(--slide-delay);
+}
 
 </style>
