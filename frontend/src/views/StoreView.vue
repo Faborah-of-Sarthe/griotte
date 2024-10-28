@@ -209,10 +209,15 @@ function handleDeleteSection() {
     }
     .cross {
         width: 1rem;
+        height: 1rem;
         display: flex;
         justify-content: center;
         margin-left: .5rem;
         flex-shrink: 0;
+    }
+    .cross svg {
+        width: 1rem;
+        height: 1rem;
     }
     .drag {
         flex-shrink: 0;
