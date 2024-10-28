@@ -34,6 +34,7 @@ const setCurrentStore = useMutation({
   onSuccess: (data, storeId) => {
     queryClient.invalidateQueries({ queryKey: ['storeslist'], refetchType: 'all' })
     queryClient.invalidateQueries({ queryKey: ['products'], refetchType: 'all' })
+    queryClient.invalidateQueries({ queryKey: ['sections'], refetchType: 'all' })
     userStore.setCurrentStore(storeId)
 
     currentStoreName.value = data.data.store.name
