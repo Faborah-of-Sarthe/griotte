@@ -23,6 +23,11 @@ function toggleSearch() {
     // On closing, clear the search terms
     if (!open.value) {
         searchTerms.value = ''
+    } else {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        });
     }
 }
 
