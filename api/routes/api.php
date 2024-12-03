@@ -90,6 +90,11 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
     // Get all recipes of the current user
     Route::get('/recipes', [RecipeController::class, 'index']);
 
+    Route::middleware(CheckOwnership::class)->group(function() {
+        // update a recipe
+        Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
+    });
+
 });
 
 // Override the default route for password reset

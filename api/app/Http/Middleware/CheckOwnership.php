@@ -21,7 +21,8 @@ class CheckOwnership
         $resources = [
             'store',
             'product',
-            'section'
+            'section',
+            'recipe'
         ];
 
 
