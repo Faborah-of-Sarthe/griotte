@@ -4,6 +4,7 @@ export const useUserStore = defineStore({
     id: "user",
     state: () => ({
         user: null,
+        recipeChoice: 'all'
     }),
     persist: true,
     getters: {
@@ -19,6 +20,9 @@ export const useUserStore = defineStore({
         tutorial: (state) => {
             return state.user?.finished_tutorial;
         },
+        getRecipeChoice: (state) => {
+            return state.recipeChoice;
+        },
     },
     actions: {
         setUser(user) {
@@ -32,6 +36,9 @@ export const useUserStore = defineStore({
         },
         setTutorial() {
             this.user.finished_tutorial = true;
+        },
+        setRecipeChoice(choice) {
+            this.recipeChoice = choice;
         },
     }
 });

@@ -26,7 +26,7 @@
   const props = defineProps({
     label: {
       type: [String, Boolean],
-      required: true
+      required: false
     },
 
     modelValue: {
@@ -37,7 +37,7 @@
   })
 
   // Create name from label
-  const name = labelize(props.label);
+  const name = props.label ? labelize(props.label) : null;
 
   // Change type of input
   const toggleEye = () => {

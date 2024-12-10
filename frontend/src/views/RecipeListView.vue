@@ -4,19 +4,42 @@ import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '@/components/forms/Button.vue'
 import RecipeCard from '../components/RecipeCard.vue'
+import { useUserStore } from '../stores/user'
+import CheckMark from '@/components/icons/CheckMark.vue'
+import BaseInput from '@/components/forms/BaseInput.vue'
+import { computed, watch } from 'vue'
+import { useDebouncedRef } from '../utils'
+import { useQueryClient } from '@tanstack/vue-query'
 
+
+const userStore = useUserStore()
+
+const recipeChoice = computed(() => userStore.getRecipeChoice)
+const search =  useDebouncedRef('', 400)
+
+const queryClient = useQueryClient()
 const fetchRecipes = async ({pageParam = 1}) => {
     const res = await axios.get(import.meta.env.VITE_API_URL + 'recipes', {
       params: {
-        page: pageParam
+        page: pageParam,
+        choice: recipeChoice.value,
+        search: search.value
       }
     })
 
     return res.data
 }
 
+// Watch for the search terms and emit the event
+watch(search, (value) => {
+    if (value.length > 2 || value.length === 0) {
+        queryClient.invalidateQueries(['recipes', recipeChoice])
+    }
+})
+
+
 const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInfiniteQuery(
-    ['recipes'], 
+    ['recipes', recipeChoice], 
     fetchRecipes,
     {
         getNextPageParam:  (lastPage) => lastPage.current_page == lastPage.last_page ? undefined : lastPage.current_page + 1,
@@ -26,6 +49,18 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
 
 <template>
     <h1>Mes recettes</h1>
+    <div class="controls">
+        <div class="buttons">
+            <Button :class="{'btn--secondary': recipeChoice !== 'all'}" @click="userStore.setRecipeChoice('all')">Toutes</Button>
+            <Button :class="{'btn--secondary': recipeChoice !== 'to_make'}" @click="userStore.setRecipeChoice('to_make')">
+                <CheckMark class="checked"/>
+                À faire
+            </Button>
+        </div>
+        <div class="search">
+            <BaseInput v-model="search" placeholder="Rechercher une recette" />
+        </div>
+    </div>
     <div v-if="isLoading">
         <Loader></Loader>
     </div>
@@ -77,38 +112,43 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         counter-reset: stores;
 
     }
-    .recipe-card {
-        background: var(--color-secondary);
-        font-size: 1.5rem;
-        padding: 1rem;
-        border-radius: 5px;
-        margin-bottom: 1rem;
-    }
     a {
         padding-right: .5rem;
     }
-    .recipe-card__name {
-        font-weight: 700;
-        color: var(--color-text);
-    }
-    .checked {
-        background: var(--color-primary);
-    }
-    .checked .recipe-card__name {
-        color: var(--color-background);
-    }
     .checked::before {
         color: var(--color-background);
-
     }
+    .controls {
+
+        .btn--secondary {
+            border: none;
+            box-shadow: inset 0 0 0 2px var(--color-primary);
+        }
  
-    .checked .checkbox {
-        stroke: var(--color-background);
-        border: 2px solid var(--color-background);
-
+        .checked {
+            stroke: var(--color-background);
+            border: 2px solid var(--color-background);
+        }
+        .btn--secondary .checked {
+            stroke: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+        .checkmark {
+            margin-right: 1rem;
+            margin-left: 0;
+        }
+        
+        .checked .checkbox {
+            stroke: var(--color-background);
+            border: 2px solid var(--color-background);
+            
+        }
     }
-    .checkbox.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    .controls .buttons {
+        display: flex;
+        gap: 1rem;
+    }
+    .controls button {
+        flex: 1;
     }
 </style>
