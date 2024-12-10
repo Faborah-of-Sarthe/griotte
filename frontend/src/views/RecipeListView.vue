@@ -3,9 +3,7 @@ import { useInfiniteQuery } from '@tanstack/vue-query'
 import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '@/components/forms/Button.vue'
-import RecipeCard from '@/components/RecipeCard.vue'
-
-
+import RecipeCard from '../components/RecipeCard.vue'
 
 const fetchRecipes = async ({pageParam = 1}) => {
     const res = await axios.get(import.meta.env.VITE_API_URL + 'recipes', {
@@ -40,13 +38,15 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
                 <p>Vous n'avez pas encore de recettes</p>
             </div>
             <div v-else>
-                <ul>
+                <ol>
                     <template v-for="(group, index) in data.pages" :key="index">
-                        <li v-for="(recipe, recipeIndex) in group.data" :key="recipe.id">
-                            <RecipeCard :recipe="recipe" ></RecipeCard>
-                        </li>
+                        <RecipeCard
+                            v-for="recipe in group.data"
+                            :key="recipe.id"
+                            :recipe="recipe"
+                        />
                     </template>
-                </ul>
+                </ol>
                 <Button v-if="hasNextPage" @click="fetchNextPage" class="btn btn--secondary large"  :loading="isLoading || isFetching">Recettes suivantes</Button>
             </div>
         </div>
@@ -58,5 +58,57 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
     .btn,
     h1 {
         margin-bottom: 1rem;
+    }
+    li {
+        display: flex;
+        align-items: center;
+    }
+    li::before {
+        counter-increment: stores;
+        content: counter(stores) ".";
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-right: 1rem;
+    }
+    ol {
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        counter-reset: stores;
+
+    }
+    .recipe-card {
+        background: var(--color-secondary);
+        font-size: 1.5rem;
+        padding: 1rem;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+    }
+    a {
+        padding-right: .5rem;
+    }
+    .recipe-card__name {
+        font-weight: 700;
+        color: var(--color-text);
+    }
+    .checked {
+        background: var(--color-primary);
+    }
+    .checked .recipe-card__name {
+        color: var(--color-background);
+    }
+    .checked::before {
+        color: var(--color-background);
+
+    }
+ 
+    .checked .checkbox {
+        stroke: var(--color-background);
+        border: 2px solid var(--color-background);
+
+    }
+    .checkbox.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>

@@ -31,5 +31,7 @@ class RecipeController extends Controller
         }
 
         $recipe->fill($validated)->save();
+
+        return $recipe;
     }
 }

@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, onBeforeUnmount } from 'vue'
 import { useUserStore } from '../stores/user'
 import Arrow from './icons/Arrow.vue'
 import { useDebouncedRef } from '../utils'
@@ -26,6 +26,10 @@ function resizeContainer() {
 
 onMounted(() => {
   resizeObserver.observe(container.value);
+})
+
+onBeforeUnmount(() => {
+  resizeObserver.disconnect();
 })
 
 // Mutation to set the current store
