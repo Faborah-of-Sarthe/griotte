@@ -95,6 +95,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
     });
 
+    // Get the number of recipes to make
+    Route::get('/recipes/count', [RecipeController::class, 'count']);
+
 });
 
 // Override the default route for password reset

@@ -9,7 +9,8 @@ import CheckMark from '@/components/icons/CheckMark.vue'
 import BaseInput from '@/components/forms/BaseInput.vue'
 import { computed, watch } from 'vue'
 import { useDebouncedRef } from '../utils'
-import { useQueryClient } from '@tanstack/vue-query'
+import { useQueryClient, useQuery } from '@tanstack/vue-query'
+import Cross from '@/components/icons/Cross.vue'
 
 
 const userStore = useUserStore()
@@ -30,6 +31,18 @@ const fetchRecipes = async ({pageParam = 1}) => {
     return res.data
 }
 
+const fetchNumberOfRecipesToMake = async () => {
+    const res = await axios.get(import.meta.env.VITE_API_URL + 'recipes/count', {
+      
+    })
+    return res.data
+}
+
+const { data: numberOfRecipesToMake, isLoading: isLoadingNumberOfRecipesToMake } = useQuery({
+    queryKey: ['numberOfRecipesToMake'],
+    queryFn: fetchNumberOfRecipesToMake
+})
+
 // Watch for the search terms and emit the event
 watch(search, (value) => {
     if (value.length > 2 || value.length === 0) {
@@ -48,13 +61,17 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
 </script>
 
 <template>
-    <h1>Mes recettes</h1>
+    <div class="header">
+        <h1>Mes recettes</h1>
+        <button class="add_button"> <Cross class="small plus" /></button>
+    </div>
     <div class="controls">
         <div class="buttons">
             <Button :class="{'btn--secondary': recipeChoice !== 'all'}" @click="userStore.setRecipeChoice('all')">Toutes</Button>
             <Button :class="{'btn--secondary': recipeChoice !== 'to_make'}" @click="userStore.setRecipeChoice('to_make')">
-                <CheckMark class="checked"/>
-                À faire
+                À faire  
+                <span v-if="isLoadingNumberOfRecipesToMake" class="custom-loader"> </span>
+                <span class="number" v-else>{{ numberOfRecipesToMake }}</span>
             </Button>
         </div>
         <div class="search">
@@ -69,8 +86,11 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
             <p>Une erreur est survenue: {{ error.message }}</p>
         </div>
         <div v-else>
-            <div v-if="data.pages.length === 0">
-                <p>Vous n'avez pas encore de recettes</p>
+            <div v-if="data.pages[0].data.length === 0 && recipeChoice === 'all'">
+                <div class="alert-info">Vous n'avez pas encore de recettes</div>
+            </div>
+            <div v-else-if="data.pages[0].data.length === 0 && recipeChoice === 'to_make'">
+                <div class="alert-info">Vous n'avez pas encore de recettes à faire</div>
             </div>
             <div v-else>
                 <ol>
@@ -91,7 +111,7 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
 
 <style lang="scss" scoped>
     .btn,
-    h1 {
+    .header {
         margin-bottom: 1rem;
     }
     li {
@@ -104,6 +124,38 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         font-weight: 700;
         color: var(--color-primary);
         margin-right: 1rem;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .add_button {
+        background: var(--color-primary);
+        border: none;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;    
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        outline: none;
+
+    }
+    .add_button svg {
+        fill: var(--color-background);
+        width: 1rem;
+        height: 1rem;
+        transform: rotate(45deg);
+    }
+
+    .plus {
+        height: .9rem;
+        width: .9rem;
+        transform: rotate(45deg);
+
     }
     ol {
         display: flex;
@@ -150,5 +202,27 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
     }
     .controls button {
         flex: 1;
+    }
+    .controls .custom-loader {
+        margin-left: .5rem;
+
+    }
+    .number {
+        font-size: .9rem;
+        margin-left: .5rem;
+
+        background-color: var(--color-background);
+        color: var(--color-primary);
+        width: 1.3rem;
+        height: 1.3rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn--secondary .number {
+        background-color: var(--color-primary);
+        color: var(--color-background);
     }
 </style>

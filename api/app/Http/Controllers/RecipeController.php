@@ -15,7 +15,6 @@ class RecipeController extends Controller
     public function index(Request $request)
     {
         $user = auth('sanctum')->user();
-
         return $user
             ->recipes()
             ->when($request->has('choice') && $request->choice === 'to_make', function ($query) {
@@ -43,5 +42,11 @@ class RecipeController extends Controller
         $recipe->fill($validated)->save();
 
         return $recipe;
+    }
+
+    public function count(Request $request)
+    {
+        $user = auth('sanctum')->user();
+        return $user->recipes()->where('to_make', true)->count();
     }
 }

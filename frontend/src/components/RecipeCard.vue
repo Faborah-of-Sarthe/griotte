@@ -34,6 +34,7 @@ const { mutate, isLoading: isLoadingMutation } = useMutation({
                 }))
             }
         })
+        queryClient.invalidateQueries(['numberOfRecipesToMake'])
     },
     onError: () => {
     }
@@ -65,6 +66,11 @@ const { mutate, isLoading: isLoadingMutation } = useMutation({
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
+    
+    a {
+        margin-right: 0.5rem;
+        word-break: break-word;
+    }
 }
 
 .recipe-card__name {
