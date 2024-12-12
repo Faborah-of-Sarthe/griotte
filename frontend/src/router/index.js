@@ -123,6 +123,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/recipes/create',
+      name: 'create-recipe',
+      component: () => import('../views/RecipeFormView.vue'),
+      meta: {
+        middleware: "auth",
+        type: "create"
+      }
+    },
+    {
       path: '/my-account',
       name: 'my-account',
       component: () => import('../views/AccountView.vue'),

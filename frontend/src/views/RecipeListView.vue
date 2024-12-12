@@ -63,7 +63,6 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
 <template>
     <div class="header">
         <h1>Mes recettes</h1>
-        <button class="add_button"> <Cross class="small plus" /></button>
     </div>
     <div class="controls">
         <div class="buttons">
@@ -106,6 +105,13 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
             </div>
         </div>
     </div>
+    <div class="bottom-controls">
+        <Transition name="slideUp" appear>
+            <RouterLink to="/recipes/create">
+                <button class="add_button"> <Cross class="small plus" /></button>
+            </RouterLink>
+        </Transition>
+    </div>
 
 </template>
 
@@ -130,12 +136,23 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         justify-content: space-between;
         align-items: center;
     }
+    .bottom-controls {
+        position: fixed;
+        bottom:0;
+        left:0;
+        right:0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding-bottom: 2rem;
+    }
     .add_button {
         background: var(--color-primary);
         border: none;
         border-radius: 50%;
-        width: 2rem;
-        height: 2rem;
+        width: 5rem;
+        height: 5rem;
         display: flex;
         align-items: center;    
         justify-content: center;
@@ -146,8 +163,8 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
     }
     .add_button svg {
         fill: var(--color-background);
-        width: 1rem;
-        height: 1rem;
+        width: 1.5rem;
+        height: 1.5rem;
         transform: rotate(45deg);
     }
 
