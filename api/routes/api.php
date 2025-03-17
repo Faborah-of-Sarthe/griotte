@@ -90,6 +90,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
     // Get all recipes of the current user
     Route::get('/recipes', [RecipeController::class, 'index']);
 
+    // Create a new recipe
+    Route::post('/recipes', [RecipeController::class, 'store']);
+
     Route::middleware(CheckOwnership::class)->group(function() {
         // update a recipe
         Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);

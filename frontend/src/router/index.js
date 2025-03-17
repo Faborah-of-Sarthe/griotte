@@ -132,6 +132,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/recipes/:id/edit',
+      name: 'edit-recipe',
+      component: () => import('../views/RecipeFormView.vue'),
+      meta: {
+        middleware: "auth",
+        type: "edit"
+      }
+    },
+    {
       path: '/my-account',
       name: 'my-account',
       component: () => import('../views/AccountView.vue'),

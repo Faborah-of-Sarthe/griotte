@@ -27,12 +27,28 @@ class RecipeController extends Controller
             ->paginate(10);
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:65535',
+            'link' => 'nullable|string|max:255',
+        ]);
+
+        $validated['to_make'] = false;
+
+        $recipe = auth('sanctum')->user()->recipes()->create($validated);
+
+        return $recipe;
+    }
+
     public function update(Recipe $recipe, Request $request)
     {
         $validated = $request->validate([
             'to_make' => 'sometimes|boolean',
             'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|nullable|string|max:65535',
+            'link' => 'sometimes|nullable|string|max:255',
         ]);
 
         if (empty($validated)) {
