@@ -101,7 +101,7 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
                         />
                     </template>
                 </ol>
-                <Button v-if="hasNextPage" @click="fetchNextPage" class="btn btn--secondary large"  :loading="isLoading || isFetching">Recettes suivantes</Button>
+                <Button v-if="hasNextPage" @click="fetchNextPage" class="btn btn--secondary large next-button"  :loading="isLoading || isFetching">Recettes suivantes</Button>
             </div>
         </div>
     </div>
@@ -146,13 +146,21 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         align-items: center;
         z-index: 1000;
         padding-bottom: 2rem;
+        pointer-events: none;
+
+        > * {
+            pointer-events: all;
+        }
+    }
+    .next-button {
+        margin-bottom: 5em;
     }
     .add_button {
         background: var(--color-primary);
         border: none;
         border-radius: 50%;
-        width: 5rem;
-        height: 5rem;
+        width: 4rem;
+        height: 4rem;
         display: flex;
         align-items: center;    
         justify-content: center;

@@ -18,10 +18,9 @@ const emit = defineEmits(['selected', 'new'])
 // Methods
 // Toggle the search state
 function toggleSearch() {
-    open.value = !open.value
   
     // On closing, clear the search terms
-    if (!open.value) {
+    if (open.value) {
         searchTerms.value = ''
     } else {
         window.scrollTo({
@@ -29,6 +28,9 @@ function toggleSearch() {
           behavior: 'smooth'
         });
     }
+
+    open.value = !open.value
+
 }
 
 // Emit the selected product and close the search
@@ -105,6 +107,10 @@ watch(searchTerms, (value) => {
 
 <style scoped lang="scss">
 @import '@/assets/base.scss';
+
+* {
+    pointer-events: all;
+}
 .add_button {
   background: var(--color-primary);
   border: none;
@@ -117,6 +123,7 @@ watch(searchTerms, (value) => {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   outline: none;
+
 
 }
 

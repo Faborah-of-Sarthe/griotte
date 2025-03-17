@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import Section from '@/components/Section.vue'
-import Autocomplete from '@/components/Autocomplete.vue'
+  import Autocomplete from '@/components/Autocomplete.vue'
 import ProductForm from '@/components/ProductForm.vue'
 import RollbackButton from '@/components/RollbackButton.vue'
 import StoreSelector from '@/components/StoreSelector.vue'
@@ -124,6 +124,7 @@ function openNewProductForm(product) {
   justify-content: center;
   padding-bottom: 2rem;
   align-items: center;
+  pointer-events: none;
 }
 h1 {
   display: flex;
