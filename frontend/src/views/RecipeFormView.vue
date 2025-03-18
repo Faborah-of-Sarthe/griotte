@@ -1,10 +1,9 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import Card from '../components/forms/Card.vue';
 import BaseInput from '../components/forms/BaseInput.vue';
 import TextArea from '../components/forms/TextArea.vue';
 import Button from '../components/forms/Button.vue';
-import Autocomplete from '../components/Autocomplete.vue';
+import Autocomplete from '../components/forms/Autocomplete.vue';
 import { ref, computed } from 'vue';
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
@@ -17,11 +16,16 @@ const type = route.meta.type
 // État pour savoir si on est en mode "ajout d'ingrédients"
 const isAddingIngredients = ref(false)
 const recipeId = ref(null)
+const ingredientsSearch = ref('')
 
 const recipe = ref({
     name: '',
     description: '',
     link: '',
+})
+
+const autocompleteUrl = computed(() => {
+    return import.meta.env.VITE_API_URL + 'products/autocomplete'
 })
 
 // Recipe creation mutation
@@ -93,13 +97,13 @@ const handleSubmit = () => {
             :loading="recipeMutation.isLoading.value || recipeEdition.isLoading.value"
             :disabled="!recipe.name || !recipe.description"
         >
-            {{ type === 'create' ? 'Créer la recette' : 'Modifier' }}
+            {{ type === 'create' ? 'Ajouter des ingrédients' : 'Modifier' }}
         </Button>
     </form>
 
     <!-- Interface d'ajout d'ingrédients -->
     <div v-else>
-        <!--  TODO: Inteface d'ajout des ingrédients   -->
+        <Autocomplete :apiUrl="autocompleteUrl.value" v-model="ingredientsSearch"></Autocomplete>
     </div>
 </template>
 
