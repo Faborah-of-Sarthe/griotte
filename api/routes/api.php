@@ -93,13 +93,19 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
     // Create a new recipe
     Route::post('/recipes', [RecipeController::class, 'store']);
 
-    Route::middleware(CheckOwnership::class)->group(function() {
-        // update a recipe
-        Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
-    });
-
     // Get the number of recipes to make
     Route::get('/recipes/count', [RecipeController::class, 'count']);
+
+    Route::middleware(CheckOwnership::class)->group(function() {
+        // Get a recipe
+        Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
+        // update a recipe
+        Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
+
+        // Attach a product to a recipe
+        Route::post('/recipes/{recipe}/products', [RecipeController::class, 'attachProduct']);
+    });
+
 
 });
 

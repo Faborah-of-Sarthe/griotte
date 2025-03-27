@@ -4,8 +4,8 @@ import BaseInput from '../components/forms/BaseInput.vue';
 import TextArea from '../components/forms/TextArea.vue';
 import Button from '../components/forms/Button.vue';
 import Autocomplete from '../components/forms/Autocomplete.vue';
-import { ref, computed } from 'vue';
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { ref, computed, watch } from 'vue';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
 
 const route = useRoute()
@@ -24,12 +24,29 @@ const recipe = ref({
     link: '',
 })
 
+// Au chargement on vérifie si on est en mode édition ou création
+if (type === 'edit') {
+    recipeId.value = route.params.id
+
+    // Recipe get query
+    const { data: recipeData } = useQuery({
+        queryKey: ['recipe', recipeId.value],
+        queryFn: () => axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value)
+    })
+
+    watch(recipeData, (data) => {
+        recipe.value = data.data
+    })
+
+}
+
 const autocompleteUrl = computed(() => {
     return import.meta.env.VITE_API_URL + 'products/autocomplete'
 })
 
+
 // Recipe creation mutation
-const recipeMutation = useMutation({
+const recipeCreation = useMutation({
     mutationFn: (recipeData) => {
         return axios.post(import.meta.env.VITE_API_URL + 'recipes', recipeData)
     },
@@ -52,6 +69,22 @@ const recipeEdition = useMutation({
     }
 })
 
+const attachProductQuery = useMutation({
+    mutationFn: (product) => {
+        return axios.post(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value + '/products', {
+            product_id: product.id,
+            name: product.name
+        })
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries(['recipe', recipeId.value])
+    }
+})
+
+const attachProductToRecipe = (product) => {
+    attachProductQuery.mutate(product)
+}
+
 // Form submission handling
 const handleSubmit = () => {
     const recipeData = {
@@ -61,7 +94,7 @@ const handleSubmit = () => {
     }
 
     if (type === 'create') {
-        recipeMutation.mutate(recipeData)
+        recipeCreation.mutate(recipeData)
     } else {
         recipeEdition.mutate(recipeData)
     }
@@ -94,7 +127,7 @@ const handleSubmit = () => {
         />
         <Button 
             type="submit" 
-            :loading="recipeMutation.isLoading.value || recipeEdition.isLoading.value"
+            :loading="recipeCreation.isLoading.value || recipeEdition.isLoading.value"
             :disabled="!recipe.name || !recipe.description"
         >
             {{ type === 'create' ? 'Ajouter des ingrédients' : 'Modifier' }}
@@ -103,7 +136,7 @@ const handleSubmit = () => {
 
     <!-- Interface d'ajout d'ingrédients -->
     <div v-else>
-        <Autocomplete :apiUrl="autocompleteUrl.value" v-model="ingredientsSearch"></Autocomplete>
+        <Autocomplete :apiUrl="autocompleteUrl.value" v-model="ingredientsSearch" @select="attachProductToRecipe" @create="attachProductToRecipe"></Autocomplete>
     </div>
 </template>
 

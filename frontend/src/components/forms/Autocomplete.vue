@@ -12,7 +12,7 @@
         <div v-if="showSuggestions && (searchQueryData || isLoadingSearchQuery)" class="suggestions">
             <div class="products" v-if="searchQueryData?.data.length > 0 || isLoadingSearchQuery" :class="{loaded: !isLoadingSearchQuery}">
                 <Loader v-if="isLoadingSearchQuery" :inline="true" loading-text="Je cherche..." />
-                <div v-for="product in searchQueryData?.data" :key="product.id" class="result">
+                <div v-for="product in searchQueryData?.data" :key="product.id" class="result" @click="selectSuggestion(product)">
                     <div class="result__name">{{ product.name }}</div>
                     <SectionIcon class="small" :icon="product.sections[0]?.icon ?? 'question'" :color=" product.sections[0]?.color ?? 0"></SectionIcon>
                 </div>
@@ -92,8 +92,13 @@ watch(debouncedSearch, (value) => {
 })
 
 const selectSuggestion = (suggestion) => {
-  emit('update:modelValue', suggestion.text)
   emit('select', suggestion)
+  showSuggestions.value = false
+  searchTerm.value = ''
+}
+
+const createProduct = (text) => {
+  emit('create', {name: text, id: null})
   showSuggestions.value = false
   searchTerm.value = ''
 }

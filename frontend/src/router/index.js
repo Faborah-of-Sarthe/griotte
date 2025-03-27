@@ -123,7 +123,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/recipes/create',
+      path: '/my-recipes/create',
       name: 'create-recipe',
       component: () => import('../views/RecipeFormView.vue'),
       meta: {
@@ -132,7 +132,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/recipes/:id/edit',
+      path: '/my-recipes/:id/edit',
       name: 'edit-recipe',
       component: () => import('../views/RecipeFormView.vue'),
       meta: {
