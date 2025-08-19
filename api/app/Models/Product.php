@@ -25,7 +25,7 @@ class Product extends Model
      * Hide unnecessary fields from the JSON response
      */
     protected $hidden = [
-        'pivot', 'user_id', 'created_at', 'updated_at'
+        'user_id', 'created_at', 'updated_at'
     ];
 
 
@@ -50,6 +50,6 @@ class Product extends Model
      */
     public function recipes()
     {
-        return $this->belongsToMany(Recipe::class);
+        return $this->belongsToMany(Recipe::class)->withPivot('quantity');
     }
 }

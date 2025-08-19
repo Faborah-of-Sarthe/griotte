@@ -4,6 +4,7 @@ import BaseInput from '../components/forms/BaseInput.vue';
 import TextArea from '../components/forms/TextArea.vue';
 import Button from '../components/forms/Button.vue';
 import Autocomplete from '../components/forms/Autocomplete.vue';
+import Cross from '../components/icons/Cross.vue';
 import { ref, computed, watch } from 'vue';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
@@ -22,22 +23,25 @@ const recipe = ref({
     name: '',
     description: '',
     link: '',
+    products: []
 })
 
-// Au chargement on vérifie si on est en mode édition ou création
+
+
+const { data: recipeData } = useQuery({
+    queryKey: computed(() => ['recipe', recipeId.value]),
+    queryFn: () => axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value),
+    enabled: computed(() => !!recipeId.value) 
+})
+
+watch(recipeData, (data) => {
+    if (data) {
+        recipe.value = data.data
+    }
+})
+
 if (type === 'edit') {
     recipeId.value = route.params.id
-
-    // Recipe get query
-    const { data: recipeData } = useQuery({
-        queryKey: ['recipe', recipeId.value],
-        queryFn: () => axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value)
-    })
-
-    watch(recipeData, (data) => {
-        recipe.value = data.data
-    })
-
 }
 
 const autocompleteUrl = computed(() => {
@@ -52,7 +56,7 @@ const recipeCreation = useMutation({
     },
     onSuccess: (data) => {
         queryClient.invalidateQueries(['recipes'])
-        // Au lieu de rediriger, on passe en mode ajout d'ingrédients
+        // Update the recipe id to trigger the query
         recipeId.value = data.data.id
         isAddingIngredients.value = true
     }
@@ -78,11 +82,44 @@ const attachProductQuery = useMutation({
     },
     onSuccess: () => {
         queryClient.invalidateQueries(['recipe', recipeId.value])
+        ingredientsSearch.value = ''
+    }
+})
+
+const detachProductQuery = useMutation({
+    mutationFn: (productId) => {
+        return axios.delete(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value + '/products/' + productId)
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries(['recipe', recipeId.value])
+    }
+})
+
+const updateQuantityQuery = useMutation({
+    mutationFn: ({ productId, quantity }) => {
+        return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value + '/products/' + productId, {
+            quantity
+        })
+    },
+    onSuccess: () => {
+        queryClient.invalidateQueries(['recipe', recipeId.value])
     }
 })
 
 const attachProductToRecipe = (product) => {
     attachProductQuery.mutate(product)
+}
+
+const detachProductFromRecipe = (productId) => {
+    detachProductQuery.mutate(productId)
+}
+
+// TODO: Fix le champ qui garde l'ancienne valeur tant que la requête est en cours
+const updateQuantity = (productId, quantity) => {
+    updateQuantityQuery.mutate({
+        productId: productId,
+        quantity: quantity
+    })
 }
 
 // Form submission handling
@@ -137,9 +174,97 @@ const handleSubmit = () => {
     <!-- Interface d'ajout d'ingrédients -->
     <div v-else>
         <Autocomplete :apiUrl="autocompleteUrl.value" v-model="ingredientsSearch" @select="attachProductToRecipe" @create="attachProductToRecipe"></Autocomplete>
+        
+        <!-- Liste des produits -->
+        <div v-if="recipe.products.length > 0" class="products-list">
+            <ul>
+                <li v-for="product in recipe.products" :key="product.id" class="product-item">
+                    <span>{{ product.name }}</span>
+                    <span class="product-item-actions">
+                        <span class="quantity-input-wrapper">
+                            <BaseInput 
+                                v-model="product.pivot.quantity" 
+                                placeholder="Quantité" 
+                                class="quantity-input"
+                                @blur="updateQuantity(product.id, $event.target.value)"
+                                :loading="updateQuantityQuery.isLoading.value"
+                            />
+                        </span>
+                        <button class="delete-button" @click="detachProductFromRecipe(product.id)" :disabled="detachProductQuery.isLoading.value">
+                            <span class="sr-only">Supprimer</span>
+                            <Cross />
+                        </button>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div v-else>
+            <p class="alert-info">Aucun ingrédient pour l'instant</p>
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+.products-list {
+    margin-top: 2rem;
 
+    ul {
+        padding: 0;
+    }
+
+    .product-item {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.25rem;
+
+        .product-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-input-wrapper {
+            width: 5rem;
+
+            :deep(input) {
+                width: 100%;
+                font-size: 0.8rem;
+                margin: 0;
+            }
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text);
+            width: 2rem;
+            height: 2rem;
+
+            &:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    }
+}
 </style>

@@ -104,6 +104,12 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
 
         // Attach a product to a recipe
         Route::post('/recipes/{recipe}/products', [RecipeController::class, 'attachProduct']);
+
+        // Detach a product from a recipe
+        Route::delete('/recipes/{recipe}/products/{productId}', [RecipeController::class, 'detachProduct']);
+
+        // Update product quantity in recipe
+        Route::patch('/recipes/{recipe}/products/{productId}', [RecipeController::class, 'updateProductQuantity']);
     });
 
 

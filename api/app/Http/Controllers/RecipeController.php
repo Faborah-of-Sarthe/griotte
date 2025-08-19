@@ -65,6 +65,11 @@ class RecipeController extends Controller
         return $recipe;
     }
 
+    /**
+     * Count the number of recipes to make
+     *
+     * @return int
+     */
     public function count(Request $request)
     {
         $user = auth('sanctum')->user();
@@ -88,13 +93,33 @@ class RecipeController extends Controller
         ]);
 
         if ($validated['product_id']) {
-            $recipe->products()->attach($validated['product_id']);
+            $recipe->products()->syncWithoutDetaching($validated['product_id']);
         } else {
             $recipe->products()->create([
                 'name' => $validated['name'],
+                'user_id' => auth('sanctum')->user()->id,
             ]);
         }
 
         return $recipe;
+    }
+
+    public function detachProduct(Recipe $recipe, $productId)
+    {
+        $recipe->products()->detach($productId);
+        return $recipe->load('products');
+    }
+
+    public function updateProductQuantity(Recipe $recipe, $productId, Request $request)
+    {
+        $validated = $request->validate([
+            'quantity' => 'required|string',
+        ]);
+
+        $recipe->products()->updateExistingPivot($productId, [
+            'quantity' => $validated['quantity']
+        ]);
+
+        return $recipe->load('products');
     }
 }
