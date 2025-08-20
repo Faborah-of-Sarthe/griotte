@@ -38,7 +38,10 @@ const { data: recipeData, isLoading: isLoadingRecipe, error: recipeError } = use
 
 watch(recipeData, (data) => {
     if (data) {
-        recipe.value = data.data
+        recipe.value.name = data.data?.name
+        recipe.value.description = data.data?.description
+        recipe.value.link = data.data?.link
+        recipe.value.products = data.data?.products
     }
 })
 
@@ -64,7 +67,7 @@ const recipeCreation = useMutation({
     }
 })
 
-// Recipe edition mutation
+
 const recipeEdition = useMutation({
     mutationFn: (recipeData) => {
         return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + route.params.id, recipeData)
@@ -73,6 +76,20 @@ const recipeEdition = useMutation({
         queryClient.invalidateQueries(['recipes'])
         queryClient.invalidateQueries(['recipe', recipeId.value])
         isAddingIngredients.value = true
+    }
+})
+
+const recipeEditionAndReturn = useMutation({
+    mutationFn: (recipeData) => {
+        return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + route.params.id, recipeData)
+    },
+    onSuccess: async () => {
+        // Rafraîchir les données plutôt que juste invalider
+        await queryClient.refetchQueries(['recipes'])
+        await queryClient.refetchQueries(['recipe', recipeId.value])
+        
+        // Naviguer vers la page de détail
+        router.push({ name: 'recipe', params: { id: recipeId.value } })
     }
 })
 
@@ -111,7 +128,7 @@ const detachProductFromRecipe = (productId) => {
 
 
 // Form submission handling
-const handleSubmit = () => {
+const handleSubmit = (action = 'ingredients') => {
     const recipeData = {
         name: recipe.value.name,
         description: recipe.value.description,
@@ -121,7 +138,11 @@ const handleSubmit = () => {
     if (type === 'create') {
         recipeCreation.mutate(recipeData)
     } else {
-        recipeEdition.mutate(recipeData)
+        if (action === 'save') {
+            recipeEditionAndReturn.mutate(recipeData)
+        } else {
+            recipeEdition.mutate(recipeData)
+        }
     }
 }
 </script>
@@ -137,7 +158,7 @@ const handleSubmit = () => {
     </div>
     
     <!-- Contenu principal -->
-    <div v-else>
+    <div v-else-if="type === 'create' || (type === 'edit' && !isLoadingRecipe && !recipeError)">
         <h1>{{ isAddingIngredients ? 'Ajouter les ingrédients' : (type === 'create' ? 'Créer une recette' : 'Modifier une recette') }}</h1>
     
         <!-- Formulaire initial -->
@@ -159,19 +180,35 @@ const handleSubmit = () => {
             placeholder="www.recette-aux-cerises.com" 
             v-model="recipe.link" 
         />
+        <!-- Boutons pour la création -->
         <Button 
+            v-if="type === 'create'"
             type="submit" 
-            :loading="recipeCreation.isLoading.value || recipeEdition.isLoading.value"
+            :loading="recipeCreation.isLoading.value"
             :disabled="!recipe.name || !recipe.description"
         >
-            {{ recipeCreation.isLoading.value 
-                ? 'Création en cours...' 
-                : recipeEdition.isLoading.value 
-                    ? 'Modification en cours...' 
-                    : type === 'create' 
-                        ? 'Ajouter des ingrédients' 
-                        : 'Gérer les ingrédients' }}
+            {{ recipeCreation.isLoading.value ? 'Création en cours...' : 'Ajouter des ingrédients' }}
         </Button>
+        
+        <div v-else class="edit-buttons">
+            <Button 
+                type="button"
+                design="secondary"
+                @click="handleSubmit('save')"
+                :loading="recipeEditionAndReturn.isLoading.value"
+                :disabled="!recipe.name || !recipe.description"
+            >
+                {{ recipeEditionAndReturn.isLoading.value ? 'Enregistrement...' : 'Enregistrer' }}
+            </Button>
+            <Button 
+                type="submit"
+                @click="handleSubmit('ingredients')"
+                :loading="recipeEdition.isLoading.value"
+                :disabled="!recipe.name || !recipe.description"
+            >
+                {{ recipeEdition.isLoading.value ? 'Modification en cours...' : 'Gérer les ingrédients' }}
+            </Button>
+        </div>
     </form>
 
     <!-- Interface d'ajout d'ingrédients -->
@@ -184,12 +221,10 @@ const handleSubmit = () => {
             :disabled="attachProductQuery.isLoading.value"
         ></Autocomplete>
         
-        <!-- Indicateur de chargement pour l'ajout d'ingrédients -->
         <div v-if="attachProductQuery.isLoading.value" class="loading-message">
             <Loader inline loadingText="Ajout de l'ingrédient..." />
         </div>
         
-        <!-- Liste des produits -->
         <div v-if="recipe.products.length > 0" class="products-list">
             <ul>
                 <li v-for="product in recipe.products" :key="product.id" class="product-item">
@@ -298,6 +333,21 @@ const handleSubmit = () => {
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
             border: 0;
+        }
+    }
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        
+        :deep(.btn) {
+            width: 100%;
         }
     }
 }

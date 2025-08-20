@@ -13,7 +13,7 @@ const router = useRouter()
 const recipeId = computed(() => route.params.id)
 
 const { data: recipe, isLoading, isError, error } = useQuery({
-    queryKey: ['recipe', recipeId.value],
+    queryKey: computed(() => ['recipe', recipeId.value]),
     queryFn: async () => {
         const res = await axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value)
         return res.data
@@ -44,7 +44,7 @@ const deleteRecipe = () => {
 <template>
     <div>
         <div v-if="isLoading">
-            <Loader />
+            <Loader loadingText="Chargement de la recette..." />
         </div>
         
         <div v-else-if="isError">
@@ -97,6 +97,7 @@ const deleteRecipe = () => {
                             type="button"
                             class="btn small"
                             >
+                            <Cross class="plus-icon" />
                             Tout ajouter à ma liste
                         </Button>
                     </div>
@@ -159,8 +160,11 @@ h2 {
 }
 
 .description {
+    h2 {
+        margin-bottom: 1rem;
+    }
     margin-bottom: 2rem;
-    
+    white-space: pre-wrap;
     p {
         line-height: 1.6;
         margin: 0;
@@ -224,13 +228,18 @@ h2 {
                 justify-content: center;
                 // background: var(--color-primary);
                 // color: var(--color-background);
-                .plus-icon {
-                    width: .8rem;
-                    height: .8rem;
-                    transform: rotate(45deg);
-                }
             }
         }
+    }
+    .buttons {
+        .plus-icon {
+            margin-right: 0.5rem;
+        }
+    }
+    .plus-icon {
+        width: .8rem;
+        height: .8rem;
+        transform: rotate(45deg);
     }
 }
 
