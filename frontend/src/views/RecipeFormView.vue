@@ -4,6 +4,7 @@ import BaseInput from '../components/forms/BaseInput.vue';
 import TextArea from '../components/forms/TextArea.vue';
 import Button from '../components/forms/Button.vue';
 import Autocomplete from '../components/forms/Autocomplete.vue';
+import QuantityInput from '../components/forms/QuantityInput.vue';
 import Cross from '../components/icons/Cross.vue';
 import { ref, computed, watch } from 'vue';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
@@ -95,16 +96,7 @@ const detachProductQuery = useMutation({
     }
 })
 
-const updateQuantityQuery = useMutation({
-    mutationFn: ({ productId, quantity }) => {
-        return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value + '/products/' + productId, {
-            quantity
-        })
-    },
-    onSuccess: () => {
-        queryClient.invalidateQueries(['recipe', recipeId.value])
-    }
-})
+
 
 const attachProductToRecipe = (product) => {
     attachProductQuery.mutate(product)
@@ -114,13 +106,7 @@ const detachProductFromRecipe = (productId) => {
     detachProductQuery.mutate(productId)
 }
 
-// TODO: Fix le champ qui garde l'ancienne valeur tant que la requête est en cours
-const updateQuantity = (productId, quantity) => {
-    updateQuantityQuery.mutate({
-        productId: productId,
-        quantity: quantity
-    })
-}
+
 
 // Form submission handling
 const handleSubmit = () => {
@@ -181,15 +167,12 @@ const handleSubmit = () => {
                 <li v-for="product in recipe.products" :key="product.id" class="product-item">
                     <span>{{ product.name }}</span>
                     <span class="product-item-actions">
-                        <span class="quantity-input-wrapper">
-                            <BaseInput 
-                                v-model="product.pivot.quantity" 
-                                placeholder="Quantité" 
-                                class="quantity-input"
-                                @blur="updateQuantity(product.id, $event.target.value)"
-                                :loading="updateQuantityQuery.isLoading.value"
-                            />
-                        </span>
+                        <QuantityInput 
+                            :quantity="product.pivot.quantity" 
+                            placeholder="Quantité"
+                            :recipe-id="recipeId"
+                            :product-id="product.id"
+                        />
                         <button class="delete-button" @click="detachProductFromRecipe(product.id)" :disabled="detachProductQuery.isLoading.value">
                             <span class="sr-only">Supprimer</span>
                             <Cross />
@@ -202,6 +185,12 @@ const handleSubmit = () => {
             <p class="alert-info">Aucun ingrédient pour l'instant</p>
         </div>
     </div>
+    
+    <div class="save-section">
+            <RouterLink :to="{ name: 'recipe', params: { id: recipeId } }" class="save-link">
+                <Button design="primary">Enregistrer</Button>
+            </RouterLink>
+        </div>
 </template>
 
 <style lang="scss" scoped>
@@ -226,15 +215,7 @@ const handleSubmit = () => {
             gap: 0.5rem;
         }
 
-        .quantity-input-wrapper {
-            width: 5rem;
 
-            :deep(input) {
-                width: 100%;
-                font-size: 0.8rem;
-                margin: 0;
-            }
-        }
 
         .delete-button {
             background: none;
