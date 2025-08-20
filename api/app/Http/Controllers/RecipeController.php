@@ -96,7 +96,7 @@ class RecipeController extends Controller
             $recipe->products()->syncWithoutDetaching($validated['product_id']);
         } else {
             $recipe->products()->create([
-                'name' => $validated['name'],
+                'name' => ucfirst($validated['name']),
                 'user_id' => auth('sanctum')->user()->id,
             ]);
         }

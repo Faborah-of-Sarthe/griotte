@@ -1,0 +1,270 @@
+<script setup>
+import { useRoute, useRouter } from 'vue-router'
+import { useQuery } from '@tanstack/vue-query'
+import axios from 'axios'
+import Loader from '../components/Loader.vue'
+import Button from '../components/forms/Button.vue'
+import Cross from '../components/icons/Cross.vue'
+import { computed } from 'vue'
+
+const route = useRoute()
+const router = useRouter()
+
+const recipeId = computed(() => route.params.id)
+
+const { data: recipe, isLoading, isError, error } = useQuery({
+    queryKey: ['recipe', recipeId.value],
+    queryFn: async () => {
+        const res = await axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value)
+        return res.data
+    },
+    enabled: computed(() => !!recipeId.value)
+})
+
+const addIngredientToList = (ingredient) => {
+    // TODO: Implémenter l'ajout d'un ingrédient à la liste
+    console.log('Ajouter l\'ingrédient à la liste:', ingredient)
+}
+
+const addAllIngredientsToList = () => {
+    // TODO: Implémenter l'ajout de tous les ingrédients à la liste
+    console.log('Ajouter tous les ingrédients à la liste')
+}
+
+const editRecipe = () => {
+    router.push({ name: 'edit-recipe', params: { id: recipeId.value } })
+}
+
+const deleteRecipe = () => {
+    // TODO: Implémenter la suppression de la recette
+    console.log('Supprimer la recette')
+}
+</script>
+
+<template>
+    <div>
+        <div v-if="isLoading">
+            <Loader />
+        </div>
+        
+        <div v-else-if="isError">
+            <div class="error">
+                <p>Une erreur est survenue lors du chargement de la recette</p>
+                <p v-if="error">{{ error.message }}</p>
+            </div>
+        </div>
+        
+        <div v-else-if="recipe" class="recipe-detail">
+            <div class="header">
+                <h1>{{ recipe.name }}</h1>
+               
+            </div>
+            
+            <!-- Liste des ingrédients -->
+            <div class="ingredients">
+                <div class="ingredients-header">
+                    <h2>Ingrédients</h2>
+                    
+                </div>
+                
+                <div v-if="!recipe.products || recipe.products.length === 0" class="no-ingredients">
+                    <p class="alert-info">Aucun ingrédient n'a été ajouté à cette recette.</p>
+                </div>
+                <div v-else>
+                    <ul class="ingredients-list">
+                        <li v-for="product in recipe.products" :key="product.id" class="ingredient-item">
+                            <span class="ingredient-name">
+                                {{ product.name }}
+                                <span v-if="product.pivot && product.pivot.quantity" class="quantity">
+                                    ({{ product.pivot.quantity }})
+                                </span>
+                            </span>
+                            <Button 
+                            design="secondary" 
+                            @click="addIngredientToList(product)" 
+                            type="button"
+                            class="add-button"
+                            >
+                                <Cross class="plus-icon" />
+                            </Button>
+                        </li>
+                    </ul>
+                    <div class="buttons">
+                        <Button 
+                            v-if="recipe.products && recipe.products.length > 0"
+                            design="secondary" 
+                            @click="addAllIngredientsToList" 
+                            type="button"
+                            class="btn small"
+                            >
+                            Tout ajouter à ma liste
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description de la recette -->
+            <div v-if="recipe.description" class="description">
+                <h2>Description</h2>
+                <p>{{ recipe.description }}</p>
+            </div>
+            
+            <!-- Lien vers la recette -->
+            <div v-if="recipe.link" class="recipe-link">
+                <h2>Lien</h2>
+                <a :href="recipe.link" target="_blank" rel="noopener noreferrer">
+                    {{ recipe.link }}
+                </a>
+            </div>
+            
+            <div class="action-buttons">
+                <Button design="danger" @click="deleteRecipe" type="button">
+                    Supprimer
+                </Button>
+                <Button design="secondary" @click="editRecipe" type="button">
+                    Modifier
+                </Button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+.recipe-detail {
+    padding: 1rem;
+}
+h2 {
+    color: var(--color-text-alt);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    
+    h1 {
+        margin: 0;
+        flex: 1;
+        min-width: 250px;
+    }
+    
+}
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.description {
+    margin-bottom: 2rem;
+    
+    p {
+        line-height: 1.6;
+        margin: 0;
+    }
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+
+    :deep(.btn) {
+        margin: 0;
+    }
+}
+
+.recipe-link {
+    margin-bottom: 2rem;
+    
+   
+    
+    a {
+        color: var(--color-primary);
+        text-decoration: underline;
+        word-break: break-all;
+    }
+}
+
+.ingredients {
+    
+    .ingredients-list {
+        padding: 0;
+        margin: 0;
+        padding-top: 1rem;
+        
+        .ingredient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            
+            .ingredient-name {
+                flex: 1;
+                font-size: 1.1rem;
+                
+                .quantity {
+                    color: var(--color-text-alt);
+                }
+            }
+            
+            .add-button {
+                min-width: auto;
+                width: 1.5rem;
+                height: 1.5rem;
+                border-radius: 50%;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                border: 0;
+                justify-content: center;
+                // background: var(--color-primary);
+                // color: var(--color-background);
+                .plus-icon {
+                    width: .8rem;
+                    height: .8rem;
+                    transform: rotate(45deg);
+                }
+            }
+        }
+    }
+}
+
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-danger);
+    
+    p {
+        margin: 0.5rem 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .action-buttons {
+            width: 100%;
+            
+            :deep(.btn) {
+                flex: 1;
+            }
+        }
+    }
+    
+    .ingredients-header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        :deep(.btn) {
+            width: 100%;
+        }
+    }
+}
+</style>

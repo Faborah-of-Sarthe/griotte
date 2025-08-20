@@ -118,9 +118,23 @@ input:-webkit-autofill:active{
   margin: auto;
 }
 
+.btn--danger {
+  background-color: #dc3545;
+  color: #fff;
+  display: block;
+  margin: auto;
+}
+
+.btn--danger:hover {
+  background-color: #c82333;
+}
+
 
 .btn.large {
   font-size: 1.5rem;
+}
+.btn.small {
+  font-size: 1rem;
 }
 .buttons {
   display: flex;
@@ -179,6 +193,7 @@ input:-webkit-autofill:active{
 
 @media (hover: hover) {
   a:hover {
+    color: var(--color-primary);
   }
 }
 

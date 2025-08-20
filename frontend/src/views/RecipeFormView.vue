@@ -6,6 +6,7 @@ import Button from '../components/forms/Button.vue';
 import Autocomplete from '../components/forms/Autocomplete.vue';
 import QuantityInput from '../components/forms/QuantityInput.vue';
 import Cross from '../components/icons/Cross.vue';
+import Loader from '../components/Loader.vue';
 import { ref, computed, watch } from 'vue';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/vue-query'
 import axios from 'axios'
@@ -29,7 +30,7 @@ const recipe = ref({
 
 
 
-const { data: recipeData } = useQuery({
+const { data: recipeData, isLoading: isLoadingRecipe, error: recipeError } = useQuery({
     queryKey: computed(() => ['recipe', recipeId.value]),
     queryFn: () => axios.get(import.meta.env.VITE_API_URL + 'recipes/' + recipeId.value),
     enabled: computed(() => !!recipeId.value) 
@@ -70,7 +71,8 @@ const recipeEdition = useMutation({
     },
     onSuccess: () => {
         queryClient.invalidateQueries(['recipes'])
-        router.push({ name: 'my-recipes' })
+        queryClient.invalidateQueries(['recipe', recipeId.value])
+        isAddingIngredients.value = true
     }
 })
 
@@ -125,11 +127,20 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <div>
-        <h1>{{ isAddingIngredients ? 'Ajouter les ingrédients' : (type === 'create' ? 'Créer une recette' : 'Modifier une recette') }}</h1>
+    <!-- État de chargement pour l'édition -->
+    <Loader v-if="type === 'edit' && isLoadingRecipe" loadingText="Chargement de la recette..." />
+    
+    <!-- Erreur de chargement -->
+    <div v-else-if="type === 'edit' && recipeError" class="error-message">
+        <p>Erreur lors du chargement de la recette</p>
+        <Button @click="router.go(-1)">Retour</Button>
     </div>
     
-    <!-- Formulaire initial -->
+    <!-- Contenu principal -->
+    <div v-else>
+        <h1>{{ isAddingIngredients ? 'Ajouter les ingrédients' : (type === 'create' ? 'Créer une recette' : 'Modifier une recette') }}</h1>
+    
+        <!-- Formulaire initial -->
     <form v-if="!isAddingIngredients" @submit.prevent="handleSubmit">
         <BaseInput 
             label="Nom" 
@@ -153,13 +164,30 @@ const handleSubmit = () => {
             :loading="recipeCreation.isLoading.value || recipeEdition.isLoading.value"
             :disabled="!recipe.name || !recipe.description"
         >
-            {{ type === 'create' ? 'Ajouter des ingrédients' : 'Modifier' }}
+            {{ recipeCreation.isLoading.value 
+                ? 'Création en cours...' 
+                : recipeEdition.isLoading.value 
+                    ? 'Modification en cours...' 
+                    : type === 'create' 
+                        ? 'Ajouter des ingrédients' 
+                        : 'Gérer les ingrédients' }}
         </Button>
     </form>
 
     <!-- Interface d'ajout d'ingrédients -->
     <div v-else>
-        <Autocomplete :apiUrl="autocompleteUrl.value" v-model="ingredientsSearch" @select="attachProductToRecipe" @create="attachProductToRecipe"></Autocomplete>
+        <Autocomplete 
+            :apiUrl="autocompleteUrl.value" 
+            v-model="ingredientsSearch" 
+            @select="attachProductToRecipe" 
+            @create="attachProductToRecipe"
+            :disabled="attachProductQuery.isLoading.value"
+        ></Autocomplete>
+        
+        <!-- Indicateur de chargement pour l'ajout d'ingrédients -->
+        <div v-if="attachProductQuery.isLoading.value" class="loading-message">
+            <Loader inline loadingText="Ajout de l'ingrédient..." />
+        </div>
         
         <!-- Liste des produits -->
         <div v-if="recipe.products.length > 0" class="products-list">
@@ -186,14 +214,39 @@ const handleSubmit = () => {
         </div>
     </div>
     
-    <div class="save-section">
-            <RouterLink :to="{ name: 'recipe', params: { id: recipeId } }" class="save-link">
-                <Button design="primary">Enregistrer</Button>
-            </RouterLink>
+        <div v-if="isAddingIngredients" class="save-section">
+                <RouterLink :to="{ name: 'recipe', params: { id: recipeId } }" class="save-link">
+                    <Button design="primary">Enregistrer</Button>
+                </RouterLink>
         </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>
+.error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-danger, #ef4444);
+    
+    p {
+        font-size: 1.125rem;
+        margin: 0;
+    }
+}
+
+.loading-message {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    background-color: var(--color-background-soft, #f8f9fa);
+    display: flex;
+    justify-content: center;
+}
+
 .products-list {
     margin-top: 2rem;
 

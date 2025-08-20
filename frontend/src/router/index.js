@@ -117,7 +117,7 @@ const router = createRouter({
     {
       path: '/my-recipes/:id',
       name: 'recipe',
-      component: () => import('../views/RecipeListView.vue'),
+      component: () => import('../views/RecipeDetailView.vue'),
       meta: {
         middleware: "auth"
       }
