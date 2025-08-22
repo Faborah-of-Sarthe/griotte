@@ -28,7 +28,11 @@ axios.interceptors.response.use(
     response => {
         if(response.status === 200 && response.data.message){
             const toast = useToast()
-            toast.success(response.data.message);
+            if(response.data.options) {
+                toast.success(response.data.message, response.data.options);
+            } else {
+                toast.success(response.data.message);
+            }
         }
         return Promise.resolve(response)
     },

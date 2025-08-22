@@ -156,6 +156,9 @@ class RecipeController extends Controller
 
         return response()->json([
             'message' => $product->name . ' ajouté à la liste de courses avec succès',
+            'options' => [
+                'timeout' => 1500,
+            ],
             'product' => $product
         ]);
     }
