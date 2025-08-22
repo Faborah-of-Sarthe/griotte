@@ -23,10 +23,12 @@ function toggleSearch() {
     if (open.value) {
         searchTerms.value = ''
     } else {
+        setTimeout(() => {
         window.scrollTo({
-          top: document.body.scrollHeight,
-          behavior: 'smooth'
-        });
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 100);
     }
 
     open.value = !open.value
