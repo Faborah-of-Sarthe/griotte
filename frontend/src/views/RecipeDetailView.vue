@@ -5,6 +5,7 @@ import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
+import Modal from '../components/Modal.vue'
 import { computed, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 
@@ -16,6 +17,9 @@ const recipeId = computed(() => route.params.id)
 
 // Set to track which ingredients are being added
 const addingIngredients = ref(new Set())
+
+// Modal state for recipe deletion
+const openDeleteModal = ref(false)
 
 const { data: recipe, isLoading, isError, error } = useQuery({
     queryKey: computed(() => ['recipe', recipeId.value]),
@@ -56,6 +60,22 @@ const {isLoading: isAddingAllIngredients, mutate: addAllIngredients} = useMutati
     }
 })
 
+const {mutate: deleteRecipeMutation} = useMutation({
+    mutationFn: async () => {
+        const response = await axios.delete(
+            `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}`,
+            { withCredentials: true }
+        )
+        return response.data
+    },
+    onSuccess: () => {
+        router.push({ name: 'my-recipes' })
+    },
+    onError: (error) => {
+        console.error('Erreur lors de la suppression de la recette:', error)
+    }
+})
+
 const addIngredientToList = (ingredient) => {
     addIngredient(ingredient)
 }
@@ -69,8 +89,12 @@ const editRecipe = () => {
 }
 
 const deleteRecipe = () => {
-    // TODO: Implémenter la suppression de la recette
-    console.log('Supprimer la recette')
+    openDeleteModal.value = true
+}
+
+const handleDeleteRecipe = () => {
+    deleteRecipeMutation()
+    openDeleteModal.value = false
 }
 </script>
 
@@ -159,6 +183,14 @@ const deleteRecipe = () => {
                 </Button>
             </div>
         </div>
+        
+        <!-- Modal de confirmation de suppression -->
+        <Modal v-if="openDeleteModal" @close="openDeleteModal = false" title="Suppression" :buttons="true" @validate="handleDeleteRecipe">
+            <template #content>
+                <p>Voulez-vous vraiment supprimer cette recette ?</p>
+                <p>Attention, cette action est définitive !</p>
+            </template>
+        </Modal>
     </div>
 </template>
 

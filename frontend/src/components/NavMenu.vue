@@ -88,7 +88,7 @@
         color: var(--color-primary);
         box-shadow: 0 0 10px rgba(0,0,0,.1);
         transition: width .1s ease-in-out;
-        z-index: 10;
+        z-index: 12;
 
 
         ul {

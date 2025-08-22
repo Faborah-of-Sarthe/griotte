@@ -101,6 +101,8 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         Route::get('/recipes/{recipe}', [RecipeController::class, 'show']);
         // update a recipe
         Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
+        // Delete a recipe
+        Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy']);
 
         // Attach a product to a recipe
         Route::post('/recipes/{recipe}/products', [RecipeController::class, 'attachProduct']);

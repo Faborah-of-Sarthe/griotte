@@ -66,6 +66,18 @@ class RecipeController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Recipe $recipe)
+    {
+        $recipe->delete();
+
+        return response()->json([
+            'message' => 'Recette supprimée avec succès.'
+        ], 200);
+    }
+
+    /**
      * Count the number of recipes to make
      *
      * @return int
