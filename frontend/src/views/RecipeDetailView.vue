@@ -6,9 +6,11 @@ import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
 import { computed } from 'vue'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
 const router = useRouter()
+const toast = useToast()
 
 const recipeId = computed(() => route.params.id)
 
@@ -21,9 +23,16 @@ const { data: recipe, isLoading, isError, error } = useQuery({
     enabled: computed(() => !!recipeId.value)
 })
 
-const addIngredientToList = (ingredient) => {
-    // TODO: Implémenter l'ajout d'un ingrédient à la liste
-    console.log('Ajouter l\'ingrédient à la liste:', ingredient)
+const addIngredientToList = async (ingredient) => {
+    try {
+        await axios.post(
+            `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}/products/${ingredient.id}/add-to-list`
+        )
+        
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout de l\'ingrédient à la liste:', error)
+      
+    }
 }
 
 const addAllIngredientsToList = () => {

@@ -122,4 +122,41 @@ class RecipeController extends Controller
 
         return $recipe->load('products');
     }
+
+    /**
+     * Ajouter un ingrédient de la recette à la liste de courses
+     */
+    public function addIngredientToShoppingList(Recipe $recipe, $productId)
+    {
+        // Récupérer le produit
+        $product = auth('sanctum')->user()->products()->findOrFail($productId);
+
+        // Récupérer les données du pivot pour cette recette
+        $pivotData = $recipe->products()->where('product_id', $productId)->first();
+
+        if (!$pivotData) {
+            return response()->json(['message' => 'Cet ingrédient ne fait pas partie de cette recette'], 404);
+        }
+
+        // Construire le nouveau commentaire
+        $newCommentLine = $recipe->name;
+        if ($pivotData->pivot && $pivotData->pivot->quantity) {
+            $newCommentLine .= ' ( ' . $pivotData->pivot->quantity . ' )';
+        }
+
+        // Ajouter la nouvelle ligne au commentaire existant
+        $currentComment = $product->comment ? $product->comment : '';
+        $updatedComment = $currentComment ? $currentComment . "\n- " . $newCommentLine : "- " . $newCommentLine;
+
+        // Mettre à jour le produit
+        $product->update([
+            'to_buy' => 1,
+            'comment' => $updatedComment
+        ]);
+
+        return response()->json([
+            'message' => $product->name . ' ajouté à la liste de courses avec succès',
+            'product' => $product
+        ]);
+    }
 }

@@ -110,6 +110,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
 
         // Update product quantity in recipe
         Route::patch('/recipes/{recipe}/products/{productId}', [RecipeController::class, 'updateProductQuantity']);
+
+        // Add ingredient to shopping list
+        Route::post('/recipes/{recipe}/products/{productId}/add-to-list', [RecipeController::class, 'addIngredientToShoppingList']);
     });
 
 
