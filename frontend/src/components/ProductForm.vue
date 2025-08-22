@@ -17,7 +17,9 @@
                 </div>
                 <div class="buttons">
                     <Button type="button" design="secondary" @click="stepDown" v-show="step > 1">Précédent</Button>
-                    <Button key="button-next" type="button" v-show="step < maxStep"  @click="stepUp" :disabled="productFormStore.product.name.length === 0">Suivant</Button>
+                    <Button key="button-next" type="button" v-show="step < maxStep && !(step === 1 && productFormStore.type === 'edit')"  @click="stepUp" :disabled="productFormStore.product.name.length === 0">Suivant</Button>
+                    <Button key="button-continue-edit" type="button" v-show="step === 1 && productFormStore.type === 'edit'" @click="stepUp" :disabled="productFormStore.product.name.length === 0" design="secondary">Rayons</Button>
+                    <Button key="button-save-edit" type="submit" v-show="step === 1 && productFormStore.type === 'edit'" :disabled="loading || productFormStore.product.name.length === 0" :loading="loading">Enregistrer</Button>
                     <Button key="button-submit" type="submit"  v-show="step == maxStep"  :disabled="loading" :loading="loading">{{ buttonLabel }}</Button>
                   
                 </div>
@@ -159,5 +161,7 @@ function stepDown() {
         display: flex;
         justify-content: space-around;
         margin-top: 1rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
 </style>
