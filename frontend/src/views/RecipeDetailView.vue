@@ -1,11 +1,11 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 
 const route = useRoute()
@@ -13,6 +13,9 @@ const router = useRouter()
 const toast = useToast()
 
 const recipeId = computed(() => route.params.id)
+
+// Set to track which ingredients are being added
+const addingIngredients = ref(new Set())
 
 const { data: recipe, isLoading, isError, error } = useQuery({
     queryKey: computed(() => ['recipe', recipeId.value]),
@@ -23,21 +26,42 @@ const { data: recipe, isLoading, isError, error } = useQuery({
     enabled: computed(() => !!recipeId.value)
 })
 
-const addIngredientToList = async (ingredient) => {
-    try {
-        await axios.post(
+const {mutate: addIngredient} = useMutation({
+    mutationFn: async (ingredient) => {
+        const response = await axios.post(
             `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}/products/${ingredient.id}/add-to-list`
         )
-        
-    } catch (error) {
+        return response.data
+    },
+    onMutate: (ingredient) => {
+        addingIngredients.value.add(ingredient.id)
+    },
+    onSettled: (data, error, ingredient) => {
+        addingIngredients.value.delete(ingredient.id)
+    },
+    onError: (error) => {
         console.error('Erreur lors de l\'ajout de l\'ingrédient à la liste:', error)
-      
     }
+})
+
+const {isLoading: isAddingAllIngredients, mutate: addAllIngredients} = useMutation({
+    mutationFn: async () => {
+        const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}/add-all-to-list`
+        ) 
+        return response.data
+    },
+    onError: (error) => {
+        console.error('Erreur lors de l\'ajout des ingrédients à la liste:', error)
+    }
+})
+
+const addIngredientToList = (ingredient) => {
+    addIngredient(ingredient)
 }
 
 const addAllIngredientsToList = () => {
-    // TODO: Implémenter l'ajout de tous les ingrédients à la liste
-    console.log('Ajouter tous les ingrédients à la liste')
+    addAllIngredients()
 }
 
 const editRecipe = () => {
@@ -69,7 +93,6 @@ const deleteRecipe = () => {
                
             </div>
             
-            <!-- Liste des ingrédients -->
             <div class="ingredients">
                 <div class="ingredients-header">
                     <h2>Ingrédients</h2>
@@ -93,6 +116,7 @@ const deleteRecipe = () => {
                             @click="addIngredientToList(product)" 
                             type="button"
                             class="add-button"
+                            :disabled="addingIngredients.has(product.id)"
                             >
                                 <Cross class="plus-icon" />
                             </Button>
@@ -104,22 +128,21 @@ const deleteRecipe = () => {
                             design="secondary" 
                             @click="addAllIngredientsToList" 
                             type="button"
-                            class="btn small"
+                            class="btn small add-all-ingredients"
+                            :disabled="isAddingAllIngredients"
                             >
                             <Cross class="plus-icon" />
-                            Tout ajouter à ma liste
+                            {{ isAddingAllIngredients ? 'Ajout en cours...' : 'Tout ajouter à ma liste' }}
                         </Button>
                     </div>
                 </div>
             </div>
 
-            <!-- Description de la recette -->
             <div v-if="recipe.description" class="description">
                 <h2>Description</h2>
                 <p>{{ recipe.description }}</p>
             </div>
             
-            <!-- Lien vers la recette -->
             <div v-if="recipe.link" class="recipe-link">
                 <h2>Lien</h2>
                 <a :href="recipe.link" target="_blank" rel="noopener noreferrer">
@@ -235,8 +258,11 @@ h2 {
                 align-items: center;
                 border: 0;
                 justify-content: center;
-                // background: var(--color-primary);
-                // color: var(--color-background);
+                
+            }
+            .add-button:disabled {
+                background: var(--color-background);
+                color: var(--color-text-alt);
             }
         }
     }
@@ -250,6 +276,11 @@ h2 {
         height: .8rem;
         transform: rotate(45deg);
     }
+}
+.add-all-ingredients:disabled {
+    background: var(--color-background);
+    color: var(--color-text-alt);
+    border: 1px solid var(--color-text-alt);
 }
 
 .error {

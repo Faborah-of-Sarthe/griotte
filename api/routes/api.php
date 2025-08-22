@@ -113,6 +113,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
 
         // Add ingredient to shopping list
         Route::post('/recipes/{recipe}/products/{productId}/add-to-list', [RecipeController::class, 'addIngredientToShoppingList']);
+
+        // Add all ingredients to shopping list
+        Route::post('/recipes/{recipe}/add-all-to-list', [RecipeController::class, 'addAllIngredientsToShoppingList']);
     });
 
 

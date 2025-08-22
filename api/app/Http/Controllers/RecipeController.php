@@ -124,35 +124,18 @@ class RecipeController extends Controller
     }
 
     /**
-     * Ajouter un ingrédient de la recette à la liste de courses
+     * Add an ingredient of the recipe to the shopping list
      */
     public function addIngredientToShoppingList(Recipe $recipe, $productId)
     {
-        // Récupérer le produit
         $product = auth('sanctum')->user()->products()->findOrFail($productId);
-
-        // Récupérer les données du pivot pour cette recette
         $pivotData = $recipe->products()->where('product_id', $productId)->first();
 
         if (!$pivotData) {
             return response()->json(['message' => 'Cet ingrédient ne fait pas partie de cette recette'], 404);
         }
 
-        // Construire le nouveau commentaire
-        $newCommentLine = $recipe->name;
-        if ($pivotData->pivot && $pivotData->pivot->quantity) {
-            $newCommentLine .= ' ( ' . $pivotData->pivot->quantity . ' )';
-        }
-
-        // Ajouter la nouvelle ligne au commentaire existant
-        $currentComment = $product->comment ? $product->comment : '';
-        $updatedComment = $currentComment ? $currentComment . "\n- " . $newCommentLine : "- " . $newCommentLine;
-
-        // Mettre à jour le produit
-        $product->update([
-            'to_buy' => 1,
-            'comment' => $updatedComment
-        ]);
+        $this->addProductToShoppingList($product, $recipe, $pivotData->pivot->quantity ?? null);
 
         return response()->json([
             'message' => $product->name . ' ajouté à la liste de courses avec succès',
@@ -160,6 +143,63 @@ class RecipeController extends Controller
                 'timeout' => 1500,
             ],
             'product' => $product
+        ]);
+    }
+
+    /**
+     * Add all ingredients of the recipe to the shopping list
+     */
+    public function addAllIngredientsToShoppingList(Recipe $recipe)
+    {
+        $user = auth('sanctum')->user();
+        $products = $recipe->products;
+
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'Cette recette ne contient aucun ingrédient'], 404);
+        }
+
+        $addedCount = 0;
+        $skippedCount = 0;
+
+        foreach ($products as $recipeProduct) {
+            $this->addProductToShoppingList($recipeProduct, $recipe, $recipeProduct->pivot->quantity ?? null);
+            $addedCount++;
+        }
+
+        $message = $addedCount . ' ingrédient' . ($addedCount > 1 ? 's' : '') . ' ajouté' . ($addedCount > 1 ? 's' : '') . ' à la liste de courses avec succès';
+
+        if ($skippedCount > 0) {
+            $message .= ' (' . $skippedCount . ' ingrédient' . ($skippedCount > 1 ? 's' : '') . ' ignoré' . ($skippedCount > 1 ? 's' : '') . ')';
+        }
+
+        return response()->json([
+            'message' => $message,
+            'options' => [
+                'timeout' => 1500,
+            ],
+            'added_count' => $addedCount,
+            'skipped_count' => $skippedCount
+        ]);
+    }
+
+    /**
+     * Private method to add a product to the shopping list
+     */
+    private function addProductToShoppingList($product, Recipe $recipe, $quantity = null)
+    {
+        // Build the new comment line
+        $newCommentLine = $recipe->name;
+        if ($quantity) {
+            $newCommentLine .= ' ( ' . $quantity . ' )';
+        }
+
+        // Add the new line to the existing comment
+        $currentComment = $product->comment ? $product->comment : '';
+        $updatedComment = $currentComment ? $currentComment . "\n- " . $newCommentLine : "- " . $newCommentLine;
+
+        $product->update([
+            'to_buy' => 1,
+            'comment' => $updatedComment
         ]);
     }
 }
