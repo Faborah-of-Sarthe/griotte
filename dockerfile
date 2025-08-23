@@ -43,3 +43,6 @@ RUN npm run build
 
 WORKDIR /app
 RUN chown -R application:application .
+# Forcer les permissions sur le dossier api
+RUN chown -R application:application api/
+RUN chmod -R 775 api/storage api/bootstrap/cache
