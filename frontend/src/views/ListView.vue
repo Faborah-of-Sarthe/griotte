@@ -102,7 +102,7 @@ function openNewProductForm(product) {
   </div>
   <template v-if="!isLoading && !isError">
     <div class="controls">
-      <RollbackButton v-if="actionsStore.visible"></RollbackButton>
+      <RollbackButton v-if="true || actionsStore.visible"></RollbackButton>
       <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
     </div>
   </template>
@@ -125,6 +125,10 @@ function openNewProductForm(product) {
   padding-bottom: 2rem;
   align-items: center;
   pointer-events: none;
+
+  > * {
+    pointer-events: all;
+  }
 }
 h1 {
   display: flex;
