@@ -66,8 +66,8 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
     </div>
     <div class="controls">
         <div class="buttons">
-            <Button :class="{'btn--secondary': recipeChoice !== 'all'}" @click="userStore.setRecipeChoice('all')">Toutes</Button>
-            <Button :class="{'btn--secondary': recipeChoice !== 'to_make'}" @click="userStore.setRecipeChoice('to_make')">
+            <Button :design="recipeChoice !== 'all' ? 'secondary' : 'primary'" @click="userStore.setRecipeChoice('all')">Toutes</Button>
+            <Button :design="recipeChoice !== 'to_make' ? 'secondary' : 'primary'" @click="userStore.setRecipeChoice('to_make')">
                 À faire  
                 <span v-if="isLoadingNumberOfRecipesToMake" class="custom-loader"> </span>
                 <span class="number" v-else>{{ numberOfRecipesToMake }}</span>
@@ -250,4 +250,9 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         background-color: var(--color-primary);
         color: var(--color-background);
     }
+
+    .btn--primary:hover {
+        box-shadow: inset 0 0 0 2px var(--color-primary);
+    }
+
 </style>
