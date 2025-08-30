@@ -13,6 +13,7 @@ class Recipe extends Model
         'name',
         'description',
         'user_id',
+        'link',
         'to_make',
     ];
 

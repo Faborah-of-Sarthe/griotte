@@ -5,6 +5,7 @@ import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
+import ExternalLink from '../components/icons/ExternalLink.vue'
 import Modal from '../components/Modal.vue'
 import { computed, ref } from 'vue'
 import { useToast } from 'vue-toastification'
@@ -113,8 +114,17 @@ const handleDeleteRecipe = () => {
         
         <div v-else-if="recipe" class="recipe-detail">
             <div class="header">
-                <h1>{{ recipe.name }}</h1>
-               
+                <h1>
+                    {{ recipe.name }}
+                    <a v-if="recipe.link" 
+                       :href="recipe.link" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="external-link-icon"
+                       :title="`Ouvrir le lien de la recette dans un nouvel onglet`">
+                        <ExternalLink />
+                    </a>
+                </h1>
             </div>
             
             <div class="ingredients">
@@ -214,8 +224,26 @@ h2 {
         margin: 0;
         flex: 1;
         min-width: 250px;
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
     }
     
+    .external-link-icon {
+        color: var(--color-primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        
+        svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        
+        &:hover {
+            opacity: 0.8;
+        }
+    }
 }
 .action-buttons {
     display: flex;
