@@ -27,7 +27,7 @@ php artisan migrate
 
 cd ../frontend
 # Compile npm assets
-npm run prod
+npm run build
 
 
 cd ../api
