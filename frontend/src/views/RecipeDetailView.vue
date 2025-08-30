@@ -176,22 +176,19 @@ const handleDeleteRecipe = () => {
                 <h2>Description</h2>
                 <p>{{ recipe.description }}</p>
             </div>
-            
-            <div v-if="recipe.link" class="recipe-link">
-                <h2>Lien</h2>
-                <a :href="recipe.link" target="_blank" rel="noopener noreferrer">
-                    {{ recipe.link }}
-                </a>
-            </div>
+         
             
             <div class="action-buttons">
-                <Button design="danger" @click="deleteRecipe" type="button">
+                <Button design="primary" @click="deleteRecipe" type="button">
                     Supprimer
                 </Button>
                 <Button design="secondary" @click="editRecipe" type="button">
                     Modifier
                 </Button>
             </div>
+            <Button design="secondary" @click="router.push({ name: 'my-recipes' })" type="button" class="go-back-button ">
+                Retour aux recettes
+            </Button>
         </div>
         
         <!-- Modal de confirmation de suppression -->
@@ -249,6 +246,9 @@ h2 {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    :deep(.btn) {
+        font-size: 1rem;
+    }
 }
 
 .description {
@@ -374,6 +374,9 @@ h2 {
         :deep(.btn) {
             width: 100%;
         }
+    }
+    .go-back-button {
+        margin-top: 2rem;
     }
 }
 </style>
