@@ -6,6 +6,7 @@ import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
 import ExternalLink from '../components/icons/ExternalLink.vue'
+import TodoButton from '../components/TodoButton.vue'
 import Modal from '../components/Modal.vue'
 import { computed, ref } from 'vue'
 import { useToast } from 'vue-toastification'
@@ -77,6 +78,8 @@ const {mutate: deleteRecipeMutation} = useMutation({
     }
 })
 
+
+
 const addIngredientToList = (ingredient) => {
     addIngredient(ingredient)
 }
@@ -97,6 +100,8 @@ const handleDeleteRecipe = () => {
     deleteRecipeMutation()
     openDeleteModal.value = false
 }
+
+
 </script>
 
 <template>
@@ -179,12 +184,13 @@ const handleDeleteRecipe = () => {
          
             
             <div class="action-buttons">
-                <Button design="primary" @click="deleteRecipe" type="button">
+                <Button design="secondary" @click="deleteRecipe" type="button">
                     Supprimer
                 </Button>
                 <Button design="secondary" @click="editRecipe" type="button">
                     Modifier
                 </Button>
+                <TodoButton :recipe="recipe" :show-text="true" :as-button="true" />
             </div>
             <Button design="secondary" @click="router.push({ name: 'my-recipes' })" type="button" class="go-back-button ">
                 Retour aux recettes
@@ -250,6 +256,8 @@ h2 {
         font-size: 1rem;
     }
 }
+
+
 
 .description {
     h2 {
@@ -318,6 +326,7 @@ h2 {
                 align-items: center;
                 border: 0;
                 justify-content: center;
+                box-shadow: none;
                 
             }
             .add-button:disabled {
