@@ -173,7 +173,6 @@ const handleSubmit = (action = 'ingredients') => {
             label="Détails de la recette" 
             placeholder="Une recette de clafoutis aux cerises" 
             v-model="recipe.description"
-            required 
         />
         <BaseInput 
             label="Lien" 
@@ -185,7 +184,7 @@ const handleSubmit = (action = 'ingredients') => {
             v-if="type === 'create'"
             type="submit" 
             :loading="recipeCreation.isLoading.value"
-            :disabled="!recipe.name || !recipe.description"
+            :disabled="!recipe.name"
         >
             {{ recipeCreation.isLoading.value ? 'Création en cours...' : 'Ajouter des ingrédients' }}
         </Button>
@@ -196,7 +195,7 @@ const handleSubmit = (action = 'ingredients') => {
                 design="secondary"
                 @click="handleSubmit('save')"
                 :loading="recipeEditionAndReturn.isLoading.value"
-                :disabled="!recipe.name || !recipe.description"
+                :disabled="!recipe.name"
             >
                 {{ recipeEditionAndReturn.isLoading.value ? 'Enregistrement...' : 'Enregistrer' }}
             </Button>
@@ -204,7 +203,7 @@ const handleSubmit = (action = 'ingredients') => {
                 type="submit"
                 @click="handleSubmit('ingredients')"
                 :loading="recipeEdition.isLoading.value"
-                :disabled="!recipe.name || !recipe.description"
+                :disabled="!recipe.name"
             >
                 {{ recipeEdition.isLoading.value ? 'Modification en cours...' : 'Gérer les ingrédients' }}
             </Button>
