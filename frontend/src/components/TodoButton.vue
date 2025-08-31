@@ -27,7 +27,7 @@ const { mutate, isLoading: isLoadingMutation } = useMutation({
     },
     onSuccess: (response) => {
         // Mettre à jour la recette spécifique dans le cache
-        queryClient.setQueryData(['recipe', response.data.id], response.data)
+        queryClient.setQueryData(['recipe', response.data.id.toString()], response.data)
         
         // Mettre à jour les données des recettes dans la liste (infinite query)
         queryClient.setQueriesData(['recipes'], (oldData) => {
