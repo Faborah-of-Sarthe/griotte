@@ -361,7 +361,9 @@ h2 {
         margin: 0.5rem 0;
     }
 }
-
+.go-back-button {
+        margin-top: 2rem;
+    }
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -384,8 +386,6 @@ h2 {
             width: 100%;
         }
     }
-    .go-back-button {
-        margin-top: 2rem;
-    }
+ 
 }
 </style>

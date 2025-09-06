@@ -21,7 +21,6 @@ const navigateToImportCreation = () => {
         
         <div class="choice-cards">
             <div class="choice-card" @click="navigateToImportCreation">
-                <div class="choice-icon">🌐</div>
                 <h3>Importer depuis un site</h3>
                 <p>Copiez le lien d'une recette depuis votre site de cuisine préféré et laissez Griotte extraire automatiquement les informations.</p>
                 <Button design="primary" type="button">
@@ -30,10 +29,10 @@ const navigateToImportCreation = () => {
             </div>
             
             <div class="choice-card" @click="navigateToManualCreation">
-                <div class="choice-icon">✏️</div>
                 <h3>Créer manuellement</h3>
                 <p>Créez votre recette de A à Z en remplissant vous-même tous les détails.</p>
-                <Button design="secondary" type="button">
+                <Button design="primary" type="button">
+                <Button design="primary" type="button">
                     Créer manuellement
                 </Button>
             </div>

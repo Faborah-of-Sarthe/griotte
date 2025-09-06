@@ -6,6 +6,8 @@ import axios from 'axios'
 import BaseInput from '../components/forms/BaseInput.vue'
 import Button from '../components/forms/Button.vue'
 import Loader from '../components/Loader.vue'
+import WelcomeCherry from '../components/WelcomeCherry.vue'
+import Cross from '../components/icons/Cross.vue'
 
 const router = useRouter()
 const recipeUrl = ref('')
@@ -60,7 +62,7 @@ const goBack = () => {
         <div class="import-form">
             <BaseInput 
                 label="URL de la recette" 
-                placeholder="https://www.example.com/ma-recette-preferee" 
+                placeholder="www.clafoutis-aux-cerises.com" 
                 v-model="recipeUrl"
                 type="url"
                 required 
@@ -79,7 +81,7 @@ const goBack = () => {
             
             <!-- Message d'erreur -->
             <div v-if="parseRecipeMutation.isError.value" class="error-message">
-                <p>❌ Impossible d'analyser cette recette</p>
+                <p><Cross class="small" /> Impossible d'analyser cette recette</p>
                 <p class="error-details">
                     {{ parseRecipeMutation.error.value?.response?.data?.message || 'Vérifiez que l\'URL est correcte et que la page contient une recette avec des micro-données.' }}
                 </p>
@@ -93,20 +95,14 @@ const goBack = () => {
                 </p>
             </div>
         </div>
-        
+        <WelcomeCherry step="import-recipe" />
         <div class="help-section">
-            <h3>💡 Comment ça marche ?</h3>
-            <ul>
+            <ol>
                 <li>Copiez l'URL complète d'une recette depuis un site de cuisine</li>
                 <li>Griotte analyse automatiquement la page pour extraire les informations</li>
                 <li>Vous pourrez ensuite vérifier et ajuster les données avant de créer la recette</li>
-            </ul>
-            
-            <div class="supported-sites">
-                <h4>Sites compatibles</h4>
-                <p>La plupart des sites de recettes modernes utilisant des micro-données (Schema.org) sont supportés, notamment :</p>
-                <p class="sites-list">Marmiton, 750g, Cuisine AZ, AlloCuisine, et bien d'autres...</p>
-            </div>
+            </ol>
+          
         </div>
     </div>
 </template>
@@ -179,23 +175,28 @@ const goBack = () => {
 .help-section {
     background: var(--color-background-mute, #f3f4f6);
     border-radius: 1rem;
+    margin-top: 1.5rem;
     padding: 1.5rem;
     
     h3 {
         margin-top: 0;
         color: var(--color-heading, #1f2937);
     }
-    
-    ul {
-        margin: 1rem 0;
-        padding-left: 1.5rem;
-        
-        li {
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-        }
+    ol {
+        padding-left: 0;
+        counter-reset: stores;
     }
-    
+    li {
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+    li::before {
+        counter-increment: stores;
+        content: counter(stores) ".";
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-right: 1rem;
+    }
     .supported-sites {
         margin-top: 1.5rem;
         padding-top: 1.5rem;
@@ -218,6 +219,11 @@ const goBack = () => {
     }
 }
 
+.small {
+    height: 1rem;
+    width: 1rem;
+    padding-top: 0.2rem;
+}
 @media (max-width: 768px) {
     .import-container {
         padding: 1rem;

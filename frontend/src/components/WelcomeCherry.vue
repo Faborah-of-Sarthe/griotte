@@ -25,6 +25,9 @@
                 Enfin, vous pouvez ajouter un produit à votre liste en cliquant sur le gros bouton <Cross class="plus" />. Si je ne le connais pas, vous pourrez renseigner ses informations et son rayon, il sera classé automatiquement la prochaine fois ! <br><br>
                 Je vous ai déjà ajouté une bonne partie des fruits et légumes, vous pouvez essayer d'en chercher ou d'en ajouter un nouveau ! Bonnes courses !
             </p>
+            <p v-else-if="step == 'import-recipe'">
+                Hey mais comment ça marche ? 
+            </p>
         </div>
         <img alt="Logo" src="@/assets/logo.svg" width="50" height="50" />
 
