@@ -32,7 +32,6 @@ const navigateToImportCreation = () => {
                 <h3>Créer manuellement</h3>
                 <p>Créez votre recette de A à Z en remplissant vous-même tous les détails.</p>
                 <Button design="primary" type="button">
-                <Button design="primary" type="button">
                     Créer manuellement
                 </Button>
             </div>
