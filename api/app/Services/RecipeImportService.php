@@ -6,6 +6,9 @@ use DOMXPath;
 use DOMDocument;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class RecipeImportService
 {
@@ -14,17 +17,30 @@ class RecipeImportService
      */
     public function extractRecipeFromUrl($url)
     {
-        // Récupérer le contenu de la page
-        $context = stream_context_create([
-            'http' => [
-                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            ]
-        ]);
+        try {
+            // Utiliser Guzzle au lieu de file_get_contents
+            $client = new Client([
+                'timeout' => 30,
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language' => 'fr-FR,fr;q=0.9,en;q=0.8',
+                    'Accept-Encoding' => 'gzip, deflate',
+                    'Connection' => 'keep-alive',
+                ]
+            ]);
 
-        $html = @file_get_contents($url, false, $context);
+            $response = $client->get($url);
+            $html = $response->getBody()->getContents();
 
-        if (!$html) {
-            throw new \Exception('Impossible de récupérer le contenu de la page');
+            if (!$html) {
+                throw new \Exception('Impossible de récupérer le contenu de la page');
+            }
+
+        } catch (RequestException $e) {
+            throw new \Exception('Erreur lors de la récupération de la page : ' . $e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception('Impossible de récupérer le contenu de la page : ' . $e->getMessage());
         }
 
         // Créer un document DOM
