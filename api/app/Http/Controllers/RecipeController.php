@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
+use App\Models\Product;
+use App\Services\RecipeImportService;
 use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
+    private $recipeImportService;
+
+    public function __construct(RecipeImportService $recipeImportService)
+    {
+        $this->recipeImportService = $recipeImportService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -193,6 +201,97 @@ class RecipeController extends Controller
             'skipped_count' => $skippedCount
         ]);
     }
+
+
+    /**
+     * Parse a recipe URL to extract recipe data using microdata
+     */
+    public function parseUrl(Request $request)
+    {
+        $validated = $request->validate([
+            'url' => 'required|url'
+        ]);
+
+        try {
+            $recipeData = $this->recipeImportService->extractRecipeFromUrl($validated['url']);
+
+            if (!$recipeData) {
+                return response()->json([
+                    'message' => 'Impossible d\'extraire les données de recette depuis cette URL. Vérifiez que la page contient bien une recette avec des micro-données.'
+                ], 422);
+            }
+
+            // Traiter les ingrédients pour l'utilisateur connecté
+            $user = auth('sanctum')->user();
+            $ingredients = $this->recipeImportService->parseIngredientsForUser($recipeData['rawRecipeData'], $user);
+            $recipeData['ingredients'] = $ingredients;
+
+            // Supprimer les données brutes avant de retourner la réponse
+            unset($recipeData['rawRecipeData']);
+
+            return response()->json($recipeData);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur lors de l\'analyse de la page : ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Create a recipe from imported data
+     */
+    public function createFromImport(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:65535',
+            'link' => 'nullable|string|max:255',
+            'ingredients' => 'sometimes|array',
+            'ingredients.*.name' => 'required_with:ingredients|string|max:255',
+            'ingredients.*.quantity' => 'nullable|string',
+            'ingredients.*.existingProduct' => 'sometimes|nullable'
+        ]);
+
+        $user = auth('sanctum')->user();
+
+        // Créer la recette
+        $recipe = $user->recipes()->create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? '',
+            'link' => $validated['link'] ?? '',
+            'to_make' => false
+        ]);
+
+        // Traiter les ingrédients
+        if (isset($validated['ingredients'])) {
+            foreach ($validated['ingredients'] as $ingredientData) {
+                $productId = null;
+
+                if (isset($ingredientData['existingProduct']) && $ingredientData['existingProduct']) {
+                    // Utiliser le produit existant
+                    $productId = $ingredientData['existingProduct']['id'];
+                } else {
+                    // Créer un nouveau produit
+                    $product = $user->products()->create([
+                        'name' => ucfirst($ingredientData['name']),
+                        'to_buy' => false,
+                        'comment' => ''
+                    ]);
+                    $productId = $product->id;
+                }
+
+                // Attacher le produit à la recette si on a un ID
+                if ($productId) {
+                    $recipe->products()->attach($productId, [
+                        'quantity' => $ingredientData['quantity'] ?? null
+                    ]);
+                }
+            }
+        }
+
+        return $recipe->load('products');
+    }
+
 
     /**
      * Private method to add a product to the shopping list

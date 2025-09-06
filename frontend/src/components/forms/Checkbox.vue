@@ -1,8 +1,10 @@
 <template>
     <div class="input_wrapper" :class="props.type" v-if="props.type == 'option'">
-        <label v-if="label" :for="name">
-            {{ label }}
-            <input type="checkbox" :id="name" ref="inputElement" :name="name" :value="modelValue" @input="$emit('update:modelValue',  $event.target.checked)" v-bind="$attrs"/>
+        <label :for="name">
+            <template v-if="label && !hideLabel">
+                {{ label }}
+            </template>
+            <input type="checkbox" :id="name" ref="inputElement" :name="name" :checked="modelValue" @input="$emit('update:modelValue',  $event.target.checked)" v-bind="$attrs"/>
             <CheckMark :class="{checked: modelValue}"  class="checkbox"></CheckMark>
         </label>
     </div>
@@ -20,13 +22,18 @@
     const props = defineProps({
         label: {
             type: [String, Boolean],
-            required: true
+            required: false
         },
 
         modelValue: {
             type:  [String, Boolean],
             required: true,
             default: ''
+        },
+        hideLabel: {
+            type: Boolean,
+            required: false,
+            default: false
         },
 
         type: {
@@ -40,7 +47,7 @@
     })
 
     // Create name from label
-    const name = labelize(props.label);
+    const name = props.label ? labelize(props.label) : props.label;
 </script>
 
 <style>

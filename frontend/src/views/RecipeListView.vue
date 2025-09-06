@@ -107,7 +107,7 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
     </div>
     <div class="bottom-controls">
         <Transition name="slideUp" appear>
-            <RouterLink :to="{ name: 'create-recipe' }">
+            <RouterLink :to="{ name: 'create-recipe-choice' }">
                 <button class="add_button"> <Cross class="small plus" /></button>
             </RouterLink>
         </Transition>

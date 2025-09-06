@@ -124,11 +124,35 @@ const router = createRouter({
     },
     {
       path: '/my-recipes/create',
-      name: 'create-recipe',
+      name: 'create-recipe-choice',
+      component: () => import('../views/RecipeCreateChoiceView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
+      path: '/my-recipes/create/manual',
+      name: 'create-recipe-manual',
       component: () => import('../views/RecipeFormView.vue'),
       meta: {
         middleware: "auth",
         type: "create"
+      }
+    },
+    {
+      path: '/my-recipes/import',
+      name: 'import-recipe',
+      component: () => import('../views/RecipeImportView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
+      path: '/my-recipes/preview',
+      name: 'preview-imported-recipe',
+      component: () => import('../views/RecipePreviewView.vue'),
+      meta: {
+        middleware: "auth"
       }
     },
     {

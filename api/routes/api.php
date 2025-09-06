@@ -93,6 +93,13 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
     // Create a new recipe
     Route::post('/recipes', [RecipeController::class, 'store']);
 
+    // Parse recipe from URL
+    Route::post('/recipes/parse-url', [RecipeController::class, 'parseUrl']);
+
+
+    // Create recipe from imported data
+    Route::post('/recipes/create-from-import', [RecipeController::class, 'createFromImport']);
+
     // Get the number of recipes to make
     Route::get('/recipes/count', [RecipeController::class, 'count']);
 
