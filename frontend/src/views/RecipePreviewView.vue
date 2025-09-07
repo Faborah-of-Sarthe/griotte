@@ -6,9 +6,8 @@ import axios from 'axios'
 import BaseInput from '../components/forms/BaseInput.vue'
 import TextArea from '../components/forms/TextArea.vue'
 import Button from '../components/forms/Button.vue'
-import Checkbox from '../components/forms/Checkbox.vue'
-import Autocomplete from '../components/forms/Autocomplete.vue'
 import Loader from '../components/Loader.vue'
+import IngredientItem from '../components/IngredientItem.vue'
 
 const router = useRouter()
 const queryClient = useQueryClient()
@@ -90,19 +89,34 @@ const goBack = () => {
     router.go(-1)
 }
 
+// Gérer la mise à jour d'un ingrédient
+const handleIngredientUpdate = (updatedIngredient) => {
+    const index = ingredientsToInclude.value.findIndex(ing => ing.uniqueId === updatedIngredient.uniqueId)
+    if (index !== -1) {
+        ingredientsToInclude.value[index] = updatedIngredient
+    }
+}
+
 // Gérer la sélection d'un produit existant depuis l'autocomplete
 const handleProductSelect = (selectedProduct, ingredient) => {
     // Remplacer l'ingrédient par le produit existant sélectionné
-    ingredient.name = selectedProduct.name
-    ingredient.existingProduct = selectedProduct
+    const updatedIngredient = {
+        ...ingredient,
+        name: selectedProduct.name,
+        existingProduct: selectedProduct
+    }
+    handleIngredientUpdate(updatedIngredient)
 }
 
 // Gérer la création d'un nouveau produit via l'autocomplete
 const handleProductCreate = (newProduct, ingredient) => {
     // Mettre à jour le nom de l'ingrédient avec le texte saisi
-    ingredient.name = newProduct.name
-    // S'assurer que c'est toujours considéré comme un nouveau produit
-    ingredient.existingProduct = null
+    const updatedIngredient = {
+        ...ingredient,
+        name: newProduct.name,
+        existingProduct: null
+    }
+    handleIngredientUpdate(updatedIngredient)
 }
 
 </script>
@@ -156,42 +170,15 @@ const handleProductCreate = (newProduct, ingredient) => {
                         <span class="existing-badge">Produits existants ({{ existingProducts.length }})</span>
                     </h3>
                     <div class="ingredients-list">
-                        <div 
-                            v-for="(ingredient, index) in existingProducts" 
-                            :key="ingredient.uniqueId" 
-                            class="ingredient-item"
-                            :class="{ 'included': ingredient.include }"
-                        >
-                            <div class="ingredient-row">
-                                <!-- Nom de l'ingrédient - non modifiable pour les existants -->
-                                <div class="ingredient-name-section">
-                                    <div class="ingredient-name-display">
-                                        {{ ingredient.existingProduct.name }}
-                                    </div>
-                                </div>
-                                <div class="ingredient-actions">
-                                    <!-- Quantité - toujours modifiable -->
-                                    <div class="ingredient-quantity-section">
-                                        <BaseInput
-                                            v-model="ingredient.quantity"
-                                            placeholder="Quantité"
-                                            class="ingredient-quantity-input"
-                                        />
-                                    </div>
-                                    
-                                    <!-- Checkbox pour inclure dans la recette -->
-                                    <div class="ingredient-include-section">
-                                        <Checkbox
-                                            hideLabel
-                                            :label="ingredient.uniqueId"
-                                            :modelValue="ingredient.include"
-                                            @update:modelValue="ingredient.include = $event"
-                                            type="option"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <IngredientItem
+                            v-for="ingredient in existingProducts"
+                            :key="ingredient.uniqueId"
+                            :ingredient="ingredient"
+                            :is-existing="true"
+                            @update:ingredient="handleIngredientUpdate"
+                            @product-select="handleProductSelect"
+                            @product-create="handleProductCreate"
+                        />
                     </div>
                 </div>
 
@@ -202,43 +189,15 @@ const handleProductCreate = (newProduct, ingredient) => {
                     </h3>
                     <p class="section-description alert-info">Ces produits ne sont pas encore dans votre liste. Si vous les incluez, ils seront automatiquement ajoutés à votre liste.</p>
                     <div class="ingredients-list">
-                        <div 
-                            v-for="(ingredient, index) in newProducts" 
-                            :key="ingredient.uniqueId" 
-                            class="ingredient-item"
-                            :class="{ 'included': ingredient.include }"
-                        >
-                            <div class="ingredient-row">
-                                <!-- Nom de l'ingrédient - modifiable pour les nouveaux -->
-                                <div class="ingredient-name-section">
-                                    <Autocomplete
-                                        v-model="ingredient.name"
-                                        placeholder="Nom de l'ingrédient"
-                                        class="ingredient-name-input"
-                                        @select="(product) => handleProductSelect(product, ingredient)"
-                                        @create="(product) => handleProductCreate(product, ingredient)"
-                                    />
-                                </div>
-                                <div class="ingredient-actions">
-                                    <div class="ingredient-quantity-section">
-                                        <BaseInput
-                                        v-model="ingredient.quantity"
-                                        placeholder="Quantité"
-                                        class="ingredient-quantity-input"
-                                        />
-                                    </div>
-                                    <div class="ingredient-include-section">
-                                        <Checkbox
-                                        hideLabel
-                                        :label="ingredient.uniqueId"
-                                        :modelValue="ingredient.include"
-                                        @update:modelValue="ingredient.include = $event"
-                                        type="option"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <IngredientItem
+                            v-for="ingredient in newProducts"
+                            :key="ingredient.uniqueId"
+                            :ingredient="ingredient"
+                            :is-existing="false"
+                            @update:ingredient="handleIngredientUpdate"
+                            @product-select="handleProductSelect"
+                            @product-create="handleProductCreate"
+                        />
                     </div>
                 </div>
             </div>
@@ -342,68 +301,6 @@ h3 {
 
 
 
-.ingredient-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-    gap: 0.5rem;
-
-    :deep(input) {
-        margin: 0;
-    }
-}
-
-.ingredient-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    
-    :deep(label) {
-        margin: 0;
-    }
-}
-
-.ingredient-name-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
-    
-    .ingredient-name-input {
-        width: 100%;
-    }
-    
-    .ingredient-name-display {
-        font-weight: 500;
-        padding: 0.75rem;
-        background: var(--color-background-mute, #f3f4f6);
-        border-radius: 0.375rem;
-        color: var(--color-text-secondary, #666);
-    }
-}
-
-.ingredient-quantity-section {
-    width: 5rem;
-
-    :deep(input) {
-        width: 100%;
-        font-size: 0.8rem;
-        margin: 0;
-    }
-}
-
-.ingredient-include-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
 
 
 
@@ -450,13 +347,6 @@ h3 {
 @media (max-width: 768px) {
     .preview-container {
         padding: 1rem;
-    }
-    
-
-
-    .ingredient-include-section {
-        padding-top: 0;
-        justify-content: flex-start;
     }
 }
 </style>
