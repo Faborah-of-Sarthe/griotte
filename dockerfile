@@ -1,7 +1,7 @@
 FROM webdevops/php-apache:8.2-alpine
 
 # Installation dans votre Image du minimum pour que Docker fonctionne
-RUN apk add oniguruma-dev libxml2-dev nano
+RUN apk add oniguruma-dev libxml2-dev nano ca-certificates
 RUN docker-php-ext-install \
         bcmath \
         ctype \
@@ -11,6 +11,8 @@ RUN docker-php-ext-install \
 
 # Installation dans votre image de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+RUN update-ca-certificates
 
 # Installation dans votre image de NodeJS
 RUN apk add nodejs npm
