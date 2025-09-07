@@ -7,6 +7,7 @@ import BaseInput from '../components/forms/BaseInput.vue'
 import TextArea from '../components/forms/TextArea.vue'
 import Button from '../components/forms/Button.vue'
 import Checkbox from '../components/forms/Checkbox.vue'
+import Autocomplete from '../components/forms/Autocomplete.vue'
 import Loader from '../components/Loader.vue'
 
 const router = useRouter()
@@ -89,6 +90,21 @@ const goBack = () => {
     router.go(-1)
 }
 
+// Gérer la sélection d'un produit existant depuis l'autocomplete
+const handleProductSelect = (selectedProduct, ingredient) => {
+    // Remplacer l'ingrédient par le produit existant sélectionné
+    ingredient.name = selectedProduct.name
+    ingredient.existingProduct = selectedProduct
+}
+
+// Gérer la création d'un nouveau produit via l'autocomplete
+const handleProductCreate = (newProduct, ingredient) => {
+    // Mettre à jour le nom de l'ingrédient avec le texte saisi
+    ingredient.name = newProduct.name
+    // S'assurer que c'est toujours considéré comme un nouveau produit
+    ingredient.existingProduct = null
+}
+
 </script>
 
 <template>
@@ -150,7 +166,7 @@ const goBack = () => {
                                 <!-- Nom de l'ingrédient - non modifiable pour les existants -->
                                 <div class="ingredient-name-section">
                                     <div class="ingredient-name-display">
-                                        {{ ingredient.name }}
+                                        {{ ingredient.existingProduct.name }}
                                     </div>
                                 </div>
                                 <div class="ingredient-actions">
@@ -195,10 +211,12 @@ const goBack = () => {
                             <div class="ingredient-row">
                                 <!-- Nom de l'ingrédient - modifiable pour les nouveaux -->
                                 <div class="ingredient-name-section">
-                                    <BaseInput
+                                    <Autocomplete
                                         v-model="ingredient.name"
                                         placeholder="Nom de l'ingrédient"
                                         class="ingredient-name-input"
+                                        @select="(product) => handleProductSelect(product, ingredient)"
+                                        @create="(product) => handleProductCreate(product, ingredient)"
                                     />
                                 </div>
                                 <div class="ingredient-actions">

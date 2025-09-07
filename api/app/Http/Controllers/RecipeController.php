@@ -270,7 +270,7 @@ class RecipeController extends Controller
                 if (isset($ingredientData['existingProduct']) && $ingredientData['existingProduct']) {
                     // Utiliser le produit existant
                     $productId = $ingredientData['existingProduct']['id'];
-                } else {
+                } elseif(isset($ingredientData['name']) && $ingredientData['name']) {
                     // Créer un nouveau produit
                     $product = $user->products()->create([
                         'name' => ucfirst($ingredientData['name']),

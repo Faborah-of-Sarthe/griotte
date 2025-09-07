@@ -5,6 +5,7 @@
       :modelValue="modelValue"
       @input="handleInput"
       @focus="showSuggestions = true"
+      @blur="handleBlur"
       class="autocomplete-input"
       placeholder="Rechercher un ingrédient"
     />
@@ -58,7 +59,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'select'])
+const emit = defineEmits(['update:modelValue', 'select', 'create'])
 
 const showSuggestions = ref(false)
 const debouncedSearch = useDebouncedRef('', 300)
@@ -82,6 +83,14 @@ const handleInput = (event) => {
   const value = event.target.value
   emit('update:modelValue', value)
   debouncedSearch.value = value
+}
+
+const handleBlur = () => {
+  // Délai pour permettre le clic sur une suggestion avant de fermer
+  setTimeout(() => {
+    showSuggestions.value = false
+    searchTerm.value = ''
+  }, 150)
 }
 
 watch(debouncedSearch, (value) => {
@@ -134,7 +143,7 @@ document.addEventListener('click', handleClickOutside)
   border-top: none;
   border-radius: 0 0 0.25rem 0.25rem;
   overflow-y: auto;
-  z-index: 10;
+  z-index: 12;
   padding: 1rem;
   box-shadow: 0 0 10px 0 rgba(105, 0, 0, 0.2);
 }
