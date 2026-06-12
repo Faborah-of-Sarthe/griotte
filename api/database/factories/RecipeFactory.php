@@ -2,13 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Recipe>
  */
 class RecipeFactory extends Factory
 {
+    protected $model = Recipe::class;
+
     /**
      * Define the model's default state.
      *
@@ -19,7 +23,8 @@ class RecipeFactory extends Factory
         return [
             'name' => fake()->word(),
             'description' => fake()->sentence(),
-            'user_id' => 16,
+            'link' => fake()->optional()->url(),
+            'user_id' => User::factory(),
             'to_make' => fake()->boolean(),
         ];
     }

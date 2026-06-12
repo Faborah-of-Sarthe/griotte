@@ -12,25 +12,29 @@ use GuzzleHttp\Exception\RequestException;
 
 class RecipeImportService
 {
+    private Client $client;
+
+    public function __construct(?Client $client = null)
+    {
+        $this->client = $client ?? new Client([
+            'timeout' => 30,
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language' => 'fr-FR,fr;q=0.9,en;q=0.8',
+                'Accept-Encoding' => 'gzip, deflate',
+                'Connection' => 'keep-alive',
+            ]
+        ]);
+    }
+
     /**
      * Extract recipe data from a URL using microdata and JSON-LD
      */
     public function extractRecipeFromUrl($url)
     {
         try {
-            // Utiliser Guzzle au lieu de file_get_contents
-            $client = new Client([
-                'timeout' => 30,
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Language' => 'fr-FR,fr;q=0.9,en;q=0.8',
-                    'Accept-Encoding' => 'gzip, deflate',
-                    'Connection' => 'keep-alive',
-                ]
-            ]);
-
-            $response = $client->get($url);
+            $response = $this->client->get($url);
             $html = $response->getBody()->getContents();
 
             if (!$html) {
@@ -46,7 +50,7 @@ class RecipeImportService
         // Créer un document DOM
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
-        $dom->loadHTML($html);
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $html);
         libxml_clear_errors();
 
         $xpath = new DOMXPath($dom);
@@ -204,14 +208,14 @@ class RecipeImportService
 
         // Patterns pour séparer quantité et nom d'ingrédient
         $patterns = [
+            // "2 tranches de pain" ou "3 gousses d'ail"
+            '/^([0-9]+(?:[,\.][0-9]+)?\s*(?:tranches?|gousses?|branches?|feuilles?|pincées?))\s*(?:de?\s+)?\s*(.+)$/i',
             // "70 g Farine" ou "70 g de Farine"
             '/^([0-9]+(?:[,\.][0-9]+)?\s*(?:g|kg|ml|cl|l|mg))\s*(?:de\s+)?\s*(.+)$/i',
             // "4 c. à soupe Huile d'olive" ou "2 cuillères à soupe de sucre"
             '/^([0-9]+(?:[,\.][0-9]+)?\s*(?:c\.|cuillères?|cuillère)\s*(?:à\s+(?:soupe|café|thé))?)\s*(?:de\s+)?\s*(.+)$/i',
             // "1/2 tasse de farine" ou "3/4 verre d'eau"
             '/^([0-9]+\/[0-9]+\s*(?:tasse|verre|bol)s?)\s*(?:de?\s+)?\s*(.+)$/i',
-            // "2 tranches de pain" ou "3 gousses d'ail"
-            '/^([0-9]+(?:[,\.][0-9]+)?\s*(?:tranches?|gousses?|branches?|feuilles?|pincées?))\s*(?:de?\s+)?\s*(.+)$/i',
             // "Une pincée de sel" ou "Un peu de poivre"
             '/^((?:une?|quelques?)\s*(?:pincées?|peu))\s*(?:de\s+)?\s*(.+)$/i',
             // Pattern pour nombre + nom au pluriel (ex: "2 oeufs")

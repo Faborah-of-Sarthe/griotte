@@ -95,7 +95,7 @@ class ProductController extends Controller
         ]);
 
         // Begin a transaction
-        DB::transaction(function () use ($request, $user, &$product) {
+        return DB::transaction(function () use ($request, $user, &$product) {
 
 
             // create the product
@@ -136,6 +136,7 @@ class ProductController extends Controller
             'name' => 'string|max:255',
             'to_buy' => 'boolean',
             'comment' => 'nullable|string',
+            'section_id' => 'nullable|integer|exists:sections,id',
         ]);
 
         if($request->has('name')) {
@@ -190,10 +191,9 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
         // delete the product
-        $product = Product::find($id);
         $product->delete();
 
         return response()->json([
@@ -216,21 +216,21 @@ class ProductController extends Controller
                 'message' => __('Product not found.')
             ], 404);
         } else {
-            // Attach the product to the section
-            $section->products()->attach($product->id);
-
             // Get the authenticated user
             $user = auth('sanctum')->user();
 
-            // For all this products sections
+            // Detach the product from the current store sections before attaching it.
             $sections = $product->sections;
-            foreach ($sections as $section) {
+            foreach ($sections as $product_section) {
                 // Check if the section belongs to the current store
-                if ($section->store_id == $user->currentStore->id) {
+                if ($product_section->store_id == $user->currentStore->id) {
                     // If yes, detach the product from this section
-                    $section->products()->detach($product->id);
+                    $product_section->products()->detach($product->id);
                 }
             }
+
+            // Attach the product to the section
+            $section->products()->syncWithoutDetaching($product->id);
         }
 
         return response()->json([

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +20,9 @@ class SectionFactory extends Factory
         return [
             'name' => fake()->word(),
             'color' => fake()->randomDigitNotNull(),
-            'icon' => fake()->randomNumber(2),
+            'icon' => fake()->word(),
             'order' => fake()->randomDigitNotNull(),
+            'store_id' => Store::factory(),
         ];
     }
 }

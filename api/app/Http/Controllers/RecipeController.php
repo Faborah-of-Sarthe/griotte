@@ -112,12 +112,16 @@ class RecipeController extends Controller
             'name' => 'required_if:product_id,null|string|max:255',
         ]);
 
-        if ($validated['product_id']) {
-            $recipe->products()->syncWithoutDetaching($validated['product_id']);
+        $product_id = $validated['product_id'] ?? null;
+
+        if ($product_id) {
+            $recipe->products()->syncWithoutDetaching($product_id);
         } else {
             $recipe->products()->create([
                 'name' => ucfirst($validated['name']),
                 'user_id' => auth('sanctum')->user()->id,
+                'to_buy' => false,
+                'comment' => '',
             ]);
         }
 

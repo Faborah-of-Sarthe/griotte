@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class ProductFactory extends Factory
             'name' => fake()->word(),
             'to_buy' => fake()->boolean(),
             'comment' => fake()->sentence(),
+            'user_id' => User::factory(),
         ];
     }
 }

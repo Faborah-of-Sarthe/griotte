@@ -14,6 +14,10 @@ return new class extends Migration
     {
         Schema::rename('recipe_product', 'product_recipe');
 
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement('ALTER TABLE product_recipe MODIFY quantity integer DEFAULT 1');
     }
 
@@ -22,7 +26,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE product_recipe MODIFY quantity integer DEFAULT NULL');
+        if (DB::connection()->getDriverName() !== 'sqlite') {
+            DB::statement('ALTER TABLE product_recipe MODIFY quantity integer DEFAULT NULL');
+        }
 
         Schema::rename('product_recipe', 'recipe_product');
     }
