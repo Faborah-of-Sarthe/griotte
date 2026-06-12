@@ -64,7 +64,8 @@ class UserControllerTest extends TestCase
         ])
             ->assertOk()
             ->assertJsonPath('message', 'Vos préférences ont bien été mises à jour.')
-            ->assertJsonPath('user.settings.unclassified_first', true);
+            ->assertJsonPath('user.settings.unclassified_first', true)
+            ->assertJsonIsObject('user.settings');
 
         $this->assertTrue($user->fresh()->settings->unclassified_first);
     }

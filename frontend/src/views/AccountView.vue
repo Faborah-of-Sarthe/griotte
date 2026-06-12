@@ -47,10 +47,20 @@ const user = ref({
 const queryClient = useQueryClient()
 const userStore = useUserStore()
 
-const normalizeSettings = (settings) => ({
-    unclassified_first: false,
-    ...settings,
-})
+const normalizeSettings = (settings) => {
+    if (typeof settings === 'string') {
+        try {
+            settings = JSON.parse(settings)
+        } catch {
+            settings = {}
+        }
+    }
+
+    return {
+        unclassified_first: false,
+        ...settings,
+    }
+}
 
 const { isLoading } = useQuery({
     queryKey:  ['user'],

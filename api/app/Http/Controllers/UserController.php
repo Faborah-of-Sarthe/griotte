@@ -52,7 +52,9 @@ class UserController extends Controller
 
         return response()->json([
             'message' => __('User settings updated successfully.'),
-            'user' => $user->fresh(),
+            'user' => array_merge($user->fresh()->toArray(), [
+                'settings' => $settings->toArray(),
+            ]),
         ]);
     }
 }
