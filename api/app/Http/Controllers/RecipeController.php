@@ -32,7 +32,7 @@ class RecipeController extends Controller
                 return $query->where('name', 'like', '%' . $request->search . '%');
             })
             ->orderBy('updated_at', 'desc')
-            ->paginate(10);
+            ->paginate(20);
     }
 
     public function show(Recipe $recipe)

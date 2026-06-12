@@ -4,10 +4,9 @@
       "type": "stdio",
       "command": "php",
       "args": [
-        "artisan",
+        "api/artisan",
         "boost:mcp"
-      ],
-      "cwd": "${workspaceFolder}/api"
+      ]
     }
   }
 }

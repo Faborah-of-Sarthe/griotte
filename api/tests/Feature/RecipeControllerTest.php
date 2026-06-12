@@ -29,16 +29,16 @@ class RecipeControllerTest extends TestCase
             ->assertJsonPath('data.0.name', 'Pizza maison');
     }
 
-    public function test_index_pagine_les_recettes_par_dix(): void
+    public function test_index_pagine_les_recettes_par_vingt(): void
     {
         $user = $this->authentifier();
-        Recipe::factory()->count(11)->for($user)->create();
+        Recipe::factory()->count(21)->for($user)->create();
 
         $this->getJson('/api/recipes')
             ->assertOk()
-            ->assertJsonCount(10, 'data')
-            ->assertJsonPath('per_page', 10)
-            ->assertJsonPath('total', 11);
+            ->assertJsonCount(20, 'data')
+            ->assertJsonPath('per_page', 20)
+            ->assertJsonPath('total', 21);
     }
 
     public function test_count_retourne_le_nombre_de_recettes_a_preparer(): void

@@ -107,8 +107,8 @@ const toggleToMake = () => {
 }
 
 .checkbox.checked {
-    stroke: var(--color-background);
-    border: 2px solid var(--color-background);
+    stroke: var(--color-primary);
+    border: 2px solid var(--color-primary);
 }
 
 .checkbox.disabled {

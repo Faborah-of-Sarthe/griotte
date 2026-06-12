@@ -41,11 +41,11 @@ const props = defineProps({
 }
 
 .checked {
-    background: var(--color-primary);
+    background: var(--color-1-light);
 }
 
 .checked .recipe-card__name {
-    color: var(--color-background);
+    color: var(--color-text);
 }
 
 

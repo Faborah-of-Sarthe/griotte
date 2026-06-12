@@ -193,7 +193,7 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         padding-right: .5rem;
     }
     .checked::before {
-        color: var(--color-background);
+        color: var(--color-primary);
     }
     .controls {
 
