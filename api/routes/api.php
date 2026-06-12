@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\CheckOwnership;
@@ -26,9 +25,7 @@ use App\Http\Controllers\RecipeController;
 // Routes protected by Sanctum
 Route::middleware('auth:sanctum', 'verified')->group(function() {
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', [UserController::class, 'show']);
     Route::put('/user', [UserController::class, 'update']);
     Route::put('/user/settings', [UserController::class, 'update_settings']);
 

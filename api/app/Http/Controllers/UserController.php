@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function show(Request $request)
+    {
+        $user = $request->user()->fresh();
+        $settings = UserSettings::fromValue($user->settings);
+
+        return response()->json(array_merge($user->toArray(), [
+            'settings' => $settings->toArray(),
+        ]));
+    }
+
     public function update(Request $request)
     {
         // Validate the request

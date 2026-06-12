@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\Feature\Concerns\CreatesGriotteData;
 use Tests\TestCase;
@@ -53,6 +54,23 @@ class UserControllerTest extends TestCase
             ->assertJsonPath('message', 'Votre compte a bien été mis à jour.');
 
         $this->assertTrue(Hash::check('nouveau-secret', $user->fresh()->password));
+    }
+
+    public function test_show_retourne_les_preferences_comme_un_objet_normalise(): void
+    {
+        $user = $this->authentifier();
+
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'settings' => '{"unclassified_first":true}',
+            ]);
+
+        $this->getJson('/api/user')
+            ->assertOk()
+            ->assertJsonPath('settings.unclassified_first', true)
+            ->assertJsonPath('settings.keep_screen_awake', false)
+            ->assertJsonIsObject('settings');
     }
 
     public function test_update_settings_modifie_les_preferences_utilisateur(): void
