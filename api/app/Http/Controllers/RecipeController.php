@@ -31,7 +31,7 @@ class RecipeController extends Controller
             ->when($request->has('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->paginate(10);
     }
 
