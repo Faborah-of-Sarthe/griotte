@@ -144,7 +144,7 @@ const { data, error, fetchNextPage, isLoading,isFetching, hasNextPage } = useInf
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1000;
+        z-index: 10;
         padding-bottom: 2rem;
         pointer-events: none;
 

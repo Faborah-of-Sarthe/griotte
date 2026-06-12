@@ -1,10 +1,11 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import axios from 'axios'
 import Loader from '../components/Loader.vue'
 import Button from '../components/forms/Button.vue'
 import Cross from '../components/icons/Cross.vue'
+import CheckMark from '../components/icons/CheckMark.vue'
 import ExternalLink from '../components/icons/ExternalLink.vue'
 import TodoButton from '../components/TodoButton.vue'
 import Modal from '../components/Modal.vue'
@@ -14,6 +15,7 @@ import { useToast } from 'vue-toastification'
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
+const queryClient = useQueryClient()
 
 const recipeId = computed(() => route.params.id)
 
@@ -45,6 +47,10 @@ const {mutate: addIngredient} = useMutation({
     onSettled: (data, error, ingredient) => {
         addingIngredients.value.delete(ingredient.id)
     },
+    onSuccess: async () => {
+        await queryClient.invalidateQueries(['recipe', recipeId.value])
+        queryClient.invalidateQueries(['products'])
+    },
     onError: (error) => {
         console.error('Erreur lors de l\'ajout de l\'ingrédient à la liste:', error)
     }
@@ -56,6 +62,10 @@ const {isLoading: isAddingAllIngredients, mutate: addAllIngredients} = useMutati
             `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}/add-all-to-list`
         ) 
         return response.data
+    },
+    onSuccess: async () => {
+        await queryClient.invalidateQueries(['recipe', recipeId.value])
+        queryClient.invalidateQueries(['products'])
     },
     onError: (error) => {
         console.error('Erreur lors de l\'ajout des ingrédients à la liste:', error)
@@ -155,9 +165,11 @@ const handleDeleteRecipe = () => {
                             @click="addIngredientToList(product)" 
                             type="button"
                             class="add-button"
-                            :disabled="addingIngredients.has(product.id)"
+                            :disabled="addingIngredients.has(product.id) || product.to_buy"
+                            :title="product.to_buy ? 'Déjà dans la liste de courses' : 'Ajouter à la liste de courses'"
                             >
-                                <Cross class="plus-icon" />
+                                <CheckMark v-if="product.to_buy" class="added-icon checked" />
+                                <Cross v-else class="plus-icon" />
                             </Button>
                         </li>
                     </ul>
@@ -344,6 +356,15 @@ h2 {
         width: .8rem;
         height: .8rem;
         transform: rotate(45deg);
+    }
+    .added-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-left: 0;
+        border: 0 !important;
+        stroke: var(--color-primary) !important;
+        stroke-width: 5px;
+        cursor: default;
     }
 }
 .add-all-ingredients:disabled {
