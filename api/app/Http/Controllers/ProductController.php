@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Settings\UserSettings;
 use App\Models\User;
 use App\Models\Store;
 use App\Models\Product;
@@ -50,7 +51,7 @@ class ProductController extends Controller
                                 })
                                 ->get();
 
-            if ($user->settings?->unclassified_first === true) {
+            if (UserSettings::fromValue($user->settings)->unclassified_first) {
                 $products->prepend($noSection);
             } else {
                 $products->push($noSection);

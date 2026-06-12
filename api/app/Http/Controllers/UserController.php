@@ -40,7 +40,7 @@ class UserController extends Controller
         $donnees_validees = $request->validate(UserSettings::validationRules());
 
         $user = $request->user();
-        $settings = $user->settings ?? UserSettings::fromArray(null);
+        $settings = UserSettings::fromValue($user->settings);
         $settings = $settings->with($donnees_validees);
 
         DB::table('users')

@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\Section;
 use App\Models\Store;
 use App\Models\User;
+use App\Settings\UserSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -28,6 +29,16 @@ class ModelTest extends TestCase
         $this->assertTrue($user->products->contains($product));
         $this->assertTrue($user->recipes->contains($recipe));
         $this->assertTrue($store->is($user->currentStore));
+    }
+
+    public function test_user_settings_normalise_une_chaine_json(): void
+    {
+        $settings = UserSettings::fromValue('{"unclassified_first":true}');
+
+        $this->assertTrue($settings->unclassified_first);
+        $this->assertSame([
+            'unclassified_first' => true,
+        ], $settings->toArray());
     }
 
     public function test_section_first_section_cree_la_section_et_les_produits_par_defaut(): void

@@ -26,6 +26,25 @@ final class UserSettings implements Arrayable, JsonSerializable
         return $regles;
     }
 
+    public static function fromValue(mixed $valeur): self
+    {
+        if ($valeur instanceof self) {
+            return $valeur;
+        }
+
+        if (is_string($valeur)) {
+            $donnees = json_decode($valeur, true);
+
+            return self::fromArray(is_array($donnees) ? $donnees : null);
+        }
+
+        if (is_array($valeur)) {
+            return self::fromArray($valeur);
+        }
+
+        return self::fromArray(null);
+    }
+
     /**
      * @param array<string, mixed>|null $donnees
      */
