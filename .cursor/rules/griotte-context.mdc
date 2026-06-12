@@ -46,6 +46,7 @@ Le dépôt est séparé en deux applications :
 - Les routes avec ressources passent souvent par `CheckOwnership`.
 - La liste de courses est calculée depuis le magasin courant et les produits `to_buy = true`.
 - Les produits sans rayon dans le magasin courant sont renvoyés dans une section virtuelle `Non classé`.
+- Les préférences utilisateur sont stockées dans `users.settings` et doivent passer par `App\Settings\UserSettings` et `App\Settings\UserSettingKey`, sans accès direct au JSON depuis les contrôleurs.
 - L'import de recette récupère une URL externe, extrait JSON-LD ou microdonnées schema.org, puis rapproche les ingrédients des produits existants.
 
 ## Points D'Attention

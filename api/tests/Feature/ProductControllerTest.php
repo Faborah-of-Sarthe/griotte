@@ -47,6 +47,33 @@ class ProductControllerTest extends TestCase
         $this->assertTrue($produit_sans_section->exists);
     }
 
+    public function test_index_positionne_les_produits_non_classes_avant_les_rayons_selon_la_preference(): void
+    {
+        [$user, $store] = $this->creer_magasin_courant();
+        $user->settings = ['unclassified_first' => true];
+        $user->save();
+        $this->authentifier($user->fresh());
+
+        $section_lente = Section::factory()->for($store)->create(['name' => 'Surgelés', 'order' => 2]);
+        $section_rapide = Section::factory()->for($store)->create(['name' => 'Frais', 'order' => 1]);
+
+        $produit_classe = Product::factory()->for($user)->create(['name' => 'Lait', 'to_buy' => true]);
+        $produit_sans_section = Product::factory()->for($user)->create(['name' => 'Pain', 'to_buy' => true]);
+
+        $section_rapide->products()->attach($produit_classe->id);
+
+        $this->getJson('/api/products')
+            ->assertOk()
+            ->assertJsonPath('0.id', 0)
+            ->assertJsonPath('0.name', 'Non classé')
+            ->assertJsonPath('1.id', $section_rapide->id)
+            ->assertJsonPath('2.id', $section_lente->id)
+            ->assertJsonFragment(['name' => 'Pain'])
+            ->assertJsonFragment(['name' => 'Lait']);
+
+        $this->assertTrue($produit_sans_section->exists);
+    }
+
     public function test_index_retourne_404_si_aucun_magasin_courant(): void
     {
         $user = $this->authentifier();

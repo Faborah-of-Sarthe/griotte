@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         return $request->user();
     });
     Route::put('/user', [UserController::class, 'update']);
+    Route::put('/user/settings', [UserController::class, 'update_settings']);
 
     // PRODUCTS
     // new product

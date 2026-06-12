@@ -33,6 +33,7 @@
     "Current store updated successfully." : "Magasin bien sélectionné !",
     "The provided password is incorrect." : "Le mot de passe fourni est incorrect.",
     "User updated successfully." : "Votre compte a bien été mis à jour.",
+    "User settings updated successfully." : "Vos préférences ont bien été mises à jour.",
     "(and :count more error)" : "(et :count erreur supplémentaire)",
     "(and :count more errors)" : "(et :count erreurs supplémentaires)"
 }

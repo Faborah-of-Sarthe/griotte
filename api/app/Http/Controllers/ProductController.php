@@ -50,7 +50,12 @@ class ProductController extends Controller
                                 })
                                 ->get();
 
-            $products->push($noSection);
+            if ($user->settings->unclassified_first) {
+                $products->prepend($noSection);
+            } else {
+                $products->push($noSection);
+            }
+
             return $products;
         }
 

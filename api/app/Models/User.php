@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UserSettingsCast;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\CustomVerifyEmail;
 use Illuminate\Notifications\Notifiable;
@@ -42,6 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'settings' => UserSettingsCast::class,
         ];
     }
 

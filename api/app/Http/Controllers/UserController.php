@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Settings\UserSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,5 +32,19 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => __('User updated successfully.')]);
+    }
+
+    public function update_settings(Request $request)
+    {
+        $donnees_validees = $request->validate(UserSettings::validationRules());
+
+        $user = $request->user();
+        $user->settings = $user->settings->with($donnees_validees);
+        $user->save();
+
+        return response()->json([
+            'message' => __('User settings updated successfully.'),
+            'user' => $user->fresh(),
+        ]);
     }
 }

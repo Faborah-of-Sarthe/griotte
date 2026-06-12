@@ -7,7 +7,7 @@
             <li><RouterLink :to="{ name: 'my-list' }">Ma liste</RouterLink></li>
             <li><RouterLink :to="{ name: 'my-stores' }">Mes magasins</RouterLink></li>
             <li><RouterLink :to="{ name: 'my-recipes' }">Mes recettes</RouterLink></li>
-            <li><RouterLink :to="{ name: 'my-account' }">Mon compte</RouterLink></li>
+            <li><RouterLink :to="{ name: 'my-account' }">Paramètres</RouterLink></li>
             <li><RouterLink :to="{ name: 'logout' }">Déconnexion</RouterLink></li>
         </ul>
     </nav>

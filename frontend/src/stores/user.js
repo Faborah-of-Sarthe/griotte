@@ -37,6 +37,11 @@ export const useUserStore = defineStore({
         setTutorial() {
             this.user.finished_tutorial = true;
         },
+        setSettings(settings) {
+            if (this.user) {
+                this.user.settings = settings;
+            }
+        },
         setRecipeChoice(choice) {
             this.recipeChoice = choice;
         },

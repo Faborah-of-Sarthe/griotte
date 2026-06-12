@@ -54,4 +54,35 @@ class UserControllerTest extends TestCase
 
         $this->assertTrue(Hash::check('nouveau-secret', $user->fresh()->password));
     }
+
+    public function test_update_settings_modifie_les_preferences_utilisateur(): void
+    {
+        $user = $this->authentifier();
+
+        $this->putJson('/api/user/settings', [
+            'unclassified_first' => true,
+        ])
+            ->assertOk()
+            ->assertJsonPath('message', 'Vos préférences ont bien été mises à jour.')
+            ->assertJsonPath('user.settings.unclassified_first', true);
+
+        $this->assertTrue($user->fresh()->settings->unclassified_first);
+    }
+
+    public function test_update_settings_ne_conserve_pas_les_cles_inconnues(): void
+    {
+        $user = $this->authentifier();
+
+        $this->putJson('/api/user/settings', [
+            'unclassified_first' => true,
+            'cle_inconnue' => true,
+        ])
+            ->assertOk()
+            ->assertJsonPath('user.settings.unclassified_first', true)
+            ->assertJsonMissingPath('user.settings.cle_inconnue');
+
+        $this->assertSame([
+            'unclassified_first' => true,
+        ], $user->fresh()->settings->toArray());
+    }
 }
