@@ -1,0 +1,56 @@
+---
+description: Contexte projet Griotte pour les agents LLM
+alwaysApply: true
+---
+
+# Contexte Projet - Griotte
+
+Griotte est une PWA de liste de courses avec gestion de magasins, rayons, produits et recettes.
+Le dépôt est séparé en deux applications :
+- `api/` : API Laravel 10 / PHP 8.1+, avec Fortify et Sanctum.
+- `frontend/` : SPA Vue 3 / Vite, avec Pinia, Vue Router, TanStack Vue Query, Axios et PWA.
+
+## Domaine Métier
+
+- Un `User` possède des `Store`, `Product` et `Recipe`.
+- `User.current_store` désigne le magasin actif pour la liste de courses.
+- Un `Store` contient des `Section`, ordonnées et personnalisées par couleur/icône.
+- Une `Section` contient des `Product` via la table pivot `product_section`.
+- Une `Recipe` contient des `Product` via `product_recipe`, avec une quantité texte.
+- `Product.to_buy` indique si le produit apparaît dans la liste de courses.
+- `Product.comment` sert aux notes utilisateur et aux détails ajoutés depuis les recettes.
+
+## Points D'Entrée
+
+- Routes API : `api/routes/api.php`
+- Modèles : `api/app/Models`
+- Contrôleurs : `api/app/Http/Controllers`
+- Import de recettes : `api/app/Services/RecipeImportService.php`
+- Entrée frontend : `frontend/src/main.js`
+- Routing frontend : `frontend/src/router/index.js`
+- Vues principales : `frontend/src/views`
+- Stores Pinia : `frontend/src/stores`
+
+## Conventions
+
+- En PHP/Laravel, utiliser des variables en `snake_case`.
+- Répondre et commenter le code en français.
+- Respecter les patterns existants avant d'ajouter une abstraction.
+- Garder les changements centrés sur le flux demandé.
+- Ne pas inclure de secrets depuis `.env`.
+- Ne pas modifier `docker-compose.yml` sans demande explicite : il est documenté comme réservé à la production.
+
+## Fonctionnement Important
+
+- Les routes métier sont protégées par `auth:sanctum` et `verified`.
+- Les routes avec ressources passent souvent par `CheckOwnership`.
+- La liste de courses est calculée depuis le magasin courant et les produits `to_buy = true`.
+- Les produits sans rayon dans le magasin courant sont renvoyés dans une section virtuelle `Non classé`.
+- L'import de recette récupère une URL externe, extrait JSON-LD ou microdonnées schema.org, puis rapproche les ingrédients des produits existants.
+
+## Points D'Attention
+
+- Les tests métier sont quasi absents : seuls des tests Laravel d'exemple existent.
+- Certaines migrations anciennes ont des noms ou méthodes `down()` suspects.
+- `RecipeImportService` touche des URLs externes : vérifier timeout, validation d'URL, SSRF et parsing fragile avant d'étendre.
+- Le README racine mentionne `npm run start`, mais `frontend/package.json` expose `npm run dev`.
