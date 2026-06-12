@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Settings\UserSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -40,8 +41,14 @@ class UserController extends Controller
 
         $user = $request->user();
         $settings = $user->settings ?? UserSettings::fromArray(null);
-        $user->settings = $settings->with($donnees_validees);
-        $user->save();
+        $settings = $settings->with($donnees_validees);
+
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'settings' => json_encode($settings->toArray(), JSON_THROW_ON_ERROR),
+                'updated_at' => now(),
+            ]);
 
         return response()->json([
             'message' => __('User settings updated successfully.'),
