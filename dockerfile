@@ -1,4 +1,4 @@
-FROM webdevops/php-apache:8.2-alpine
+FROM webdevops/php-apache:8.3-alpine
 
 # Installation dans votre Image du minimum pour que Docker fonctionne
 RUN apk add oniguruma-dev libxml2-dev nano ca-certificates
@@ -27,7 +27,7 @@ WORKDIR api
 
 
 # Installation et configuration de votre site pour la production
-# https://laravel.com/docs/10.x/deployment#optimizing-configuration-loading
+# https://laravel.com/docs/12.x/deployment#optimizing-configuration-loading
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 # Generate security key
 RUN php artisan key:generate
