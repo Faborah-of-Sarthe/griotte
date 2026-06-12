@@ -84,5 +84,6 @@ class UserControllerTest extends TestCase
         $this->assertSame([
             'unclassified_first' => true,
         ], $user->fresh()->settings->toArray());
+        $this->assertJson($user->fresh()->getRawOriginal('settings'));
     }
 }

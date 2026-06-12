@@ -23,7 +23,10 @@ class UserSettingsCast implements CastsAttributes
         return UserSettings::fromArray(is_array($donnees) ? $donnees : null);
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    /**
+     * @return array<string, string>
+     */
+    public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
         if ($value === null) {
             $value = new UserSettings();
@@ -37,6 +40,8 @@ class UserSettingsCast implements CastsAttributes
             throw new InvalidArgumentException('Les paramètres utilisateur doivent être un objet UserSettings.');
         }
 
-        return json_encode($value->toArray(), JSON_THROW_ON_ERROR);
+        return [
+            $key => json_encode($value->toArray(), JSON_THROW_ON_ERROR),
+        ];
     }
 }
