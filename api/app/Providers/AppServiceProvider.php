@@ -20,11 +20,14 @@ class AppServiceProvider extends ServiceProvider
             public function toResponse($request)
             {
                 $user = $request->user();
+                $user_settings = $user->settings->toArray();
+
                 return $request->wantsJson()
                             ? response()->json([
                                 'two_factor' => false,
                                 'finished_tutorial' => (bool) $user->finished_tutorial,
                                 'email' => $user->email,
+                                'settings' => $user_settings,
                                 ])
                             : redirect()->intended(Fortify::redirects('login'));
             }

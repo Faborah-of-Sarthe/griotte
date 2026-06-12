@@ -5,21 +5,28 @@ namespace App\Settings;
 enum UserSettingKey: string
 {
     /**
-     * Whether to display the unclassified products first in the product list.
+     * Affiche les produits non classés avant les rayons dans la liste.
      */
     case UnclassifiedFirst = 'unclassified_first';
+
+    /**
+     * Garde l'écran allumé quand la liste de courses est affichée.
+     */
+    case KeepScreenAwake = 'keep_screen_awake';
 
     public function type(): string
     {
         return match ($this) {
-            self::UnclassifiedFirst => 'boolean',
+            self::UnclassifiedFirst,
+            self::KeepScreenAwake => 'boolean',
         };
     }
 
     public function valeurParDefaut(): mixed
     {
         return match ($this) {
-            self::UnclassifiedFirst => false,
+            self::UnclassifiedFirst,
+            self::KeepScreenAwake => false,
         };
     }
 

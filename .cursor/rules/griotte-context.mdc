@@ -34,7 +34,8 @@ Le dépôt est séparé en deux applications :
 ## Conventions
 
 - En PHP/Laravel, utiliser des variables en `snake_case`.
-- Répondre et commenter le code en français.
+- Répondre  en français.
+- Commenter le code en anglais
 - Respecter les patterns existants avant d'ajouter une abstraction.
 - Garder les changements centrés sur le flux demandé.
 - Ne pas inclure de secrets depuis `.env`.

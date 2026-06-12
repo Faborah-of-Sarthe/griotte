@@ -61,13 +61,16 @@ class UserControllerTest extends TestCase
 
         $this->putJson('/api/user/settings', [
             'unclassified_first' => true,
+            'keep_screen_awake' => true,
         ])
             ->assertOk()
             ->assertJsonPath('message', 'Vos préférences ont bien été mises à jour.')
             ->assertJsonPath('user.settings.unclassified_first', true)
+            ->assertJsonPath('user.settings.keep_screen_awake', true)
             ->assertJsonIsObject('user.settings');
 
         $this->assertTrue($user->fresh()->settings->unclassified_first);
+        $this->assertTrue($user->fresh()->settings->keep_screen_awake);
     }
 
     public function test_update_settings_ne_conserve_pas_les_cles_inconnues(): void
@@ -80,10 +83,12 @@ class UserControllerTest extends TestCase
         ])
             ->assertOk()
             ->assertJsonPath('user.settings.unclassified_first', true)
+            ->assertJsonPath('user.settings.keep_screen_awake', false)
             ->assertJsonMissingPath('user.settings.cle_inconnue');
 
         $this->assertSame([
             'unclassified_first' => true,
+            'keep_screen_awake' => false,
         ], $user->fresh()->settings->toArray());
         $this->assertJson($user->fresh()->getRawOriginal('settings'));
     }

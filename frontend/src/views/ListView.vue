@@ -8,7 +8,8 @@ import RollbackButton from '@/components/RollbackButton.vue'
 import StoreSelector from '@/components/StoreSelector.vue'
 import Loader from '@/components/Loader.vue'
 import axios from 'axios'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useWakeLock } from '@vueuse/core'
 import { useProductFormStore } from '../stores/productForm'
 import { useActionsStore } from '../stores/actions'
 import { useUserStore } from '../stores/user'
@@ -22,6 +23,27 @@ const queryClient = useQueryClient()
 const productFormStore = useProductFormStore();
 const actionsStore = useActionsStore();
 const userStore = useUserStore()
+
+const shouldKeepScreenAwake = computed(() => {
+  return !!userStore.user?.settings?.keep_screen_awake
+})
+
+// Keeps the screen awake on the shopping list according to the user's preference.
+// useWakeLock manages tab visibility and releases the lock on unmount.
+const { isSupported: isWakeLockSupported, request: requestWakeLock, release: releaseWakeLock } = useWakeLock()
+
+watch(shouldKeepScreenAwake, (shouldKeep) => {
+  if (!isWakeLockSupported.value) {
+    return
+  }
+
+  if (shouldKeep) {
+    requestWakeLock('screen')
+    return
+  }
+
+  releaseWakeLock()
+}, { immediate: true })
 
 
 // Get sections and products from API

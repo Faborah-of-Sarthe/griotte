@@ -9,6 +9,7 @@ final class UserSettings implements Arrayable, JsonSerializable
 {
     public function __construct(
         public readonly bool $unclassified_first = false,
+        public readonly bool $keep_screen_awake = false,
     ) {
     }
 

@@ -10,7 +10,13 @@
                 label="Positionner les produits non classés avant les rayons"
                 :model-value="user.settings.unclassified_first"
                 :disabled="settingsLoading"
-                @update:modelValue="updateUnclassifiedFirst"
+                @update:modelValue="updateSetting('unclassified_first', $event)"
+            />
+            <Checkbox
+                label="Garder l'écran allumé sur ma liste de courses"
+                :model-value="user.settings.keep_screen_awake"
+                :disabled="settingsLoading"
+                @update:modelValue="updateSetting('keep_screen_awake', $event)"
             />
         </div>
         <hr class="settings__separator">
@@ -40,27 +46,10 @@ import { useUserStore } from '../stores/user';
 const password = ref('')
 const newPassword = ref('')
 const user = ref({
-    settings: {
-        unclassified_first: false,
-    },
+    settings: {},
 });
 const queryClient = useQueryClient()
 const userStore = useUserStore()
-
-const normalizeSettings = (settings) => {
-    if (typeof settings === 'string') {
-        try {
-            settings = JSON.parse(settings)
-        } catch {
-            settings = {}
-        }
-    }
-
-    return {
-        unclassified_first: false,
-        ...settings,
-    }
-}
 
 const { isLoading } = useQuery({
     queryKey:  ['user'],
@@ -69,11 +58,8 @@ const { isLoading } = useQuery({
             withCredentials: true,
         })
 
-        user.value = {
-            ...res.data,
-            settings: normalizeSettings(res.data.settings),
-        }
-        userStore.setSettings(user.value.settings)
+        user.value = res.data
+        userStore.setSettings(res.data.settings)
         return res.data
     },
 })
@@ -94,26 +80,29 @@ const editMutation = useMutation({
 });
 
 const settingsMutation = useMutation({
-    mutationFn: (unclassifiedFirst) => {
-        return axios.put(import.meta.env.VITE_API_URL + 'user/settings', {
-            unclassified_first: unclassifiedFirst,
-        }, {
+    mutationFn: (settings) => {
+        return axios.put(import.meta.env.VITE_API_URL + 'user/settings', settings, {
             withCredentials: true,
         })
     },
-    onSuccess: (res) => {
-        const settings = normalizeSettings(res.data.user.settings)
+    onSuccess: (res, updatedSettings) => {
+        const settings = res.data.user.settings
         user.value.settings = settings
         userStore.setSettings(settings)
-        queryClient.invalidateQueries('products')
+
+        if (Object.prototype.hasOwnProperty.call(updatedSettings, 'unclassified_first')) {
+            queryClient.invalidateQueries('products')
+        }
     },
 });
 
 const settingsLoading = computed(() => settingsMutation.isLoading.value)
 
-function updateUnclassifiedFirst(unclassifiedFirst) {
-    user.value.settings.unclassified_first = unclassifiedFirst
-    settingsMutation.mutate(unclassifiedFirst)
+function updateSetting(settingKey, value) {
+    user.value.settings[settingKey] = value
+    settingsMutation.mutate({
+        [settingKey]: value,
+    })
 }
 </script>
 

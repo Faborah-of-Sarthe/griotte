@@ -70,7 +70,7 @@ class RecipeController extends Controller
 
         $recipe->fill($validated)->save();
 
-        return $recipe;
+        return $recipe->load('products');
     }
 
     /**
