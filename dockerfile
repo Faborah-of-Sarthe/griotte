@@ -1,4 +1,4 @@
-FROM webdevops/php-apache:8.2-alpine
+FROM webdevops/php-apache:8.3-alpine
 
 # Installation dans votre Image du minimum pour que Docker fonctionne
 RUN apk add oniguruma-dev libxml2-dev nano ca-certificates

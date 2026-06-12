@@ -4,7 +4,7 @@
 
 #### Requirements
 
-Griotte requires PHP 8.0 to 8.2
+Griotte requires PHP 8.3 or higher
 
 #### Backend
 
