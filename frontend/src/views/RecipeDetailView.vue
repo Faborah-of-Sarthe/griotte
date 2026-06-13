@@ -9,12 +9,11 @@ import CheckMark from '../components/icons/CheckMark.vue'
 import ExternalLink from '../components/icons/ExternalLink.vue'
 import TodoButton from '../components/TodoButton.vue'
 import Modal from '../components/Modal.vue'
+import MarkdownContent from '../components/MarkdownContent.vue'
 import { computed, ref } from 'vue'
-import { useToast } from 'vue-toastification'
 
 const route = useRoute()
 const router = useRouter()
-const toast = useToast()
 const queryClient = useQueryClient()
 
 const recipeId = computed(() => route.params.id)
@@ -191,7 +190,7 @@ const handleDeleteRecipe = () => {
 
             <div v-if="recipe.description" class="description">
                 <h2>Description</h2>
-                <p>{{ recipe.description }}</p>
+                <MarkdownContent :source="recipe.description" />
             </div>
          
             
@@ -276,11 +275,6 @@ h2 {
         margin-bottom: 1rem;
     }
     margin-bottom: 2rem;
-    white-space: pre-wrap;
-    p {
-        line-height: 1.6;
-        margin: 0;
-    }
 }
 
 .buttons {

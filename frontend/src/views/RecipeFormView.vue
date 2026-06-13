@@ -174,6 +174,9 @@ const handleSubmit = (action = 'ingredients') => {
             placeholder="Une recette de clafoutis aux cerises" 
             v-model="recipe.description"
         />
+        <p class="markdown-help">
+            Mise en forme markdown supportée : **gras**, *italique*, # titres, - listes, [liens](https://exemple.com).
+        </p>
         <BaseInput 
             label="Lien" 
             placeholder="www.recette-aux-cerises.com" 
@@ -279,6 +282,12 @@ const handleSubmit = (action = 'ingredients') => {
     background-color: var(--color-background-soft, #f8f9fa);
     display: flex;
     justify-content: center;
+}
+
+.markdown-help {
+    color: var(--color-text-alt);
+    font-size: 0.9rem;
+    margin: -0.5rem 0 1rem;
 }
 
 .products-list {
