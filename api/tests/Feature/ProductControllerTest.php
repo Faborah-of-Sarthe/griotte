@@ -99,7 +99,8 @@ class ProductControllerTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('message', 'Produit créé avec succès.')
             ->assertJsonPath('product.name', 'Bananes')
-            ->assertJsonPath('product.to_buy', 1)
+            ->assertJsonPath('product.to_buy', true)
+            ->assertJsonPath('product.is_temporary', false)
             ->assertJsonPath('user.finished_tutorial', 1);
 
         $product = Product::where('name', 'Bananes')->first();
@@ -107,6 +108,81 @@ class ProductControllerTest extends TestCase
         $this->assertNotNull($product);
         $this->assertSame($user->id, $product->user_id);
         $this->assertTrue($section->products()->where('products.id', $product->id)->exists());
+    }
+
+    public function test_store_cree_un_produit_temporaire_a_acheter(): void
+    {
+        [$user] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+
+        $this->postJson('/api/products', [
+            'name' => 'pile bouton',
+            'is_temporary' => true,
+        ])
+            ->assertCreated()
+            ->assertJsonPath('product.name', 'Pile bouton')
+            ->assertJsonPath('product.to_buy', true)
+            ->assertJsonPath('product.is_temporary', true);
+
+        $this->assertDatabaseHas('products', [
+            'name' => 'Pile bouton',
+            'user_id' => $user->id,
+            'to_buy' => true,
+            'is_temporary' => true,
+        ]);
+    }
+
+    public function test_index_conserve_les_produits_temporaires_coches_recents(): void
+    {
+        [$user] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+
+        // The deletion of checked temporary products is handled on the frontend
+        // once the undo window is over, so the API must keep recent ones.
+        $produit_temporaire_coche = Product::factory()->for($user)->create([
+            'name' => 'Temporaire coché',
+            'to_buy' => false,
+            'is_temporary' => true,
+        ]);
+
+        $this->getJson('/api/products')
+            ->assertOk()
+            ->assertJsonMissing(['name' => 'Temporaire coché']);
+
+        $this->assertDatabaseHas('products', ['id' => $produit_temporaire_coche->id]);
+    }
+
+    public function test_index_supprime_les_produits_temporaires_coches_orphelins(): void
+    {
+        [$user] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+
+        // Safety net: a temporary product checked off more than 24h ago (the
+        // frontend never cleaned it up) is purged, while a temporary product
+        // still "to buy" and a recent one are kept.
+        $orphelin = Product::factory()->for($user)->create([
+            'name' => 'Temporaire orphelin',
+            'to_buy' => false,
+            'is_temporary' => true,
+            'updated_at' => now()->subDays(2),
+        ]);
+        $recent = Product::factory()->for($user)->create([
+            'name' => 'Temporaire récent',
+            'to_buy' => false,
+            'is_temporary' => true,
+        ]);
+        $actif = Product::factory()->for($user)->create([
+            'name' => 'Temporaire actif',
+            'to_buy' => true,
+            'is_temporary' => true,
+            'updated_at' => now()->subDays(2),
+        ]);
+
+        $this->getJson('/api/products')->assertOk();
+
+        $this->assertDatabaseMissing('products', ['id' => $orphelin->id]);
+        $this->assertDatabaseHas('products', ['id' => $recent->id]);
+        $this->assertDatabaseHas('products', ['id' => $actif->id]);
     }
 
     public function test_update_change_la_section_du_magasin_courant_et_garde_les_autres_magasins(): void
@@ -205,5 +281,19 @@ class ProductControllerTest extends TestCase
         $response->assertJsonMissing(['comment' => 'masqué']);
         $response->assertJsonFragment(['name' => 'Lait 1']);
         $response->assertJsonMissing(['name' => 'Lait autre']);
+    }
+
+    public function test_autocomplete_exclut_les_produits_temporaires(): void
+    {
+        [$user] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+
+        Product::factory()->for($user)->create(['name' => 'Piles rechargeables', 'is_temporary' => false]);
+        Product::factory()->for($user)->create(['name' => 'Piles bouton', 'is_temporary' => true]);
+
+        $this->getJson('/api/products/autocomplete?q=Piles')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'Piles rechargeables'])
+            ->assertJsonMissing(['name' => 'Piles bouton']);
     }
 }

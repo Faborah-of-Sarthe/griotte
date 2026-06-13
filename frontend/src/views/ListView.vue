@@ -47,7 +47,7 @@ watch(shouldKeepScreenAwake, (shouldKeep) => {
 
 
 // Get sections and products from API
-const { isLoading, isError, data, error, isStale } = useQuery({
+const { isLoading, isError, data, error } = useQuery({
   queryKey:  ['products'],
   queryFn: async () => {
 
@@ -80,11 +80,32 @@ const productEdition = useMutation({
 });
 
 
+const temporaryProductCreation = useMutation({
+  mutationFn: (name) => {
+    return axios.post(import.meta.env.VITE_API_URL + 'products', {
+      name,
+      is_temporary: true
+    })
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries(['products'])
+
+    if(!userStore.tutorial) {
+      userStore.setTutorial();
+    }
+  },
+});
+
+
 // Add a product to the list
 function addProduct(product) {
 
   productEdition.mutate(product)
   
+}
+
+function addTemporaryProduct(name) {
+  temporaryProductCreation.mutate(name)
 }
 
 // Open the product form
@@ -125,7 +146,7 @@ function openNewProductForm(product) {
   <template v-if="!isLoading && !isError">
     <div class="controls">
       <RollbackButton v-if="true || actionsStore.visible"></RollbackButton>
-      <Autocomplete @selected="addProduct" @new="openNewProductForm" ></Autocomplete>
+      <Autocomplete @selected="addProduct" @new="openNewProductForm" @newTemporary="addTemporaryProduct" ></Autocomplete>
     </div>
   </template>
   <ProductForm v-if="productFormStore.open" ></ProductForm>

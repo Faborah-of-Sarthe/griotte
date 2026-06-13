@@ -17,17 +17,22 @@ class Product extends Model
     protected $fillable = [
         'name',
         'to_buy',
+        'is_temporary',
         'comment',
         'user_id',
+    ];
+
+    protected $casts = [
+        'to_buy' => 'boolean',
+        'is_temporary' => 'boolean',
     ];
 
     /**
      * Hide unnecessary fields from the JSON response
      */
     protected $hidden = [
-        'user_id', 'created_at', 'updated_at'
+        'user_id', 'created_at', 'updated_at',
     ];
-
 
     /**
      * Get all the sections where this product is located

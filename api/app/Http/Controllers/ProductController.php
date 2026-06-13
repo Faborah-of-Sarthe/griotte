@@ -26,6 +26,16 @@ class ProductController extends Controller
         $store = $user->currentStore;
         // $products = [];
 
+        // Safety net: temporary products checked off more than 24h ago were not
+        // cleaned up on the frontend (e.g. the app was closed during the undo
+        // window). Delete them here so orphans don't pile up. The 24h delay is
+        // far beyond the undo window, so it never interferes with a rollback.
+        Product::where('user_id', $user->id)
+            ->where('is_temporary', true)
+            ->where('to_buy', 0)
+            ->where('updated_at', '<', now()->subDay())
+            ->delete();
+
         if ($store) {
             // get all products flagged as "to buy", categorised by the current store's sections
             $products = $store->sections()->orderBy('order')->with(['products' => function($query) {
@@ -74,6 +84,7 @@ class ProductController extends Controller
     {
         $products = Product::where('name', 'LIKE', '%' . $request->input('q') . '%')
                     ->where('user_id', auth('sanctum')->user()->id)
+                    ->where('is_temporary', false)
                     ->with([
                         'sections' => function($query) {
                             $query->where('store_id', auth('sanctum')->user()->currentStore->id);
@@ -96,6 +107,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'to_buy' => 'boolean',
+            'is_temporary' => 'boolean',
             'comment' => 'nullable|string',
             'section_id' => 'nullable|integer|exists:sections,id',
         ]);
@@ -108,6 +120,7 @@ class ProductController extends Controller
             $product = Product::create([
                 'name' => ucfirst($request->input('name')),
                 'to_buy' => 1,
+                'is_temporary' => $request->boolean('is_temporary'),
                 'comment' => $request->input('comment'),
                 'user_id' => $user->id,
             ]);
@@ -141,6 +154,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'string|max:255',
             'to_buy' => 'boolean',
+            'is_temporary' => 'boolean',
             'comment' => 'nullable|string',
             'section_id' => 'nullable|integer|exists:sections,id',
         ]);

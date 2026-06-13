@@ -31,6 +31,9 @@ class ModelTest extends TestCase
         $this->assertTrue($store->is($user->currentStore));
     }
 
+    /** 
+     * Test that the user settings are normalized from a JSON string by adding the default values.
+     */
     public function test_user_settings_normalise_une_chaine_json(): void
     {
         $settings = UserSettings::fromValue('{"unclassified_first":true}');
@@ -38,6 +41,7 @@ class ModelTest extends TestCase
         $this->assertTrue($settings->unclassified_first);
         $this->assertSame([
             'unclassified_first' => true,
+            'keep_screen_awake' => false,
         ], $settings->toArray());
     }
 

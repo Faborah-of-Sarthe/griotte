@@ -12,7 +12,7 @@ const open = ref(false)
 const inputSearch = ref(null)
 const searchTerms = useDebouncedRef('', 400)
 
-const emit = defineEmits(['selected', 'new'])
+const emit = defineEmits(['selected', 'new', 'newTemporary'])
 
 
 // Methods
@@ -47,8 +47,13 @@ function createProduct() {
     toggleSearch()
 }
 
+function createTemporaryProduct() {
+    emit('newTemporary', searchTerms.value)
+    toggleSearch()
+}
 
-const { isLoading, isError, error, isSuccess, mutate, data } = useMutation({
+
+const { isLoading, isSuccess, mutate, data } = useMutation({
   mutationFn: (searchTerms) => axios.get(import.meta.env.VITE_API_URL+'products/autocomplete', {
     params: {
       q: searchTerms
@@ -87,9 +92,15 @@ watch(searchTerms, (value) => {
             </div>
         </div>
         <div class="creation" v-if="!isLoading">
-            <div class="creation_wrapper" @click="createProduct(searchTerms)">
+            <div class="creation_wrapper" @click="createProduct">
                 <p>
                     Créer  <strong>"{{ searchTerms }}"</strong>
+                </p>
+                <Cross class="small plus" />
+            </div>
+            <div class="creation_wrapper" @click="createTemporaryProduct">
+                <p>
+                    Ajouter <strong>"{{ searchTerms }}"</strong> temporairement
                 </p>
                 <Cross class="small plus" />
             </div>

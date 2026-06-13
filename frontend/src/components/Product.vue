@@ -93,7 +93,7 @@ const hasComment = computed(() => {
       </div>
       <div class="product-info">
         <div>
-          <p  class="product-name"   v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }}  <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
+          <p  class="product-name"   v-on="!productFormStore.open ? {click: openProduct } : {}" v-longpress:500="handleLongPress" >{{ product.name }} <span v-if="product.is_temporary" class="temporary-badge">Temporaire</span> <Arrow class="arrow" :class="{open: open}" v-if="hasComment" ></Arrow></p>
           <Transition name="slideDown">
             <p class="comment" v-if="hasComment && open">
               {{ product.comment }}
@@ -133,6 +133,14 @@ const hasComment = computed(() => {
 
   .product-name {
     cursor: pointer;
+  }
+
+  .temporary-badge {
+    color: var(--color-9);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 0.35rem;
+    text-transform: uppercase;
   }
 
   .product-info {

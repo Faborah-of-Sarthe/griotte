@@ -1,6 +1,6 @@
 <template>
     <Transition name="slideLeft" appear>
-        <button v-if="actionsStore.actions.length > 0" :disabled="isLoading" class="rollback_button" @click="rollback" >
+        <button v-if="actionsStore.visible && actionsStore.actions.length > 0" :disabled="isLoading" class="rollback_button" @click="rollback" >
             <Arrow class="arrow" ></Arrow>
         </button>
     </Transition>
