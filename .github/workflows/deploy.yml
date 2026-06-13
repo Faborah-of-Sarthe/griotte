@@ -1,11 +1,10 @@
 name: Deploy
 
-# Trigger the workflow on push and 
-# pull request events on the production branch
+# Trigger the workflow on push events on the production branch
 on:
   push:
     branches:
-      - master
+      - main
 
 # Authenticate to the the server via ssh 
 # and run our deployment script 
@@ -13,9 +12,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Deploy to server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}

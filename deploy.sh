@@ -1,37 +1,51 @@
 #!/bin/bash
-set -e
+# Script de déploiement automatisé de Griotte.
+# À lancer depuis la racine du dépôt sur le serveur, avec l'utilisateur applicatif.
+# Toutes les commandes PHP/Composer sont exécutées DANS le container web,
+# ce qui évite le "sudo su" et la connexion manuelle au container.
+set -euo pipefail
 
-echo "Deployment started ..."
+# Se placer dans le dossier du script (racine du dépôt), quel que soit l'appelant.
+cd "$(dirname "$0")"
 
-# Pull the latest version of the app
+# Nom du container web défini dans docker-compose.yml.
+container="griotte_web"
+
+# Si l'utilisateur n'est pas dans le groupe "docker", on préfixe par sudo.
+# Astuce : "sudo usermod -aG docker $USER" (puis reconnexion) supprime ce besoin.
+if docker info >/dev/null 2>&1; then
+    docker_cmd="docker"
+else
+    docker_cmd="sudo docker"
+fi
+
+# Exécute une commande dans le dossier api/ du container, en tant qu'utilisateur applicatif.
+run_in_container() {
+    $docker_cmd exec -w /app/api "$container" "$@"
+}
+
+echo "Déploiement démarré ..."
+
+# Récupérer la dernière version du code (met à jour ./api et ./frontend via les volumes).
 git pull
 
-# Enter maintenance mode or return true
-# if already is in maintenance mode
-cd api
-(php artisan down) || true
+# Passer en mode maintenance (ou ne rien faire si déjà en maintenance).
+run_in_container php artisan down || true
 
+# Installer les dépendances PHP de production.
+run_in_container composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-# Install composer dependencies
-composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+# Recompiler les assets du frontend (le dossier dist/ est monté dans le container).
+( cd frontend && npm run build )
 
-# Clear the old cache
-php artisan clear-compiled
+# Vider puis régénérer le cache.
+run_in_container php artisan clear-compiled
+run_in_container php artisan optimize
 
-# Recreate cache
-php artisan optimize
+# Lancer les migrations (--force car environnement de production, sans confirmation).
+run_in_container php artisan migrate --force
 
+# Sortir du mode maintenance.
+run_in_container php artisan up
 
-# Run database migrations
-php artisan migrate 
-
-cd ../frontend
-# Compile npm assets
-npm run build
-
-
-cd ../api
-# Exit maintenance mode
-php artisan up
-
-echo "Deployment finished!"
+echo "Déploiement terminé !"
