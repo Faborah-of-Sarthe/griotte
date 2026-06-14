@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Recipe;
 use App\Models\Section;
 use App\Models\Store;
+use App\Models\Tag;
 use App\Models\User;
 use App\Settings\UserSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,12 +23,16 @@ class ModelTest extends TestCase
         $store = Store::factory()->for($user)->create();
         $product = Product::factory()->for($user)->create();
         $recipe = Recipe::factory()->for($user)->create();
+        $tag = Tag::factory()->for($user)->create();
+        $recipe->tags()->attach($tag->id);
 
         $user->forceFill(['current_store' => $store->id])->save();
 
         $this->assertTrue($user->stores->contains($store));
         $this->assertTrue($user->products->contains($product));
         $this->assertTrue($user->recipes->contains($recipe));
+        $this->assertTrue($user->tags->contains($tag));
+        $this->assertTrue($recipe->tags->contains($tag));
         $this->assertTrue($store->is($user->currentStore));
     }
 

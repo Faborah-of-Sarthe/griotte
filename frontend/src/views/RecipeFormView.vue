@@ -20,12 +20,14 @@ const type = route.meta.type
 const isAddingIngredients = ref(false)
 const recipeId = ref(null)
 const ingredientsSearch = ref('')
+const selectedTags = ref([])
 
 const recipe = ref({
     name: '',
     description: '',
     link: '',
-    products: []
+    products: [],
+    tags: []
 })
 
 
@@ -42,6 +44,8 @@ watch(recipeData, (data) => {
         recipe.value.description = data.data?.description
         recipe.value.link = data.data?.link
         recipe.value.products = data.data?.products
+        recipe.value.tags = data.data?.tags
+        selectedTags.value = data.data?.tags?.map((tag) => tag.id) ?? []
     }
 })
 
@@ -53,16 +57,44 @@ const autocompleteUrl = computed(() => {
     return import.meta.env.VITE_API_URL + 'products/autocomplete'
 })
 
+const { data: tags } = useQuery({
+    queryKey: ['tags'],
+    queryFn: async () => {
+        const res = await axios.get(import.meta.env.VITE_API_URL + 'tags')
+        return res.data
+    }
+})
+
+const syncRecipeTags = async (id) => {
+    await axios.put(import.meta.env.VITE_API_URL + 'recipes/' + id + '/tags', {
+        tag_ids: selectedTags.value
+    })
+}
+
+const toggleTag = (tagId) => {
+    if (selectedTags.value.includes(tagId)) {
+        selectedTags.value = selectedTags.value.filter((selectedTagId) => selectedTagId !== tagId)
+    } else {
+        selectedTags.value = [...selectedTags.value, tagId]
+    }
+}
+
+const isTagSelected = (tagId) => {
+    return selectedTags.value.includes(tagId)
+}
+
 
 // Recipe creation mutation
 const recipeCreation = useMutation({
     mutationFn: (recipeData) => {
         return axios.post(import.meta.env.VITE_API_URL + 'recipes', recipeData)
     },
-    onSuccess: (data) => {
-        queryClient.invalidateQueries(['recipes'])
+    onSuccess: async (data) => {
         // Update the recipe id to trigger the query
         recipeId.value = data.data.id
+        await syncRecipeTags(recipeId.value)
+        queryClient.invalidateQueries(['recipes'])
+        queryClient.invalidateQueries(['recipe', recipeId.value])
         isAddingIngredients.value = true
     }
 })
@@ -72,7 +104,8 @@ const recipeEdition = useMutation({
     mutationFn: (recipeData) => {
         return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + route.params.id, recipeData)
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+        await syncRecipeTags(route.params.id)
         queryClient.invalidateQueries(['recipes'])
         queryClient.invalidateQueries(['recipe', recipeId.value])
         isAddingIngredients.value = true
@@ -84,6 +117,7 @@ const recipeEditionAndReturn = useMutation({
         return axios.patch(import.meta.env.VITE_API_URL + 'recipes/' + route.params.id, recipeData)
     },
     onSuccess: async () => {
+        await syncRecipeTags(route.params.id)
         // Rafraîchir les données plutôt que juste invalider
         await queryClient.refetchQueries(['recipes'])
         await queryClient.refetchQueries(['recipe', recipeId.value])
@@ -182,6 +216,25 @@ const handleSubmit = (action = 'ingredients') => {
             placeholder="www.recette-aux-cerises.com" 
             v-model="recipe.link" 
         />
+        <div v-if="tags && tags.length > 0" class="recipe-tags-field">
+            <label>Tags</label>
+            <div class="tag-buttons">
+                <button
+                    v-for="tag in tags"
+                    :key="tag.id"
+                    type="button"
+                    class="tag-select"
+                    :class="{ selected: isTagSelected(tag.id) }"
+                    @click="toggleTag(tag.id)"
+                >
+                    {{ tag.name }}
+                </button>
+            </div>
+        </div>
+        <p v-else class="markdown-help">
+            Aucun tag disponible pour le moment.
+            <RouterLink :to="{ name: 'recipe-tags' }">Créer des tags</RouterLink>
+        </p>
         <!-- Boutons pour la création -->
         <Button 
             v-if="type === 'create'"
@@ -358,5 +411,36 @@ const handleSubmit = (action = 'ingredients') => {
             width: 100%;
         }
     }
+}
+
+.recipe-tags-field {
+    margin-bottom: 1rem;
+}
+
+.tag-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-select {
+    align-items: center;
+    background: var(--color-1-light);
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    padding: 0.35rem 0.65rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.tag-select.selected {
+    background: var(--color-primary);
+    color: var(--color-background);
 }
 </style>

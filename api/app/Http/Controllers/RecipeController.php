@@ -23,13 +23,35 @@ class RecipeController extends Controller
     public function index(Request $request)
     {
         $user = auth('sanctum')->user();
+        $tag_ids = $request->input('tags', []);
+
+        if (!is_array($tag_ids)) {
+            $tag_ids = [$tag_ids];
+        }
+
+        $tag_ids = collect($tag_ids)
+            ->filter(fn ($tag_id) => $tag_id !== null && $tag_id !== '')
+            ->map(fn ($tag_id) => (int) $tag_id)
+            ->unique()
+            ->values();
+
         return $user
             ->recipes()
+            ->with('tags')
             ->when($request->has('choice') && $request->choice === 'to_make', function ($query) {
                 return $query->where('to_make', true);
             })
             ->when($request->has('search'), function ($query) use ($request) {
                 return $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->when($tag_ids->isNotEmpty(), function ($query) use ($tag_ids) {
+                foreach ($tag_ids as $tag_id) {
+                    $query->whereHas('tags', function ($tag_query) use ($tag_id) {
+                        $tag_query->where('tags.id', $tag_id);
+                    });
+                }
+
+                return $query;
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
@@ -37,7 +59,7 @@ class RecipeController extends Controller
 
     public function show(Recipe $recipe)
     {
-        return $recipe->load('products');
+        return $recipe->load(['products', 'tags']);
     }
 
     public function store(Request $request)
@@ -70,7 +92,7 @@ class RecipeController extends Controller
 
         $recipe->fill($validated)->save();
 
-        return $recipe->load('products');
+        return $recipe->load(['products', 'tags']);
     }
 
     /**
@@ -145,6 +167,28 @@ class RecipeController extends Controller
         ]);
 
         return $recipe->load('products');
+    }
+
+    public function syncTags(Recipe $recipe, Request $request)
+    {
+        $validated = $request->validate([
+            'tag_ids' => 'array',
+            'tag_ids.*' => [
+                'integer',
+                'distinct',
+                'exists:tags,id',
+                function ($attribute, $value, $fail) {
+                    $user = auth('sanctum')->user();
+                    if (!$user->tags()->where('id', $value)->exists()) {
+                        $fail('Le tag sélectionné ne vous appartient pas.');
+                    }
+                }
+            ],
+        ]);
+
+        $recipe->tags()->sync($validated['tag_ids'] ?? []);
+
+        return $recipe->load(['products', 'tags']);
     }
 
     /**

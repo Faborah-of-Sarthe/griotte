@@ -8,6 +8,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +85,20 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
     });
 
+    // TAGS
+    // Get all tags of the current user
+    Route::get('/tags', [TagController::class, 'index']);
+
+    // Create a new tag
+    Route::post('/tags', [TagController::class, 'store']);
+
+    Route::middleware(CheckOwnership::class)->group(function() {
+        // update a tag
+        Route::patch('/tags/{tag}', [TagController::class, 'update']);
+        // delete a tag
+        Route::delete('/tags/{tag}', [TagController::class, 'destroy']);
+    });
+
     // RECIPES
     // Get all recipes of the current user
     Route::get('/recipes', [RecipeController::class, 'index']);
@@ -108,6 +123,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         Route::patch('/recipes/{recipe}', [RecipeController::class, 'update']);
         // Delete a recipe
         Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy']);
+
+        // Sync recipe tags
+        Route::put('/recipes/{recipe}/tags', [RecipeController::class, 'syncTags']);
 
         // Attach a product to a recipe
         Route::post('/recipes/{recipe}/products', [RecipeController::class, 'attachProduct']);

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Product;
 use App\Models\Recipe;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Concerns\CreatesGriotteData;
@@ -39,6 +40,23 @@ class RecipeControllerTest extends TestCase
             ->assertJsonCount(20, 'data')
             ->assertJsonPath('per_page', 20)
             ->assertJsonPath('total', 21);
+    }
+
+    public function test_index_filtre_les_recettes_ayant_tous_les_tags_selectionnes(): void
+    {
+        $user = $this->authentifier();
+        $tag_vegetarien = Tag::factory()->for($user)->create(['name' => 'Végétarien']);
+        $tag_rapide = Tag::factory()->for($user)->create(['name' => 'Rapide']);
+        $recipe_match = Recipe::factory()->for($user)->create(['name' => 'Salade express']);
+        $recipe_partielle = Recipe::factory()->for($user)->create(['name' => 'Salade simple']);
+        $recipe_match->tags()->attach([$tag_vegetarien->id, $tag_rapide->id]);
+        $recipe_partielle->tags()->attach($tag_vegetarien->id);
+
+        $this->getJson("/api/recipes?tags[]={$tag_vegetarien->id}&tags[]={$tag_rapide->id}")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $recipe_match->id)
+            ->assertJsonCount(2, 'data.0.tags');
     }
 
     public function test_count_retourne_le_nombre_de_recettes_a_preparer(): void
@@ -166,6 +184,51 @@ class RecipeControllerTest extends TestCase
             'product_id' => $product->id,
             'quantity' => '200 g',
         ]);
+    }
+
+    public function test_sync_tags_remplace_les_tags_de_la_recette(): void
+    {
+        $user = $this->authentifier();
+        $recipe = Recipe::factory()->for($user)->create();
+        $tag_vegetarien = Tag::factory()->for($user)->create(['name' => 'Végétarien']);
+        $tag_rapide = Tag::factory()->for($user)->create(['name' => 'Rapide']);
+
+        $this->putJson("/api/recipes/{$recipe->id}/tags", [
+            'tag_ids' => [$tag_vegetarien->id, $tag_rapide->id],
+        ])
+            ->assertOk()
+            ->assertJsonCount(2, 'tags');
+
+        $this->assertDatabaseHas('recipe_tag', [
+            'recipe_id' => $recipe->id,
+            'tag_id' => $tag_vegetarien->id,
+        ]);
+        $this->assertDatabaseHas('recipe_tag', [
+            'recipe_id' => $recipe->id,
+            'tag_id' => $tag_rapide->id,
+        ]);
+
+        $this->putJson("/api/recipes/{$recipe->id}/tags", [
+            'tag_ids' => [$tag_rapide->id],
+        ])->assertOk();
+
+        $this->assertDatabaseMissing('recipe_tag', [
+            'recipe_id' => $recipe->id,
+            'tag_id' => $tag_vegetarien->id,
+        ]);
+    }
+
+    public function test_sync_tags_refuse_un_tag_d_un_autre_utilisateur(): void
+    {
+        $user = $this->authentifier();
+        $recipe = Recipe::factory()->for($user)->create();
+        $tag = Tag::factory()->for(User::factory()->create())->create();
+
+        $this->putJson("/api/recipes/{$recipe->id}/tags", [
+            'tag_ids' => [$tag->id],
+        ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['tag_ids.0']);
     }
 
     public function test_add_ingredient_to_shopping_list_met_a_jour_le_produit(): void

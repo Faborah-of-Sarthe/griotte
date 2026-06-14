@@ -5,16 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Recipe extends Model
+class Tag extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'description',
         'user_id',
-        'link',
-        'to_make',
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'created_at',
+        'updated_at',
+        'pivot',
     ];
 
     public function user()
@@ -22,13 +26,8 @@ class Recipe extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function products()
+    public function recipes()
     {
-        return $this->belongsToMany(Product::class, 'product_recipe')->withPivot('quantity');
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Recipe::class);
     }
 }
