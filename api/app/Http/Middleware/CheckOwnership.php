@@ -22,7 +22,8 @@ class CheckOwnership
             'store',
             'product',
             'section',
-            'recipe'
+            'recipe',
+            'tag'
         ];
 
 

@@ -84,4 +84,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Recipe::class);
     }
 
+    /**
+     * Get all the tags belonging to this user.
+     */
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
 }

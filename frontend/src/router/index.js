@@ -115,6 +115,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/my-recipes/tags',
+      name: 'recipe-tags',
+      component: () => import('../views/RecipeTagsView.vue'),
+      meta: {
+        middleware: "auth"
+      }
+    },
+    {
       path: '/my-recipes/:id',
       name: 'recipe',
       component: () => import('../views/RecipeDetailView.vue'),
