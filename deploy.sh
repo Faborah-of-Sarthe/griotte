@@ -35,6 +35,9 @@ run_in_container php artisan down || true
 # Installer les dépendances PHP de production.
 run_in_container composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
+# Publier les assets Filament du back-office.
+run_in_container php artisan filament:upgrade
+
 # Recompiler les assets du frontend (le dossier dist/ est monté dans le container).
 ( cd frontend && npm run build )
 

@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use App\Casts\UserSettingsCast;
-use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\CustomVerifyEmail;
-use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName as FilamentHasName;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements FilamentHasName, FilamentUser, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -20,9 +23,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -42,9 +45,20 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_admin' => 'boolean',
             'password' => 'hashed',
             'settings' => UserSettingsCast::class,
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $panel->getId() === 'admin' && $this->is_admin;
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->email ?? 'Utilisateur #'.$this->getKey();
     }
 
     /**
@@ -91,5 +105,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Tag::class);
     }
-
 }

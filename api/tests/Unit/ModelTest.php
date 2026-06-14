@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Filament\Resources\Users\UserResource;
 use App\Models\Product;
 use App\Models\Recipe;
 use App\Models\Section;
@@ -36,7 +37,31 @@ class ModelTest extends TestCase
         $this->assertTrue($store->is($user->currentStore));
     }
 
-    /** 
+    public function test_user_resource_protege_l_admin_connecte(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin);
+
+        $this->assertFalse(UserResource::canDelete($admin));
+        $this->assertFalse(UserResource::canChangeAdminStatus($admin));
+    }
+
+    public function test_user_resource_protege_le_dernier_admin(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $autre_admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($autre_admin);
+
+        $this->assertTrue(UserResource::canDelete($admin));
+        $this->assertTrue(UserResource::canChangeAdminStatus($admin));
+
+        $autre_admin->forceFill(['is_admin' => false])->save();
+
+        $this->assertFalse(UserResource::canDelete($admin));
+        $this->assertFalse(UserResource::canChangeAdminStatus($admin));
+    }
+
+    /**
      * Test that the user settings are normalized from a JSON string by adding the default values.
      */
     public function test_user_settings_normalise_une_chaine_json(): void
