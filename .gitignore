@@ -15,6 +15,11 @@ public/hot
 public_html/storage
 public_html/hot
 
+# Filament published assets
+/api/public/css/filament/
+/api/public/fonts/filament/
+/api/public/js/filament/
+
 storage/*.key
 .env
 Homestead.yaml
