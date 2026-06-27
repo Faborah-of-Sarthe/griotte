@@ -109,7 +109,8 @@ class ProductController extends Controller
             'to_buy' => 'boolean',
             'is_temporary' => 'boolean',
             'comment' => 'nullable|string',
-            'section_id' => 'nullable|integer|exists:sections,id',
+            // 0 is the virtual "Non classé" section, so we skip the exists check for it.
+            'section_id' => 'nullable|integer|exclude_if:section_id,0|exists:sections,id',
         ]);
 
         // Begin a transaction
@@ -156,7 +157,8 @@ class ProductController extends Controller
             'to_buy' => 'boolean',
             'is_temporary' => 'boolean',
             'comment' => 'nullable|string',
-            'section_id' => 'nullable|integer|exists:sections,id',
+            // 0 is the virtual "Non classé" section, so we skip the exists check for it.
+            'section_id' => 'nullable|integer|exclude_if:section_id,0|exists:sections,id',
         ]);
 
         if($request->has('name')) {

@@ -210,6 +210,45 @@ class ProductControllerTest extends TestCase
         $this->assertTrue($section_autre_store->products()->where('products.id', $product->id)->exists());
     }
 
+    public function test_update_remet_le_produit_en_non_classe_quand_section_id_vaut_zero(): void
+    {
+        [$user, $store] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+        $ancienne_section = Section::factory()->for($store)->create();
+        $autre_store = Store::factory()->for($user)->create();
+        $section_autre_store = Section::factory()->for($autre_store)->create();
+        $product = Product::factory()->for($user)->create(['name' => 'lait']);
+
+        $ancienne_section->products()->attach($product->id);
+        $section_autre_store->products()->attach($product->id);
+
+        // 0 is the virtual "Non classé" section: it must be accepted and detach
+        // the product from the current store sections without triggering the
+        // "section_id sélectionné invalide" validation error.
+        $this->patchJson("/api/products/{$product->id}", [
+            'name' => 'beurre',
+            'section_id' => 0,
+        ])
+            ->assertCreated()
+            ->assertJsonPath('product.name', 'Beurre');
+
+        $this->assertFalse($ancienne_section->products()->where('products.id', $product->id)->exists());
+        $this->assertTrue($section_autre_store->products()->where('products.id', $product->id)->exists());
+    }
+
+    public function test_update_rejette_une_section_id_inexistante(): void
+    {
+        [$user] = $this->creer_magasin_courant();
+        $this->authentifier($user);
+        $product = Product::factory()->for($user)->create();
+
+        $this->patchJson("/api/products/{$product->id}", [
+            'section_id' => 999999,
+        ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('section_id');
+    }
+
     public function test_update_efface_le_commentaire_quand_le_produit_est_coche(): void
     {
         [$user] = $this->creer_magasin_courant();
