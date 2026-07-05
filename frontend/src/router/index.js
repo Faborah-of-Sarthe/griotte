@@ -173,6 +173,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/recipes/shared/:token',
+      name: 'public-recipe',
+      component: () => import('../views/PublicRecipeView.vue'),
+      meta: {
+        middleware: "public"
+      }
+    },
+    {
       path: '/my-account',
       name: 'my-account',
       component: () => import('../views/AccountView.vue'),

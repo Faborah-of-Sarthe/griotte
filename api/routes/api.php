@@ -8,6 +8,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\PublicRecipeController;
 use App\Http\Controllers\TagController;
 
 /*
@@ -124,6 +125,11 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
         // Delete a recipe
         Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy']);
 
+        // Publish a recipe (make it publicly shareable)
+        Route::post('/recipes/{recipe}/publish', [RecipeController::class, 'publish']);
+        // Unpublish a recipe
+        Route::delete('/recipes/{recipe}/publish', [RecipeController::class, 'unpublish']);
+
         // Sync recipe tags
         Route::put('/recipes/{recipe}/tags', [RecipeController::class, 'syncTags']);
 
@@ -145,6 +151,9 @@ Route::middleware('auth:sanctum', 'verified')->group(function() {
 
 
 });
+
+// Public (unauthenticated) access to a shared recipe via its token
+Route::get('/public/recipes/{token}', [PublicRecipeController::class, 'show']);
 
 // Override the default route for password reset
 Route::get('/reset-password/{token}', function (string $token) {

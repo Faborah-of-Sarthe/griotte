@@ -108,6 +108,32 @@ class RecipeController extends Controller
     }
 
     /**
+     * Publish a recipe so it becomes accessible through its share link.
+     */
+    public function publish(Recipe $recipe)
+    {
+        $recipe->publish();
+
+        return response()->json([
+            'is_public' => $recipe->is_public,
+            'public_token' => $recipe->public_token,
+        ]);
+    }
+
+    /**
+     * Unpublish a recipe, revoking public access while keeping its token.
+     */
+    public function unpublish(Recipe $recipe)
+    {
+        $recipe->unpublish();
+
+        return response()->json([
+            'is_public' => $recipe->is_public,
+            'public_token' => $recipe->public_token,
+        ]);
+    }
+
+    /**
      * Count the number of recipes to make
      *
      * @return int
