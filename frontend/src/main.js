@@ -37,19 +37,25 @@ axios.interceptors.response.use(
         return Promise.resolve(response)
     },
     error => {
-        if (error.response?.status === 401) {
-            logout()
-            window.location.reload()
-        }
-        if(error.response?.status === 404){ 
-            router.push({name: 'NotFound'})
-        }
-        if(error.response?.status === 403){ 
-            router.push({name: 'NotFound'})
-        }
-        if(error.response?.data?.message) {
-            const toast = useToast()
-            toast.error(error.response.data.message);
+        // Public recipe requests handle their own errors in the view and must
+        // not trigger logout or a redirect to the NotFound page.
+        const isPublicRequest = error.config?.url?.includes('public/recipes')
+
+        if (!isPublicRequest) {
+            if (error.response?.status === 401) {
+                logout()
+                window.location.reload()
+            }
+            if(error.response?.status === 404){ 
+                router.push({name: 'NotFound'})
+            }
+            if(error.response?.status === 403){ 
+                router.push({name: 'NotFound'})
+            }
+            if(error.response?.data?.message) {
+                const toast = useToast()
+                toast.error(error.response.data.message);
+            }
         }
         return Promise.reject(error)
     },

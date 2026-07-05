@@ -11,10 +11,12 @@ import TodoButton from '../components/TodoButton.vue'
 import Modal from '../components/Modal.vue'
 import MarkdownContent from '../components/MarkdownContent.vue'
 import { computed, ref } from 'vue'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
 const router = useRouter()
 const queryClient = useQueryClient()
+const toast = useToast()
 
 const recipeId = computed(() => route.params.id)
 
@@ -88,6 +90,44 @@ const {mutate: deleteRecipeMutation} = useMutation({
 })
 
 
+
+// Public sharing state derived from the recipe payload
+const isPublic = computed(() => !!recipe.value?.is_public)
+const shareUrl = computed(() => {
+    if (!recipe.value?.public_token) {
+        return ''
+    }
+    return `${window.location.origin}/recipes/shared/${recipe.value.public_token}`
+})
+
+const { mutate: togglePublish, isLoading: isTogglingPublish } = useMutation({
+    mutationFn: async (shouldPublish) => {
+        const url = `${import.meta.env.VITE_API_URL}recipes/${recipeId.value}/publish`
+        const response = shouldPublish
+            ? await axios.post(url)
+            : await axios.delete(url)
+        return response.data
+    },
+    onSuccess: async (data) => {
+        await queryClient.invalidateQueries(['recipe', recipeId.value])
+        toast.success(data.is_public ? 'Recette rendue publique' : 'Recette rendue privée')
+    },
+    onError: (error) => {
+        console.error('Erreur lors du changement de visibilité de la recette:', error)
+    }
+})
+
+const copyShareUrl = async () => {
+    if (!shareUrl.value) {
+        return
+    }
+    try {
+        await navigator.clipboard.writeText(shareUrl.value)
+        toast.success('Lien copié dans le presse-papiers')
+    } catch (error) {
+        console.error('Impossible de copier le lien:', error)
+    }
+}
 
 const addIngredientToList = (ingredient) => {
     addIngredient(ingredient)
@@ -192,8 +232,31 @@ const handleDeleteRecipe = () => {
                 <h2>Description</h2>
                 <MarkdownContent :source="recipe.description" />
             </div>
-         
-            
+
+            <div class="share-section">
+                <h2>Partage</h2>
+                <p class="share-help">
+                    {{ isPublic
+                        ? 'Cette recette est publique : toute personne disposant du lien peut la consulter.'
+                        : 'Rendez cette recette publique pour la partager via un lien.' }}
+                </p>
+                <div v-if="isPublic && shareUrl" class="share-link">
+                    <input type="text" :value="shareUrl" readonly @focus="$event.target.select()" />
+                    <Button design="secondary" type="button" @click="copyShareUrl">
+                        Copier
+                    </Button>
+                </div>
+                <Button
+                    design="secondary"
+                    type="button"
+                    class="share-toggle"
+                    :disabled="isTogglingPublish"
+                    @click="togglePublish(!isPublic)"
+                >
+                    {{ isPublic ? 'Rendre privée' : 'Rendre publique' }}
+                </Button>
+            </div>
+
             <div class="action-buttons">
                 <Button design="secondary" @click="deleteRecipe" type="button">
                     Supprimer
@@ -275,6 +338,48 @@ h2 {
         margin-bottom: 1rem;
     }
     margin-bottom: 2rem;
+}
+
+.share-section {
+    margin-bottom: 2rem;
+
+    h2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .share-help {
+        color: var(--color-text-alt);
+        font-size: 0.9rem;
+        margin: 0 0 1rem;
+    }
+
+    .share-link {
+        display: flex;
+        gap: 0.5rem;
+        align-items: stretch;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+
+        input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--color-text-alt);
+            border-radius: 0.375rem;
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: 0.9rem;
+        }
+
+        :deep(.btn) {
+            margin: 0;
+        }
+    }
+
+    .share-toggle:deep(.btn),
+    :deep(.share-toggle) {
+        margin: 0;
+    }
 }
 
 .buttons {
